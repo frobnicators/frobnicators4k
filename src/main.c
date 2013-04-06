@@ -1,7 +1,7 @@
 #include "winclude.h"
-#include <GL/GL.h>
 #include "util.h"
 #include "klister.h"
+#include "shader.h"
 
 HDC		hDC = NULL; 
 HGLRC	hRC = NULL; 
@@ -210,6 +210,8 @@ void initGL() {
 	glCullFace(GL_BACK);
 	glDepthFunc(GL_LEQUAL);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	init_shaders();
 }
 
 void do_the_magic() {

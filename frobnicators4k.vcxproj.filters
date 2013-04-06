@@ -30,6 +30,15 @@
     <ClInclude Include="src\winclude.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\pack.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\main.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shader.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.c">
@@ -42,6 +51,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\demo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pack.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shader.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
