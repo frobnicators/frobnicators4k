@@ -21,12 +21,27 @@
     <ClInclude Include="src\util.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\klister.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\demo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\winclude.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\util.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\klister.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\demo.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

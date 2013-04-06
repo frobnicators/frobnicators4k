@@ -1,16 +1,13 @@
-#define STRICT
-#define WIN32_LEAN_AND_MEAN
-
-#include <windows.h>
-#include <GL/glew.h>
+#include "winclude.h"
+#include <GL/GL.h>
 #include "util.h"
+#include "klister.h"
 
 HDC		hDC = NULL; 
 HGLRC	hRC = NULL; 
 HWND	hWnd = NULL;
 HINSTANCE hInstance = NULL;
 
-BOOL    keys[256];
 BOOL    fullscreen = FULLSCREEN;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -36,12 +33,12 @@ void terminate() {
 
 	UnregisterClass("OpenGL", hInstance);
 
-	exit(0);
+	ExitProcess(0);
 }
 
 void CreateGLWindow(const char * title, int width, int height) {
 	GLuint PixelFormat;
-	WNDCLASS wc = { 0 };
+	WNDCLASS wc;
 	DWORD dwExStyle;
 	DWORD dwStyle;
 	RECT WindowRect;
@@ -89,7 +86,6 @@ void CreateGLWindow(const char * title, int width, int height) {
 
 	if(fullscreen) {
 		DEVMODE dmScreenSettings = { 0 };
-		//memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
 		dmScreenSettings.dmSize = sizeof(dmScreenSettings);
 		dmScreenSettings.dmPelsWidth = width;
 		dmScreenSettings.dmPelsHeight = height;
@@ -97,6 +93,9 @@ void CreateGLWindow(const char * title, int width, int height) {
 		dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
 		if(ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL) {
+#if _DEBUG
+			debug("Failed to activate fullscreen.\n");
+#endif
 			fullscreen = FALSE;
 		} else {
 			dwExStyle = WS_EX_APPWINDOW;
@@ -183,12 +182,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		}
 		break;
 	case WM_CLOSE:
-		terminate();
-	case WM_KEYDOWN:
-		keys[wParam] = TRUE;
+	case WM_DESTROY:
+		PostQuitMessage(0);
 		break;
-	case WM_KEYUP:
-		keys[wParam] = FALSE;
+	case WM_KEYDOWN:
+		if(wParam == VK_ESCAPE) PostQuitMessage(0);
 		break;
 	/* case WM_SIZE:
 		resize(LOWORD(lParam), HIWORD(lParam)); //width, height
@@ -198,20 +196,65 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 }
 
 void initGL() {
+	if(!initKlister()) {
+#if _DEBUG
+		debug("Failed to init opengl glue\n");
+		terminate();
+#endif
+	}
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+	glCullFace(GL_BACK);
+	glDepthFunc(GL_LEQUAL);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+}
+
+void do_the_magic() {
+	float dt, t;
+	MSG msg;
+	BOOL done = FALSE;
+
+	while(!done) {
+		if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+			if(msg.message == WM_QUIT) {
+				done = TRUE;
+			} else {
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+		} else {
+			t = get_time(&dt);
+
+			SwapBuffers(hDC);
+			Sleep(100);
+		}
+	}
 }
 
 void run() {
-	CreateGLWindow("Frobnicators 4k", 800, 600);
-	initGL();
-	 
-	Sleep(2000);
+	DWORD dwWidth = 800;
+	DWORD dwHeight = 600;
+	int i=0;
 
+	if(fullscreen) {
+		dwWidth = GetSystemMetrics(SM_CXSCREEN);
+		dwHeight = GetSystemMetrics(SM_CYSCREEN);
+	}
+	CreateGLWindow("Frobnicators 4k", dwWidth, dwHeight);
+	initGL();
+	start_time();
+
+	do_the_magic();
+	 
 	terminate();
 }
 
-int APIENTRY WinMain(HINSTANCE hInstance,
-                     HINSTANCE hPrevInstance,
-                     LPTSTR    lpCmdLine,
-	                 int       nCmdShow) { run(); }
+/* For release */
+void __stdcall WinMainCRTStartup() {
+	run();		
+}
 
+/* For debug */
 int main() { run(); }
