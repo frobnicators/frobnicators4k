@@ -7,4 +7,6 @@
 	float get_time(float * dt);
 
 	void start_time();
+
+	void * frob_memset(void * s, int c, size_t n);
 #endif

@@ -85,7 +85,8 @@ void CreateGLWindow(const char * title, int width, int height) {
 	}
 
 	if(fullscreen) {
-		DEVMODE dmScreenSettings = { 0 };
+		DEVMODE dmScreenSettings;
+		frob_memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
 		dmScreenSettings.dmSize = sizeof(dmScreenSettings);
 		dmScreenSettings.dmPelsWidth = width;
 		dmScreenSettings.dmPelsHeight = height;
