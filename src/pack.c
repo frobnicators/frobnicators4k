@@ -42,7 +42,7 @@ static void add_file(const char * name, const char * data, unsigned long size) {
 #if _DEBUG
 char * find_path(const char * name) {
 	char * path;
-	const char * fmt_common = "data/common/%s";
+	const char * fmt_shared = "data/shared/%s";
 	const char * fmt_special = "data/" DEMO_FOLDER "/%s"; 
 
 	int len = _scprintf(fmt_special	, name) + 1; /* Include null terminator */
@@ -56,10 +56,10 @@ char * find_path(const char * name) {
 		return path;
 	}
 
-	len = _scprintf(fmt_common, name) + 1; /* Include null terminator */
+	len = _scprintf(fmt_shared, name) + 1; /* Include null terminator */
 
 	path = (char*) malloc(len);
-	sprintf_s(path, len, fmt_common, name);
+	sprintf_s(path, len, fmt_shared, name);
 
 	dwAttrib = GetFileAttributes(path);
 	if(dwAttrib != INVALID_FILE_ATTRIBUTES && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
@@ -103,7 +103,8 @@ struct file_data_t read_data(const char * name) {
 			fseek(file, cur, SEEK_SET);
 		}
 
-		data = (char*) malloc(size);
+		data = (char*) malloc(size+1);
+		data[size] = 0;
 		res = fread(data, 1, size, file);
 		if ( res != size ) {
 			if ( ferror(file) ){
