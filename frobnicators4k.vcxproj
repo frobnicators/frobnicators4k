@@ -76,7 +76,7 @@
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;FULLSCREEN=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;FULLSCREEN=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAs>CompileAsC</CompileAs>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <ExceptionHandling>false</ExceptionHandling>
@@ -90,7 +90,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalOptions>/CRINKLER %(AdditionalOptions)</AdditionalOptions>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <AdditionalDependencies>opengl32.lib;msvcrt_old.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;msvcrt_old.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

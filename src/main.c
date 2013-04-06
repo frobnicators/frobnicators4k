@@ -11,7 +11,6 @@ HWND	hWnd = NULL;
 HINSTANCE hInstance = NULL;
 
 BOOL    keys[256];
-BOOL    active=TRUE;
 BOOL    fullscreen = FULLSCREEN;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -175,28 +174,44 @@ void CreateGLWindow(const char * title, int width, int height) {
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	switch(uMsg) {
+	case WM_SYSCOMMAND:
+		switch(wParam) {
+		case SC_SCREENSAVE:
+		case SC_MONITORPOWER:
+			return 0; /* Prevent screensavers and powersave mode */
+		}
+		break;
+	case WM_CLOSE:
+		terminate();
+	case WM_KEYDOWN:
+		keys[wParam] = TRUE;
+		break;
+	case WM_KEYUP:
+		keys[wParam] = FALSE;
+		break;
+	/* case WM_SIZE:
+		resize(LOWORD(lParam), HIWORD(lParam)); //width, height
+		break; */
+	}
 	return DefWindowProc(hWnd,uMsg,wParam,lParam);
 }
 
-void run() {
+void initGL() {
+}
 
+void run() {
+	CreateGLWindow("Frobnicators 4k", 800, 600);
+	initGL();
+	 
+	Sleep(2000);
+
+	terminate();
 }
 
 int APIENTRY WinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
                      LPTSTR    lpCmdLine,
-                     int       nCmdShow) {
-	CreateGLWindow("Frobnicators 4k", 800, 600);
-	 
-	Sleep(2000);
+	                 int       nCmdShow) { run(); }
 
-	terminate();
-}
-
-int main() {
-	CreateGLWindow("Frobnicators 4k", 800, 600);
-	 
-	Sleep(2000);
-
-	terminate();
-}
+int main() { run(); }
