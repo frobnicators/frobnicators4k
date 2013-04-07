@@ -3,33 +3,19 @@
 #include "klister.h"
 #include "shader.h"
 
-HDC		hDC = NULL; 
-HGLRC	hRC = NULL; 
-HWND	hWnd = NULL;
-HINSTANCE hInstance = NULL;
-
-BOOL    fullscreen = FULLSCREEN;
+HDC		hDC; 
+HGLRC	hRC; 
+HWND	hWnd;
+HINSTANCE hInstance;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 void __declspec(noreturn) terminate() {
 
-	if(fullscreen) {
+#if FULLSCREEN
 		ChangeDisplaySettings(NULL, 0);
 		ShowCursor(TRUE);
-	}
-
-	if(hRC) {
-		wglMakeCurrent(NULL, NULL);
-		wglDeleteContext(hRC);
-		hRC = NULL;
-	}
-
-	if(hDC) ReleaseDC(hWnd, hDC);
-	hDC = NULL;
-
-	if(hWnd) DestroyWindow(hWnd);
-	hWnd = NULL;
+#endif
 
 	UnregisterClass("OpenGL", hInstance);
 
@@ -84,7 +70,8 @@ void CreateGLWindow(const char * title, int width, int height) {
 		terminate();
 	}
 
-	if(fullscreen) {
+#if FULLSCREEN
+	{
 		DEVMODE dmScreenSettings;
 		frob_memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
 		dmScreenSettings.dmSize = sizeof(dmScreenSettings);
@@ -97,18 +84,17 @@ void CreateGLWindow(const char * title, int width, int height) {
 #if _DEBUG
 			debug("Failed to activate fullscreen.\n");
 #endif
-			fullscreen = FALSE;
+			dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
+			dwStyle = WS_OVERLAPPEDWINDOW;
 		} else {
 			dwExStyle = WS_EX_APPWINDOW;
 			dwStyle = WS_POPUP;
 			ShowCursor(FALSE);
 		}
-	}
-
-	if(!fullscreen) {
-		dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
-		dwStyle = WS_OVERLAPPEDWINDOW;
-	}
+#else
+	dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
+	dwStyle = WS_OVERLAPPEDWINDOW;
+#endif
 
 	AdjustWindowRectEx(&WindowRect, dwStyle, FALSE, dwExStyle);
 
@@ -189,9 +175,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	case WM_KEYDOWN:
 		if(wParam == VK_ESCAPE) PostQuitMessage(0);
 		break;
-	/* case WM_SIZE:
-		resize(LOWORD(lParam), HIWORD(lParam)); //width, height
-		break; */
 	}
 	return DefWindowProc(hWnd,uMsg,wParam,lParam);
 }
@@ -203,13 +186,13 @@ void initGL() {
 #endif
 		terminate();
 	}
-	glEnable(GL_CULL_FACE);
+	/*glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glCullFace(GL_BACK);
 	glDepthFunc(GL_LEQUAL);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);*/
 
 	init_shaders();
 }
@@ -238,14 +221,14 @@ void do_the_magic() {
 }
 
 void run() {
+	int i=0;
+#if FULLSCREEN
+	DWORD dwWidth = GetSystemMetrics(SM_CXSCREEN);
+	DWORD dwHeight = GetSystemMetrics(SM_CYSCREEN);
+#else
 	DWORD dwWidth = 800;
 	DWORD dwHeight = 600;
-	int i=0;
-
-	if(fullscreen) {
-		dwWidth = GetSystemMetrics(SM_CXSCREEN);
-		dwHeight = GetSystemMetrics(SM_CYSCREEN);
-	}
+#endif
 	CreateGLWindow("Frobnicators 4k", dwWidth, dwHeight);
 	initGL();
 	start_time();

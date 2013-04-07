@@ -13,13 +13,13 @@ GLuint vertex_shader;
 GLuint build_shader(const char * src, GLenum type) {
 	GLuint shader = glCreateShader(type);
 	GLint compile_status;
-	char buffer[2048];
 
 	glShaderSource(shader, 1, &src, NULL);
 	glCompileShader(shader);
 #if _DEBUG
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &compile_status);
 	if(compile_status == GL_FALSE) {
+		char buffer[2048];
 
 		glGetShaderInfoLog(shader, 2048, NULL, buffer);
 		printf("Shader compile error. Source:\n%s\n", src);
@@ -73,5 +73,5 @@ GLuint load_shader(const char * name) {
 	}
 #endif
 
-	return 0;
+	return program;
 }
