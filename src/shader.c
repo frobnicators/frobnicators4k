@@ -4,15 +4,12 @@
 #include "main.h"
 #include "util.h"
 
-extern DWORD width, height;
-
 #if _DEBUG
 #include <stdlib.h>
 #include <stdio.h>
 #endif
 
 static GLuint vertex_shader, vbo[2];
-static float ortho[16];
 static const unsigned char indices[] = { 0, 1, 2 , 3 };
 
 
@@ -44,13 +41,12 @@ static GLuint build_shader(const char * src, GLenum type) {
 
 void init_shaders() {
 	static const float quad[] = {
-		0.f, 0.f,	0.f, 1.f,
-		0.f, 1.f,	0.f, 0.f,
-		1.f, 1.f,	1.f, 0.f,
-		1.f, 0.f,	1.f, 1.f,
+		-1.f, -1.f,
+		-1.f, 1.f,
+		1.f, 1.f,
+		1.f, -1.f
 	};
 	static struct file_data_t vert_data;
-	static float w,h;
 #if _DEBUG
 	struct file_data_t common;
 	char * src;
@@ -66,28 +62,6 @@ void init_shaders() {
 #endif
 
 	vertex_shader = build_shader(src, GL_VERTEX_SHADER);
-	w = (float) width;
-	h = (float) height;
-
-	/* Create orthographic projection matrix */
-	ortho[0] = 2.f / w;
-	ortho[5] = -2.f / h;
-	ortho[10] = -1.f;
-	ortho[12] = -1.f;
-	ortho[13] = 1.f;
-	ortho[15] = 1.f;
-
-	/* Set the rest to 0, this is smaller than memset */
-	ortho[1] = 0.f;
-	ortho[2] = 0.f;
-	ortho[3] = 0.f;
-	ortho[4] = 0.f;
-	ortho[6] = 0.f;
-	ortho[7] = 0.f;
-	ortho[8] = 0.f;
-	ortho[9] = 0.f;
-	ortho[11] = 0.f;
-	ortho[14] = 0.f;
 
 	/* Create vbos */
 	glGenBuffers(2, vbo);
@@ -139,11 +113,8 @@ void load_shader(const char * name, struct shader_t * shader) {
 	glUseProgram(shader->program);
 	matrix = glGetUniformLocation(shader->program, "matrix");
 	shader->time = glGetUniformLocation(shader->program, "time");
-	glUniformMatrix4fv(matrix, 1, GL_FALSE, ortho);
 	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), 0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), (const GLvoid*)(2*sizeof(float)));
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 }
 
 void render(struct shader_t * shader, float t) {
