@@ -1,8 +1,8 @@
 Release/
 Debug/
+*.sdf
 *.opensdf
 *.swp
-*.sdf
-*.sou
+*.suo
 *~
 data.h
