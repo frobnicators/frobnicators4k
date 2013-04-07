@@ -1,7 +1,7 @@
 dir = ARGV[0]
 
 if dir.nil?
-	puts "Missing argument: demo folder (ex 'demo')"
+	$stderr.puts "Missing argument: demo folder (ex 'demo')"
 	exit -1
 end
 
@@ -14,20 +14,27 @@ else
 	@common = File.read("data/shared/shaders/common.glsl")
 end
 
+# Put common.glsl in files list so it is not included
+@files.push("shaders/common.glsl")
+
+
+
 def hndl_dir(dir, named_path)
 	Dir.foreach("#{dir}") do |f|
 		if f[0] != '.' then
 			path = "#{dir}/#{f}"
 			if File.file?(path) then
 				name = "#{named_path}#{f}"
-				return if @files.include? name
+				next if @files.include? name
 
 				size = File.size(path)
 				if(name[-4..-1] == "glsl") then
 					data = @common + "\n" +IO.read(path)
 					data = data.gsub("\r", "")
-				else
+				elsif name[-1] != "~" then
 					data = IO.binread(path)
+				else
+					next
 				end
 
 				data = data.gsub("\\", "\\\\").gsub("\n", "\\n").gsub("\r", "\\r").gsub("\"", "\\\"")
@@ -46,3 +53,5 @@ hndl_dir("data/shared", "")
 puts "};"
 
 puts "const int num_files = #{@files.size};"
+
+$stderr.puts "Done"
