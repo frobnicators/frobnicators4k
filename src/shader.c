@@ -8,7 +8,7 @@
 #include <stdio.h>
 #endif
 
-GLuint shader_stages[2]; /* First is set to vert shader, second is variated */
+GLuint vertex_shader;
 
 GLuint build_shader(const char * src, GLenum type) {
 	GLuint shader = glCreateShader(type);
@@ -17,17 +17,17 @@ GLuint build_shader(const char * src, GLenum type) {
 
 	glShaderSource(shader, 1, &src, NULL);
 	glCompileShader(shader);
+#if _DEBUG
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &compile_status);
 	if(compile_status == GL_FALSE) {
-#if _DEBUG
 
 		glGetShaderInfoLog(shader, 2048, NULL, buffer);
 		printf("Shader compile error. Source:\n%s\n", src);
 		printf("Error in shader: %s\n", buffer);
-#endif
-		MessageBox(NULL, "Shader compile error", "", MB_OK | MB_ICONERROR);
+		MessageBox(NULL, "Shader compile error", "Shader error", MB_OK | MB_ICONERROR);
 		terminate();
 	}
+#endif
 
 }
 
@@ -42,19 +42,36 @@ void init_shaders() {
 	const char * src = vert_data.data;
 #endif
 
-	shader_stages[0] = build_shader(src, GL_VERTEX_SHADER);
+	vertex_shader = build_shader(src, GL_VERTEX_SHADER);
 }
 
 GLuint load_shader(const char * name) {
 	struct file_data_t frag_data = read_data(name);
+	GLuint fragment_shader, program;
 #if _DEBUG
 	struct file_data_t common = read_data("common.glsl");
+	GLint link_status;
 	char * src = (char*)malloc(strlen(GLSL_VERSION_LINE) + strlen(common.data) + strlen(frag_data.data) + 3);
 	sprintf(src, GLSL_VERSION_LINE "%s\n%s\n", common.data, frag_data.data);
 
 #else
 	const char * src = frag_data.data;
 #endif
-	//shader_stages[1] = build_shader(src, GL_FRAGMENT_SHADER);
+	fragment_shader = build_shader(src, GL_FRAGMENT_SHADER);
+	program = glCreateProgram();
+	glAttachShader(program, vertex_shader);
+	glAttachShader(program, fragment_shader);
+	glLinkProgram(program);
+
+#if _DEBUG
+	glGetProgramiv(program, GL_LINK_STATUS, &link_status);
+	if(!link_status) {
+		char buffer[2048];
+		glGetProgramInfoLog(program, 2048, NULL, buffer);
+		printf("Link error in shader %s: %s\n", name, buffer);
+		MessageBox(NULL, "Link error in shader.", "Shader error", MB_OK | MB_ICONERROR);
+	}
+#endif
+
 	return 0;
 }
