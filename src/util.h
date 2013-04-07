@@ -8,6 +8,7 @@
 
 	void start_time();
 
-	void * frob_memset(void * s, int c, size_t n);
-	int frob_strcmp(const char * s1, const char * s2);
+	void * memset(void * s, int c, size_t n);
+	int strcmp(const char * s1, const char * s2);
+	size_t strlen ( const char * str );
 #endif

@@ -30,7 +30,7 @@ float get_time(float * dt) {
 	return (t - _start_time) / 1000000.f;
 }
 
-void * frob_memset(void * s, int c, size_t n) {
+void * memset(void * s, int c, size_t n) {
 	char * b = (char*) s;
 	size_t i;
 	for(i = 0; i < n; i++, b++) {
@@ -39,7 +39,7 @@ void * frob_memset(void * s, int c, size_t n) {
 	return s;
 }
 
-int frob_strcmp(const char * s1, const char * s2) {
+int strcmp(const char * s1, const char * s2) {
 	size_t i, l1, l2;
 	l1 = strlen(s1);
 	l2 = strlen(s2);
@@ -48,4 +48,10 @@ int frob_strcmp(const char * s1, const char * s2) {
 		else if(s1[i] > s2[i]) return 1;
 	}
 	return 0;
+}
+
+size_t strlen ( const char * str ) {
+	size_t len = 0;
+	while(str[len] != NULL) len++;
+	return len;
 }

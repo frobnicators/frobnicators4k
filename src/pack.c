@@ -76,7 +76,7 @@ char * find_path(const char * name) {
 struct file_data_t read_data(const char * name) {
 	int i;
 	for(i=0; i<num_files; ++i) {
-		if(frob_strcmp(files[i].name, name) == 0) {
+		if(strcmp(files[i].name, name) == 0) {
 			struct file_data_t ret = { files[i].data, files[i].size };
 			return ret;
 		}
