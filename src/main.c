@@ -12,7 +12,7 @@ BOOL    fullscreen = FULLSCREEN;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-void terminate() {
+void __declspec(noreturn) terminate() {
 
 	if(fullscreen) {
 		ChangeDisplaySettings(NULL, 0);
@@ -200,8 +200,8 @@ void initGL() {
 	if(!initKlister()) {
 #if _DEBUG
 		debug("Failed to init opengl glue\n");
-		terminate();
 #endif
+		terminate();
 	}
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);

@@ -1,4 +1,4 @@
 #ifndef MAIN_H
 #define MAIN_H
-	void terminate();
+	void __declspec(noreturn) terminate();
 #endif

@@ -1,7 +1,7 @@
 #ifndef PACK_H
 #define PACK_H
 
-#define GLSL_VERSION_LINE "#version 130\n"
+#define GLSL_VERSION_LINE "#version 150\n"
 
 struct file_data_t {
 		const char * data;

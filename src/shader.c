@@ -10,24 +10,22 @@
 
 GLuint shader_stages[2]; /* First is set to vert shader, second is variated */
 
-static GLuint build_shader(const char * src, GLenum type) {
+GLuint build_shader(const char * src, GLenum type) {
 	GLuint shader = glCreateShader(type);
 	GLint compile_status;
-	printf("Shader source: %s\n", src);
+	char buffer[2048];
 
 	glShaderSource(shader, 1, &src, NULL);
 	glCompileShader(shader);
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &compile_status);
 	if(compile_status == GL_FALSE) {
 #if _DEBUG
-		char buffer[2048];
 
-		fprintf(stderr, "Shader compile error. Source: %s\n", src);
 		glGetShaderInfoLog(shader, 2048, NULL, buffer);
-		fprintf(stderr, "Error in shader: %s\n", buffer);
-#else
-		MessageBox(NULL, "Shader fail", "E", MB_OK | MB_ICONERROR);
+		printf("Shader compile error. Source:\n%s\n", src);
+		printf("Error in shader: %s\n", buffer);
 #endif
+		MessageBox(NULL, "Shader compile error", "", MB_OK | MB_ICONERROR);
 		terminate();
 	}
 

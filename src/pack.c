@@ -25,7 +25,7 @@ int num_files = 0;
 
 static void add_file(const char * name, const char * data, unsigned long size) {
 	struct data_t entry;
-	entry.name = strdup(name);
+	entry.name = _strdup(name);
 	entry.data = data;
 	entry.size = size;
 
@@ -92,7 +92,7 @@ struct file_data_t read_data(const char * name) {
 		free(_name);
 
 		if(file == NULL) {
-			fprintf(stderr,"Couldn't open file `%s'\n", name);
+			printf("Couldn't open file `%s'\n", name);
 			terminate();
 		}
 
@@ -108,9 +108,9 @@ struct file_data_t read_data(const char * name) {
 		res = fread(data, 1, size, file);
 		if ( res != size ) {
 			if ( ferror(file) ){
-				fprintf(stderr,"Error when reading file `%s': %s\n", name, strerror(errno));
+				printf("Error when reading file `%s': %s\n", name, strerror(errno));
 			} else {
-				fprintf(stderr, "Error when reading file `%s': read size was not the expected size (read %lu bytes, expected %lu)\n", name, res, size);
+				printf("Error when reading file `%s': read size was not the expected size (read %lu bytes, expected %lu)\n", name, res, size);
 			}
 		}
 		fclose(file);
