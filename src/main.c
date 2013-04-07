@@ -4,13 +4,13 @@
 #include "shader.h"
 #include "demo.h"
 
-HDC		hDC; 
-HGLRC	hRC; 
-HWND	hWnd;
-HINSTANCE hInstance;
+static HDC		hDC; 
+static HGLRC	hRC; 
+static HWND	hWnd;
+static HINSTANCE hInstance;
 DWORD width, height;
 
-LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 void __declspec(noreturn) terminate() {
 
@@ -24,7 +24,7 @@ void __declspec(noreturn) terminate() {
 	ExitProcess(0);
 }
 
-void CreateGLWindow(const char * title) {
+static void CreateGLWindow(const char * title) {
 	GLuint PixelFormat;
 	WNDCLASS wc;
 	DWORD dwExStyle;
@@ -181,7 +181,7 @@ void CreateGLWindow(const char * title) {
 	SetFocus(hWnd);
 }
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	switch(uMsg) {
 	case WM_SYSCOMMAND:
 		switch(wParam) {
@@ -201,7 +201,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	return DefWindowProc(hWnd,uMsg,wParam,lParam);
 }
 
-void initGL() {
+static void initGL() {
 	initKlister();
 	/*glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
@@ -212,10 +212,9 @@ void initGL() {
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);*/
 
 	init_shaders();
-	init_demo();
 }
 
-void do_the_magic() {
+static void do_the_magic() {
 	float dt, t;
 	MSG msg;
 	BOOL done = FALSE;
@@ -230,14 +229,13 @@ void do_the_magic() {
 			}
 		} else {
 			t = get_time(&dt);
-			render_demo(dt, t);
 			SwapBuffers(hDC);
 			Sleep(100);
 		}
 	}
 }
 
-void run() {
+static void run() {
 	int i=0;
 #if FULLSCREEN
 	width = GetSystemMetrics(SM_CXSCREEN);
@@ -260,5 +258,7 @@ void __stdcall WinMainCRTStartup() {
 	run();		
 }
 
+#if _DEBUG
 /* For debug */
 int main() { run(); }
+#endif
