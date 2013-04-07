@@ -1,5 +1,6 @@
 Release/
 Debug/
+SemiRelease/
 *.sdf
 *.opensdf
 *.swp

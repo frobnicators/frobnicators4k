@@ -1,5 +1,5 @@
 #include "klister.h"
-#if _DEBUG
+#if SOME_DEBUG
 #include "main.h"
 #endif
 
@@ -16,7 +16,7 @@ PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
 PFNGLUNIFORM1FPROC glUniform1f;
 PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
 
-#if _DEBUG
+#if SOME_DEBUG
 PFNGLGETSHADERIVPROC glGetShaderiv;
 PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog;
 PFNGLGETPROGRAMIVPROC glGetProgramiv;
@@ -35,7 +35,7 @@ void initKlister() {
 	glUniform1f = (PFNGLUNIFORM1FPROC)getProcAddr("glUniform1f");
 	glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)getProcAddr("glUniformMatrix4fv");
 
-#if _DEBUG
+#if SOME_DEBUG
 	glGetShaderiv = (PFNGLGETSHADERIVPROC)getProcAddr("glGetShaderiv");
 	glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)getProcAddr("glGetShaderInfoLog");
 	glGetProgramiv = (PFNGLGETPROGRAMIVPROC)getProcAddr("glGetProgramiv");

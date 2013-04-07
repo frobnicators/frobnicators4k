@@ -73,12 +73,13 @@ char * find_path(const char * name) {
 }
 #endif
 
-struct file_data_t read_data(const char * name) {
+void read_data(const char * name,struct file_data_t * ret  ) {
 	int i;
 	for(i=0; i<num_files; ++i) {
 		if(strcmp(files[i].name, name) == 0) {
-			struct file_data_t ret = { files[i].data, files[i].size };
-			return ret;
+			ret->data = files[i].data;
+			ret->size = files[i].size;
+			return;
 		}
 	}
 
@@ -88,7 +89,6 @@ struct file_data_t read_data(const char * name) {
 		char * data;
 		unsigned long size, res;
 		FILE * file = fopen(_name, "rb");
-		struct file_data_t ret;
 		free(_name);
 
 		if(file == NULL) {
@@ -115,9 +115,9 @@ struct file_data_t read_data(const char * name) {
 		}
 		fclose(file);
 		add_file(name, data, size);
-		ret.data = data;
-		ret.size = size;
-		return ret;
+		ret->data = data;
+		ret->size = size;
+		return;
 	}
 #endif
 	MessageBox(NULL, "File failure", name, MB_OK | MB_ICONEXCLAMATION);

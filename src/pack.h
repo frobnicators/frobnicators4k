@@ -6,6 +6,6 @@ struct file_data_t {
 		unsigned long size;
 };
 
-struct file_data_t read_data(const char * name);
+void read_data(const char * name, struct file_data_t * data );
 
 #endif

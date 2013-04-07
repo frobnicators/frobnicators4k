@@ -18,19 +18,24 @@ static const unsigned char index[] = { 0, 1, 2 , 3 };
 
 GLuint build_shader(const char * src, GLenum type) {
 	GLuint shader = glCreateShader(type);
+#if SOME_DEBUG
 	GLint compile_status;
+#endif
+	
 
 	glShaderSource(shader, 1, &src, NULL);
 	glCompileShader(shader);
-#if _DEBUG
+#if SOME_DEBUG
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &compile_status);
 	if(compile_status == GL_FALSE) {
 		char buffer[2048];
 
 		glGetShaderInfoLog(shader, 2048, NULL, buffer);
+#if _DEBUG
 		printf("Shader compile error. Source:\n%s\n", src);
 		printf("Error in shader: %s\n", buffer);
-		MessageBox(NULL, "Shader compile error", "Shader error", MB_OK | MB_ICONERROR);
+#endif
+		MessageBox(NULL, buffer, "Shader compile error", MB_OK | MB_ICONERROR);
 		terminate();
 	}
 #endif
@@ -44,22 +49,23 @@ void init_shaders() {
 		1.f, 1.f,	1.f, 0.f,
 		1.f, 0.f,	1.f, 1.f,
 	};
-	struct file_data_t vert_data = read_data("shaders/vertex.glsl");
+	struct file_data_t vert_data;
 	float w,h;
-	int i;
 #if _DEBUG
-	struct file_data_t common = read_data("shaders/common.glsl");
-	const unsigned long len = strlen(common.data) + strlen(vert_data.data) + 3;
-	char * src = (char*)malloc(len);
+	struct file_data_t common;
+	char * src;
+
+	read_data("shaders/vertex.glsl", &vert_data);
+	read_data("shaders/common.glsl", &common);
+	src = (char*)malloc(strlen(common.data) + strlen(vert_data.data) + 3);
 	sprintf(src, "%s\n%s\n", common.data, vert_data.data);
 #else
-	const char * src = vert_data.data;
+	const char * src;
+	read_data("shaders/vertex.glsl", &vert_data);
+	src = vert_data.data;
 #endif
 
 	vertex_shader = build_shader(src, GL_VERTEX_SHADER);
-/*	for(i = 0; i<16; ++i) { 
-		ortho[i] = 0.f;
-	}*/
 	w = (float) width;
 	h = (float) height;
 
@@ -84,43 +90,51 @@ void init_shaders() {
 	ortho[14] = 0.f;
 }
 
-struct shader_t load_shader(const char * name) {
-	struct file_data_t frag_data = read_data(name);
-	GLuint fragment_shader;
-	struct shader_t shader;
-#if _DEBUG
-	struct file_data_t common = read_data("shaders/common.glsl");
+void load_shader(const char * name, struct shader_t * shader) {
+	struct file_data_t frag_data;
+	GLuint fragment_shader, matrix;
+#if SOME_DEBUG
 	GLint link_status;
-	char * src = (char*)malloc(strlen(common.data) + strlen(frag_data.data) + 3);
+#endif
+
+#if _DEBUG
+	struct file_data_t common;
+	char * src;
+
+	read_data("shaders/common.glsl", &common);
+	src = (char*)malloc(strlen(common.data) + strlen(frag_data.data) + 3);
 	sprintf(src, "%s\n%s\n", common.data, frag_data.data);
 
 #else
-	const char * src = frag_data.data;
+	const char * src;
+	read_data(name, &frag_data);
+	src = frag_data.data;
 #endif
 	fragment_shader = build_shader(src, GL_FRAGMENT_SHADER);
-	shader.program = glCreateProgram();
-	glAttachShader(shader.program, vertex_shader);
-	glAttachShader(shader.program, fragment_shader);
-	glLinkProgram(shader.program);
+	shader->program = glCreateProgram();
+	glAttachShader(shader->program, vertex_shader);
+	glAttachShader(shader->program, fragment_shader);
+	glLinkProgram(shader->program);
 
-#if _DEBUG
-	glGetProgramiv(shader.program, GL_LINK_STATUS, &link_status);
+#if SOME_DEBUG
+	glGetProgramiv(shader->program, GL_LINK_STATUS, &link_status);
 	if(!link_status) {
 		char buffer[2048];
-		glGetProgramInfoLog(shader.program, 2048, NULL, buffer);
+		glGetProgramInfoLog(shader->program, 2048, NULL, buffer);
+#if _DEBUG
 		printf("Link error in shader %s: %s\n", name, buffer);
-		MessageBox(NULL, "Link error in shader.", "Shader error", MB_OK | MB_ICONERROR);
+#endif
+		MessageBox(NULL, buffer, "Shader compile error", MB_OK | MB_ICONERROR);
 	}
 #endif
 
-	shader.matrix = glGetUniformLocation(shader.program, "matrix");
-	shader.time = glGetUniformLocation(shader.program, "time");
-	
-	return shader;
+	glUseProgram(shader->program);
+	matrix = glGetUniformLocation(shader->program, "matrix");
+	shader->time = glGetUniformLocation(shader->program, "time");
+	glUniformMatrix4fv(matrix, 1, GL_FALSE, ortho);
 }
 
 void render(struct shader_t * shader, float t) {
 	glUseProgram(shader->program);
 	glUniform1f(shader->time, t);
-	glUniformMatrix4fv(shader->matrix, 1, GL_FALSE, ortho);
 }
