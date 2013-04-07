@@ -3,8 +3,16 @@
 
 #include "klister.h"
 
+struct shader_t {
+	GLuint program;
+	GLuint matrix;
+	GLuint time;
+};
+
 void init_shaders();
 
-GLuint load_shader(const char * name);
+struct shader_t load_shader(const char * name);
+
+void render(struct shader_t * shader, float t);
 
 #endif
