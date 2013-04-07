@@ -5,5 +5,5 @@ out vec2 uv;
 
 void main(){
 	uv = in_uv;
-	gl_Position = projectionViewMatrix *  in_pos;
+	gl_Position = matrix *  in_pos;
 }
