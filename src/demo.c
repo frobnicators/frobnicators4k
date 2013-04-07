@@ -1,7 +1,7 @@
 #include "demo.h"
 #include "shader.h"
 
-struct shader_t shader;
+static struct shader_t shader;
 
 void init_demo() {
 	shader = load_shader("shaders/gradient.glsl");
