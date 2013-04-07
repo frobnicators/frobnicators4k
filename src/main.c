@@ -177,8 +177,8 @@ static void CreateGLWindow(const char * title) {
 #endif
 
 	ShowWindow(hWnd,SW_SHOW);
-	SetForegroundWindow(hWnd);
-	SetFocus(hWnd);
+	//SetForegroundWindow(hWnd);
+	//SetFocus(hWnd);
 }
 
 static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -192,10 +192,10 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		break;
 	case WM_CLOSE:
 	case WM_DESTROY:
-		PostQuitMessage(0);
+		terminate();
 		break;
 	case WM_KEYDOWN:
-		if(wParam == VK_ESCAPE) PostQuitMessage(0);
+		if(wParam == VK_ESCAPE) terminate();
 		break;
 	}
 	return DefWindowProc(hWnd,uMsg,wParam,lParam);
@@ -203,14 +203,6 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 static void initGL() {
 	initKlister();
-	/*glEnable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_BLEND);
-	glCullFace(GL_BACK);
-	glDepthFunc(GL_LEQUAL);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);*/
-
 	init_shaders();
 	init_demo();
 }
@@ -218,12 +210,11 @@ static void initGL() {
 static void do_the_magic() {
 	float dt, t;
 	MSG msg;
-	BOOL done = FALSE;
 
-	while(!done) {
+	while(1) {
 		if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
 			if(msg.message == WM_QUIT) {
-				done = TRUE;
+				terminate();
 			} else {
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
@@ -254,8 +245,6 @@ static void run() {
 	start_time();
 
 	do_the_magic();
-	 
-	terminate();
 }
 
 /* For release */
