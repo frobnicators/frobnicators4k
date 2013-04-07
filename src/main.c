@@ -230,6 +230,9 @@ static void do_the_magic() {
 			}
 		} else {
 			t = get_time(&dt);
+#if _DEBUG
+			printf("Time: %f\n", t);
+#endif
 			render_demo(dt, t);
 			SwapBuffers(hDC);
 			Sleep(100);

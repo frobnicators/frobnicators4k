@@ -25,9 +25,9 @@ void start_time() {
 
 float get_time(float * dt) {
 	DWORD t = GetTickCount();
-	*dt = (float)(t - _last_time) / 1000000.f;
+	*dt = (float)(t - _last_time) / 1000.f;
 	_last_time = t;
-	return (t - _start_time) / 1000000.f;
+	return (t - _start_time) / 1000.f;
 }
 
 void * memset(void * s, int c, size_t n) {
