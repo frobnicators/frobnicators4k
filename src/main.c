@@ -2,11 +2,13 @@
 #include "util.h"
 #include "klister.h"
 #include "shader.h"
+#include "demo.h"
 
 HDC		hDC; 
 HGLRC	hRC; 
 HWND	hWnd;
 HINSTANCE hInstance;
+DWORD width, height;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -22,7 +24,7 @@ void __declspec(noreturn) terminate() {
 	ExitProcess(0);
 }
 
-void CreateGLWindow(const char * title, int width, int height) {
+void CreateGLWindow(const char * title) {
 	GLuint PixelFormat;
 	WNDCLASS wc;
 	DWORD dwExStyle;
@@ -65,15 +67,19 @@ void CreateGLWindow(const char * title, int width, int height) {
 	wc.lpszMenuName = NULL;
 	wc.lpszClassName = "OpenGL";
 
+#if _DEBUG
 	if(!RegisterClass(&wc)) {
 		MessageBox(NULL, "Failed to register the window class.", "ERROR", MB_OK | MB_ICONEXCLAMATION);
 		terminate();
 	}
+#else
+	RegisterClass(&wc);
+#endif
 
 #if FULLSCREEN
 	{
 		DEVMODE dmScreenSettings;
-		frob_memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
+		memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
 		dmScreenSettings.dmSize = sizeof(dmScreenSettings);
 		dmScreenSettings.dmPelsWidth = width;
 		dmScreenSettings.dmPelsHeight = height;
@@ -91,14 +97,18 @@ void CreateGLWindow(const char * title, int width, int height) {
 			dwStyle = WS_POPUP;
 			ShowCursor(FALSE);
 		}
+	}
 #else
 	dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
 	dwStyle = WS_OVERLAPPEDWINDOW;
 #endif
 
 	AdjustWindowRectEx(&WindowRect, dwStyle, FALSE, dwExStyle);
-
-	if ((hWnd=CreateWindowEx(  dwExStyle,
+	/* This hack be pretty ... */
+#if _DEBUG
+	if ((
+#endif
+		hWnd=CreateWindowEx(  dwExStyle,
 				"OpenGL",
 				title,
 				WS_CLIPSIBLINGS |
@@ -110,49 +120,61 @@ void CreateGLWindow(const char * title, int width, int height) {
 				NULL,
 				NULL,
 				hInstance,
-				NULL)) == NULL)
-	{
-#if _DEBUG
+				NULL)
+#if _DEBUG 
+				) == NULL) {
 		debug("Failed to create window: %d\n", GetLastError());
-#endif
 		terminate();
 	}
+#else
+	;
+#endif
 
 	
+#if _DEBUG
 	if (!(hDC=GetDC(hWnd))) {
-		#if _DEBUG
 		debug("Can't Create A GL Device Context: %d", GetLastError());
-		#endif
 		terminate(); 
 	}
+#else
+	hDC = GetDC(hWnd);
+#endif
 
+#if _DEBUG
 	if (!(PixelFormat=ChoosePixelFormat(hDC,&pfd))) {
-		#if _DEBUG
 		debug("Can't Find A Suitable PixelFormat: %d", GetLastError());
-		#endif
 		terminate();
 	}
-	
+#else
+	PixelFormat=ChoosePixelFormat(hDC,&pfd);
+#endif
+
+#if _DEBUG
 	if(!SetPixelFormat(hDC, PixelFormat, &pfd)) {
-		#if _DEBUG
 		debug("Can't set the pixel format: %d", GetLastError());
-		#endif
 		terminate();
 	}
+#else
+	SetPixelFormat(hDC, PixelFormat, &pfd);
+#endif
 
+#if _DEBUG
 	if(!(hRC = wglCreateContext(hDC))) {
-		#if _DEBUG
 		debug("Can't create a opengl context: %d", GetLastError());
-		#endif
 		terminate();
 	}
+#else
+	hRC = wglCreateContext(hDC);
+#endif
 
+#if _DEBUG
 	if(!wglMakeCurrent(hDC, hRC)) {
-		#if _DEBUG
 		debug("Failed to make context current: %d", GetLastError());
-		#endif
 		terminate();
 	}
+#else
+	wglMakeCurrent(hDC, hRC);
+#endif
 
 	ShowWindow(hWnd,SW_SHOW);
 	SetForegroundWindow(hWnd);
@@ -207,8 +229,6 @@ void do_the_magic() {
 			}
 		} else {
 			t = get_time(&dt);
-			glClearColor(1.f, 0.f, 1.f, 1.f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			SwapBuffers(hDC);
 			Sleep(100);
 		}
@@ -218,13 +238,13 @@ void do_the_magic() {
 void run() {
 	int i=0;
 #if FULLSCREEN
-	DWORD dwWidth = GetSystemMetrics(SM_CXSCREEN);
-	DWORD dwHeight = GetSystemMetrics(SM_CYSCREEN);
+	width = GetSystemMetrics(SM_CXSCREEN);
+	height = GetSystemMetrics(SM_CYSCREEN);
 #else
-	DWORD dwWidth = 800;
-	DWORD dwHeight = 600;
+	width = 800;
+	height = 600;
 #endif
-	CreateGLWindow("Frobnicators 4k", dwWidth, dwHeight);
+	CreateGLWindow(DEMO_NAME);
 	initGL();
 	start_time();
 
