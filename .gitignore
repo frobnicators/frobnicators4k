@@ -3,4 +3,6 @@ Debug/
 *.opensdf
 *.swp
 *.sdf
-
+*.sou
+*~
+data.h

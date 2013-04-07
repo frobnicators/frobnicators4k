@@ -120,5 +120,6 @@ struct file_data_t read_data(const char * name) {
 		return ret;
 	}
 #endif
+	MessageBox(NULL, "File failure", name, MB_OK | MB_ICONEXCLAMATION);
 	terminate(); /* Failed to open file */
 }

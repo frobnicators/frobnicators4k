@@ -32,12 +32,12 @@ GLuint build_shader(const char * src, GLenum type) {
 }
 
 void init_shaders() {
-	struct file_data_t vert_data = read_data("default.vert");
+	struct file_data_t vert_data = read_data("shaders/vertex.glsl");
 #if _DEBUG
-	struct file_data_t common = read_data("common.glsl");
-	const unsigned long len = strlen(GLSL_VERSION_LINE) + strlen(common.data) + strlen(vert_data.data) + 3;
+	struct file_data_t common = read_data("shaders/common.glsl");
+	const unsigned long len = strlen(common.data) + strlen(vert_data.data) + 3;
 	char * src = (char*)malloc(len);
-	sprintf(src, GLSL_VERSION_LINE "%s\n%s\n", common.data, vert_data.data);
+	sprintf(src, "%s\n%s\n", common.data, vert_data.data);
 #else
 	const char * src = vert_data.data;
 #endif
@@ -49,10 +49,10 @@ GLuint load_shader(const char * name) {
 	struct file_data_t frag_data = read_data(name);
 	GLuint fragment_shader, program;
 #if _DEBUG
-	struct file_data_t common = read_data("common.glsl");
+	struct file_data_t common = read_data("shaders/common.glsl");
 	GLint link_status;
-	char * src = (char*)malloc(strlen(GLSL_VERSION_LINE) + strlen(common.data) + strlen(frag_data.data) + 3);
-	sprintf(src, GLSL_VERSION_LINE "%s\n%s\n", common.data, frag_data.data);
+	char * src = (char*)malloc(strlen(common.data) + strlen(frag_data.data) + 3);
+	sprintf(src, "%s\n%s\n", common.data, frag_data.data);
 
 #else
 	const char * src = frag_data.data;
