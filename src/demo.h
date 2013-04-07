@@ -3,6 +3,6 @@
 #define DEMO_FOLDER "demo"
 #define DEMO_NAME "frobnicators - 4k"
 	void init_demo();
-	void update_demo(float dt, float t);
-	void render_demo(float dt, float t);
+	void update_demo();
+	void render_demo();
 #endif

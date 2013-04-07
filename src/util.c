@@ -13,9 +13,10 @@ void start_time() {
 	_last_time = _start_time;
 }
 
-float get_time(float * dt) {
+float get_time(float * dt, unsigned long * ldt) {
 	DWORD t = GetTickCount();
-	*dt = (float)(t - _last_time) / 1000.f;
+	*ldt = (t - _last_time);
+	*dt = (float) *ldt / 1000.f;
 	_last_time = t;
 	return (t - _start_time) / 1000.f;
 }

@@ -116,8 +116,8 @@ void load_shader(const char * name, struct shader_t * shader) {
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 }
 
-void render(struct shader_t * shader, float t) {
+void render(struct shader_t * shader) {
 	glUseProgram(shader->program);
-	glUniform1f(shader->time, t);
+	glUniform1f(shader->time, time);
 	glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, 0);
 }

@@ -9,6 +9,7 @@ static HGLRC	hRC;
 static HWND	hWnd;
 static HINSTANCE hInstance;
 DWORD width, height;
+float dt, time;
 
 static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -208,7 +209,6 @@ static void initGL() {
 }
 
 static void do_the_magic() {
-	float dt, t;
 	MSG msg;
 
 	while(1) {
@@ -220,11 +220,11 @@ static void do_the_magic() {
 				DispatchMessage(&msg);
 			}
 		} else {
-			t = get_time(&dt);
+			time = get_time(&dt, &ldt);
 #if _DEBUG
-			printf("Time: %f\n", t);
+			printf("Time: %f\n", time);
 #endif
-			render_demo(dt, t);
+			render_demo();
 			SwapBuffers(hDC);
 			Sleep(100);
 		}
