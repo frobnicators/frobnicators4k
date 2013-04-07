@@ -109,6 +109,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="data.h" />
     <ClInclude Include="src\demo.h" />
     <ClInclude Include="src\klister.h" />
     <ClInclude Include="src\main.h" />
