@@ -11,12 +11,12 @@ extern DWORD width, height;
 #include <stdio.h>
 #endif
 
-static GLuint vertex_shader;
+static GLuint vertex_shader, vbo[2];
 static float ortho[16];
-static const unsigned char index[] = { 0, 1, 2 , 3 };
+static const unsigned char indices[] = { 0, 1, 2 , 3 };
 
 
-GLuint build_shader(const char * src, GLenum type) {
+static GLuint build_shader(const char * src, GLenum type) {
 	GLuint shader = glCreateShader(type);
 #if SOME_DEBUG
 	GLint compile_status;
@@ -49,8 +49,8 @@ void init_shaders() {
 		1.f, 1.f,	1.f, 0.f,
 		1.f, 0.f,	1.f, 1.f,
 	};
-	struct file_data_t vert_data;
-	float w,h;
+	static struct file_data_t vert_data;
+	static float w,h;
 #if _DEBUG
 	struct file_data_t common;
 	char * src;
@@ -88,6 +88,13 @@ void init_shaders() {
 	ortho[9] = 0.f;
 	ortho[11] = 0.f;
 	ortho[14] = 0.f;
+
+	/* Create vbos */
+	glGenBuffers(2, vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[1]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 }
 
 void load_shader(const char * name, struct shader_t * shader) {
@@ -100,6 +107,7 @@ void load_shader(const char * name, struct shader_t * shader) {
 #if _DEBUG
 	struct file_data_t common;
 	char * src;
+	read_data(name, &frag_data);
 
 	read_data("shaders/common.glsl", &common);
 	src = (char*)malloc(strlen(common.data) + strlen(frag_data.data) + 3);
@@ -132,9 +140,14 @@ void load_shader(const char * name, struct shader_t * shader) {
 	matrix = glGetUniformLocation(shader->program, "matrix");
 	shader->time = glGetUniformLocation(shader->program, "time");
 	glUniformMatrix4fv(matrix, 1, GL_FALSE, ortho);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), 0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), (const GLvoid*)(2*sizeof(float)));
 }
 
 void render(struct shader_t * shader, float t) {
 	glUseProgram(shader->program);
 	glUniform1f(shader->time, t);
+	glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, 0);
 }
