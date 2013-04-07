@@ -15,6 +15,11 @@ PFNGLUSEPROGRAMPROC glUseProgram;
 PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
 PFNGLUNIFORM1FPROC glUniform1f;
 PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
+PFNGLGENBUFFERSPROC glGenBuffers;
+PFNGLBINDBUFFERPROC glBindBuffer;
+PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
+PFNGLBUFFERDATAPROC glBufferData;
+PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
 
 #if SOME_DEBUG
 PFNGLGETSHADERIVPROC glGetShaderiv;
@@ -34,6 +39,11 @@ void initKlister() {
 	glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)getProcAddr("glGetUniformLocation");
 	glUniform1f = (PFNGLUNIFORM1FPROC)getProcAddr("glUniform1f");
 	glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)getProcAddr("glUniformMatrix4fv");
+	glGenBuffers = (PFNGLGENBUFFERSPROC)getProcAddr("glGenBuffers");
+	glBindBuffer = (PFNGLBINDBUFFERPROC)getProcAddr("glBindBuffer");
+	glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)getProcAddr("glEnableVertexAttribArray");
+	glBufferData = (PFNGLBUFFERDATAPROC)getProcAddr("glBufferData");
+	glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)getProcAddr("glVertexAttribPointer");
 
 #if SOME_DEBUG
 	glGetShaderiv = (PFNGLGETSHADERIVPROC)getProcAddr("glGetShaderiv");
@@ -52,6 +62,11 @@ void initKlister() {
 		glGetUniformLocation == NULL ||
 		glUniform1f == NULL ||
 		glUniformMatrix4fv == NULL ||
+		glGenBuffers == NULL ||
+		glBindBuffer == NULL ||
+		glEnableVertexAttribArray == NULL ||
+		glBufferData == NULL ||
+		glVertexAttribPointer == NULL ||
 
 		glGetShaderiv == NULL ||
 		glGetShaderInfoLog == NULL ||
