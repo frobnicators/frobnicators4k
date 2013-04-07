@@ -1,6 +1,5 @@
 #include "util.h"
 #include "winclude.h"
-#include <string.h>
 
 #if _DEBUG 
 	#include <stdio.h>
@@ -40,18 +39,11 @@ void * memset(void * s, int c, size_t n) {
 }
 
 int strcmp(const char * s1, const char * s2) {
-	size_t i, l1, l2;
-	l1 = strlen(s1);
-	l2 = strlen(s2);
-	for(i = 0; i<l1 && i < l2; ++i) {
+	size_t i=0;
+	while(s1[i] != NULL && s2[i] != NULL) {
 		if(s1[i] < s2[i]) return -1;
 		else if(s1[i] > s2[i]) return 1;
+		i++;
 	}
-	return 0;
-}
-
-size_t strlen ( const char * str ) {
-	size_t len = 0;
-	while(str[len] != NULL) len++;
-	return len;
+	return (s1[i] - s2[i]);
 }
