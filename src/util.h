@@ -2,8 +2,6 @@
 #define UTIL_H
 	#include <crtdefs.h>
 
-	void debug(const char* fmt, ...);
-
 	float get_time(float * dt);
 
 	void start_time();

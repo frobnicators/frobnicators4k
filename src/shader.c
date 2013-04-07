@@ -73,7 +73,7 @@ void init_shaders() {
 
 void load_shader(const char * name, struct shader_t * shader) {
 	struct file_data_t frag_data;
-	GLuint fragment_shader, matrix;
+	GLuint fragment_shader;
 #if SOME_DEBUG
 	GLint link_status;
 #endif
@@ -111,7 +111,6 @@ void load_shader(const char * name, struct shader_t * shader) {
 #endif
 
 	glUseProgram(shader->program);
-	matrix = glGetUniformLocation(shader->program, "matrix");
 	shader->time = glGetUniformLocation(shader->program, "time");
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);

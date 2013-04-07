@@ -88,7 +88,7 @@ static void CreateGLWindow(const char * title) {
 
 		if(ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL) {
 #if _DEBUG
-			debug("Failed to activate fullscreen.\n");
+			printf("Failed to activate fullscreen.\n");
 #endif
 			dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
 			dwStyle = WS_OVERLAPPEDWINDOW;
@@ -123,7 +123,7 @@ static void CreateGLWindow(const char * title) {
 				NULL)
 #if _DEBUG 
 				) == NULL) {
-		debug("Failed to create window: %d\n", GetLastError());
+		printf("Failed to create window: %d\n", GetLastError());
 		terminate();
 	}
 #else
@@ -133,7 +133,7 @@ static void CreateGLWindow(const char * title) {
 	
 #if _DEBUG
 	if (!(hDC=GetDC(hWnd))) {
-		debug("Can't Create A GL Device Context: %d", GetLastError());
+		printf("Can't Create A GL Device Context: %d", GetLastError());
 		terminate(); 
 	}
 #else
@@ -142,7 +142,7 @@ static void CreateGLWindow(const char * title) {
 
 #if _DEBUG
 	if (!(PixelFormat=ChoosePixelFormat(hDC,&pfd))) {
-		debug("Can't Find A Suitable PixelFormat: %d", GetLastError());
+		printf("Can't Find A Suitable PixelFormat: %d", GetLastError());
 		terminate();
 	}
 #else
@@ -151,7 +151,7 @@ static void CreateGLWindow(const char * title) {
 
 #if _DEBUG
 	if(!SetPixelFormat(hDC, PixelFormat, &pfd)) {
-		debug("Can't set the pixel format: %d", GetLastError());
+		printf("Can't set the pixel format: %d", GetLastError());
 		terminate();
 	}
 #else
@@ -160,7 +160,7 @@ static void CreateGLWindow(const char * title) {
 
 #if _DEBUG
 	if(!(hRC = wglCreateContext(hDC))) {
-		debug("Can't create a opengl context: %d", GetLastError());
+		printf("Can't create a opengl context: %d", GetLastError());
 		terminate();
 	}
 #else
@@ -169,7 +169,7 @@ static void CreateGLWindow(const char * title) {
 
 #if _DEBUG
 	if(!wglMakeCurrent(hDC, hRC)) {
-		debug("Failed to make context current: %d", GetLastError());
+		printf("Failed to make context current: %d", GetLastError());
 		terminate();
 	}
 #else
