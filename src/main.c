@@ -4,6 +4,13 @@
 #include "shader.h"
 #include "demo.h"
 
+#if _DEBUG
+#include <stdio.h>
+#endif
+
+#define FRAME_RATE 60
+#define MIN_DT (1000/FRAME_RATE)
+
 static HDC		hDC; 
 static HGLRC	hRC; 
 static HWND	hWnd;
@@ -210,6 +217,7 @@ static void initGL() {
 
 static void do_the_magic() {
 	MSG msg;
+	unsigned long ldt;
 
 	while(1) {
 		if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
@@ -226,7 +234,7 @@ static void do_the_magic() {
 #endif
 			render_demo();
 			SwapBuffers(hDC);
-			Sleep(100);
+			if(ldt < MIN_DT) Sleep(MIN_DT - ldt);
 		}
 	}
 }
