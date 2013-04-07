@@ -212,6 +212,7 @@ void initGL() {
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);*/
 
 	init_shaders();
+	init_demo();
 }
 
 void do_the_magic() {
@@ -229,6 +230,7 @@ void do_the_magic() {
 			}
 		} else {
 			t = get_time(&dt);
+			render_demo(dt, t);
 			SwapBuffers(hDC);
 			Sleep(100);
 		}
