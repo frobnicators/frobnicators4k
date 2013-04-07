@@ -120,7 +120,7 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalOptions>/CRINKLER /UNSAFEIMPORT /REPORT:crinkler.html %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/CRINKLER /UNSAFEIMPORT /COMPMODE:SLOW  /ORDERTRIES:2000 /PROGRESSGUI /REPORT:crinkler.html %(AdditionalOptions)</AdditionalOptions>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
