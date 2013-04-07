@@ -11,8 +11,10 @@ extern DWORD width, height;
 #include <stdio.h>
 #endif
 
-GLuint vertex_shader;
-float ortho[16];
+static GLuint vertex_shader;
+static float ortho[16];
+static const unsigned char index[] = { 0, 1, 2 , 3 };
+
 
 GLuint build_shader(const char * src, GLenum type) {
 	GLuint shader = glCreateShader(type);
@@ -36,6 +38,12 @@ GLuint build_shader(const char * src, GLenum type) {
 }
 
 void init_shaders() {
+	static const float quad[] = {
+		0.f, 0.f,	0.f, 1.f,
+		0.f, 1.f,	0.f, 0.f,
+		1.f, 1.f,	1.f, 0.f,
+		1.f, 0.f,	1.f, 1.f,
+	};
 	struct file_data_t vert_data = read_data("shaders/vertex.glsl");
 	float w,h;
 	int i;
