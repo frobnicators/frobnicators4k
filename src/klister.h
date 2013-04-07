@@ -9,9 +9,7 @@ typedef char GLchar;
 
 /* Manual glew stuff */
 
-#define GLAPI extern
-
-GLboolean initKlister();
+void initKlister();
 
 /* Defines */
 #define GL_BLEND_EQUATION_RGB GL_BLEND_EQUATION
@@ -201,7 +199,10 @@ extern PFNGLCOMPILESHADERPROC glCompileShader;
 extern PFNGLCREATEPROGRAMPROC glCreateProgram;
 extern PFNGLATTACHSHADERPROC glAttachShader;
 extern PFNGLLINKPROGRAMPROC glLinkProgram;
-
+extern PFNGLUSEPROGRAMPROC glUseProgram;
+extern PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
+extern PFNGLUNIFORM1FPROC glUniform1f;
+extern PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
 
 #if _DEBUG
 extern PFNGLGETSHADERIVPROC glGetShaderiv;

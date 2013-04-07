@@ -180,12 +180,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 }
 
 void initGL() {
-	if(!initKlister()) {
-#if _DEBUG
-		debug("Failed to init opengl glue\n");
-#endif
-		terminate();
-	}
+	initKlister();
 	/*glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
