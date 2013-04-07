@@ -105,7 +105,6 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <PrecompiledHeaderFile />
       <DebugInformationFormat>None</DebugInformationFormat>
-      <AdditionalOptions>/QIfist %(AdditionalOptions)</AdditionalOptions>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <OmitFramePointers>false</OmitFramePointers>
