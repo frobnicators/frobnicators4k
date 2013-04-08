@@ -223,12 +223,8 @@ static void do_the_magic() {
 
 	while(1) {
 		if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-			if(msg.message == WM_QUIT) {
-				terminate();
-			} else {
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
 		} else {
 			update_time(&ldt);
 #if _DEBUG
