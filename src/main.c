@@ -38,7 +38,7 @@ static void CreateGLWindow(const char * title) {
 	WNDCLASS wc;
 	DWORD dwExStyle;
 	DWORD dwStyle;
-	RECT WindowRect = {0, width, 0, height } ;
+	RECT WindowRect = {0, 0, width, height } ;
 
 	PIXELFORMATDESCRIPTOR pfd = {
 		sizeof(PIXELFORMATDESCRIPTOR),
