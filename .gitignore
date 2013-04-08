@@ -1,6 +1,7 @@
 Release/
 Debug/
 SemiRelease/
+HardCompressed/
 *.sdf
 *.opensdf
 *.swp
