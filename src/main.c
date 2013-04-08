@@ -33,7 +33,7 @@ void __declspec(noreturn) terminate() {
 	ExitProcess(0);
 }
 
-static void CreateGLWindow(const char * title) {
+static void CreateGLWindow() {
 	GLuint PixelFormat;
 	WNDCLASS wc;
 	DWORD dwExStyle;
@@ -109,7 +109,7 @@ static void CreateGLWindow(const char * title) {
 #endif
 		hWnd=CreateWindowEx(  dwExStyle,
 				"OpenGL",
-				title,
+				"",
 				WS_CLIPSIBLINGS |
 				WS_CLIPCHILDREN |
 				dwStyle,
@@ -203,8 +203,9 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 static void initGL() {
 	initKlister();
 	init_shaders();
-	init_demo();
-	init_music();
+#if INIT_GL_NEEDED
+	init_gl();
+#endif
 }
 
 static void do_the_magic() {
@@ -236,8 +237,11 @@ static void run() {
 	width = 800;
 	height = 600;
 #endif
-	CreateGLWindow(DEMO_NAME);
+	CreateGLWindow();
 	initGL();
+
+	init_demo();
+	init_music();
 
 	do_the_magic();
 }

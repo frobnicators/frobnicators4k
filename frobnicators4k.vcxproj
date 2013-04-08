@@ -110,7 +110,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;4klang.obj;winmm.lib;msvcrt_old.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;4klang.obj;winmm.lib;msvcrt_old.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -129,7 +129,7 @@
       <PrecompiledHeaderFile />
       <DebugInformationFormat>None</DebugInformationFormat>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
-      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>false</OmitFramePointers>
       <StructMemberAlignment>1Byte</StructMemberAlignment>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -235,17 +235,18 @@
     <ClInclude Include="generated\4klang.h" />
     <ClInclude Include="generated\shaders.h" />
     <ClInclude Include="src\demo.h" />
+    <ClInclude Include="src\fbo.h" />
     <ClInclude Include="src\klister.h" />
     <ClInclude Include="src\main.h" />
     <ClInclude Include="src\music.h" />
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\util.h" />
     <ClInclude Include="src\winclude.h" />
-    <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="generated\shaders.c" />
     <ClCompile Include="src\demo.c" />
+    <ClCompile Include="src\fbo.c" />
     <ClCompile Include="src\klister.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\music.c" />

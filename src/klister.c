@@ -14,12 +14,18 @@ PFNGLLINKPROGRAMPROC glLinkProgram;
 PFNGLUSEPROGRAMPROC glUseProgram;
 PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
 PFNGLUNIFORM1FPROC glUniform1f;
+//PFNGLUNIFORM1IPROC glUniform1i;
+PFNGLUNIFORM2IPROC glUniform2i;
 PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
 PFNGLGENBUFFERSPROC glGenBuffers;
 PFNGLBINDBUFFERPROC glBindBuffer;
 PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
 PFNGLBUFFERDATAPROC glBufferData;
 PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
+PFNGLGENFRAMEBUFFERSPROC glGenFramebuffers;
+PFNGLBINDFRAMEBUFFERPROC glBindFramebuffer;
+PFNGLFRAMEBUFFERTEXTURE2DPROC glFramebufferTexture2D;
+//PFNGLACTIVETEXTUREPROC glActiveTexture;
 
 #if SOME_DEBUG
 PFNGLGETSHADERIVPROC glGetShaderiv;
@@ -38,12 +44,18 @@ void initKlister() {
 	glUseProgram = (PFNGLUSEPROGRAMPROC)getProcAddr("glUseProgram");
 	glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)getProcAddr("glGetUniformLocation");
 	glUniform1f = (PFNGLUNIFORM1FPROC)getProcAddr("glUniform1f");
+	//glUniform1i = (PFNGLUNIFORM1IPROC)getProcAddr("glUniform1i");
+	glUniform2i = (PFNGLUNIFORM2IPROC)getProcAddr("glUniform2i");
 	glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)getProcAddr("glUniformMatrix4fv");
 	glGenBuffers = (PFNGLGENBUFFERSPROC)getProcAddr("glGenBuffers");
 	glBindBuffer = (PFNGLBINDBUFFERPROC)getProcAddr("glBindBuffer");
 	glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)getProcAddr("glEnableVertexAttribArray");
 	glBufferData = (PFNGLBUFFERDATAPROC)getProcAddr("glBufferData");
 	glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)getProcAddr("glVertexAttribPointer");
+	glGenFramebuffers = (PFNGLGENFRAMEBUFFERSPROC)getProcAddr("glGenFramebuffers");
+	glBindFramebuffer = (PFNGLBINDFRAMEBUFFERPROC)getProcAddr("glBindFramebuffer");
+	glFramebufferTexture2D = (PFNGLFRAMEBUFFERTEXTURE2DPROC)getProcAddr("glFramebufferTexture2D");
+	//glActiveTexture = (PFNGLACTIVETEXTUREPROC)getProcAddr("glActiveTexture");
 
 #if SOME_DEBUG
 	glGetShaderiv = (PFNGLGETSHADERIVPROC)getProcAddr("glGetShaderiv");
@@ -61,12 +73,18 @@ void initKlister() {
 		glUseProgram == NULL ||
 		glGetUniformLocation == NULL ||
 		glUniform1f == NULL ||
+		//glUniform1i == NULL ||
+		glUniform2i == NULL ||
 		glUniformMatrix4fv == NULL ||
 		glGenBuffers == NULL ||
 		glBindBuffer == NULL ||
 		glEnableVertexAttribArray == NULL ||
 		glBufferData == NULL ||
 		glVertexAttribPointer == NULL ||
+		glGenFramebuffers == NULL ||
+		glBindFramebuffer == NULL ||
+		glFramebufferTexture2D == NULL ||
+		//glActiveTexture == NULL ||
 
 		glGetShaderiv == NULL ||
 		glGetShaderInfoLog == NULL ||

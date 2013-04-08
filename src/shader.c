@@ -3,7 +3,7 @@
 #include "main.h"
 #include "util.h"
 #include "shaders.h"
-
+#include "demo.h"
 
 #if _DEBUG
 #include <stdlib.h>
@@ -18,6 +18,11 @@ static GLuint vertex_shader, vbo[2];
 static const char * shader_src[2];
 static const unsigned char indices[] = { 0, 1, 2 , 3 };
 
+void init_gl() {
+#if ENABLE_TEXTURES
+	glEnable(GL_TEXTURE_2D);
+#endif
+}
 
 static GLuint build_shader(GLenum type) {
 	GLuint shader = glCreateShader(type);
@@ -60,6 +65,7 @@ void init_shaders() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 }
 
+/* Loads the shader. This leaves the created shader active */
 void load_shader(const char * name, struct shader_t * shader) {
 	GLuint fragment_shader;
 #if SOME_DEBUG

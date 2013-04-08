@@ -6,6 +6,6 @@ struct shader_entry_t {
 	const char * data;
 };
 
-#define NUM_SHADERS 3
+#define NUM_SHADERS 4
 extern struct shader_entry_t _shaders[NUM_SHADERS];
 #endif

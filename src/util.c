@@ -3,9 +3,11 @@
 #include "winclude.h"
 #include "music.h"
 
+
 #if _DEBUG 
 	#include <stdio.h>
 	#include <stdarg.h>
+	#include <GL/GLU.h>
 #endif
 
 #define SAMPLE_RATE_FLT (float)SAMPLE_RATE
@@ -38,3 +40,16 @@ int strcmp(const char * s1, const char * s2) {
 	}
 	return (s1[i] - s2[i]);
 }
+
+#if _DEBUG
+void checkForGLErrors(const char * str) {
+	while ( 1 ) {
+		GLenum x = glGetError() ;
+
+		if ( x == GL_NO_ERROR )
+			return;
+
+		MessageBox(NULL, (LPCSTR) gluErrorString(x), str, MB_OK);
+	}
+}
+#endif
