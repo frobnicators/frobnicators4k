@@ -10,7 +10,13 @@
 #include <stdio.h>
 
 #include "demo.h"
+
 #endif
+
+#if SOME_DEBUG
+static const char * current_shader = "vertex"; /* Current shader compiling */
+#endif
+
 
 static const char * read_shader(const char * name);
 
@@ -37,7 +43,10 @@ static GLuint build_shader(GLenum type) {
 		char buffer[2048];
 
 		glGetShaderInfoLog(shader, 2048, NULL, buffer);
-		MessageBox(NULL, buffer, "Shader compile error", MB_OK | MB_ICONERROR);
+#if _DEBUG
+		printf("Shader src: %s\n", shader_src[1]);
+#endif
+		MessageBox(NULL, buffer, current_shader, MB_OK | MB_ICONERROR);
 		terminate();
 	}
 #endif
@@ -55,6 +64,7 @@ void init_shaders() {
 	shader_src[0] = read_shader("common.glsl");
 	shader_src[1] = read_shader("vertex.glsl");
 
+
 	vertex_shader = build_shader(GL_VERTEX_SHADER);
 
 	/* Create vbos */
@@ -70,6 +80,7 @@ void load_shader(const char * name, struct shader_t * shader) {
 	GLuint fragment_shader;
 #if SOME_DEBUG
 	GLint link_status;
+	current_shader = name;
 #endif
 	shader_src[1] = read_shader(name);
 	fragment_shader = build_shader(GL_FRAGMENT_SHADER);
@@ -161,8 +172,8 @@ const char * read_shader( const char * name ) {
 	int i;
 #if	_DEBUG
 	for(i=0; i<num_shaders; ++i) {
-		if(strcmp(_shaders[i].name, name) == 0) {
-			return _shaders[i].data;
+		if(strcmp(shaders[i].name, name) == 0) {
+			return shaders[i].data;
 		}
 	}
 	{

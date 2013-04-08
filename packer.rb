@@ -29,7 +29,11 @@ def hndl_dir(dir, named_path)
 			system("./shader_minifier.exe --format none --preserve-externals #{path} -o #{@tmp_file}")
 			
 			data = IO.read(@tmp_file)
-			data = data.gsub(/[\r\n]+/,"\\n")
+			data = data
+				.gsub("\r","")
+				.gsub(/\n+/,"\n")
+				.gsub(/;\n?!#/,";")
+				.gsub(/\n/, "\\n")
 			@files.push(name)
 			@cfile.puts "	{ \"#{name}\" , \"#{data}\" },";
 		elsif File.directory?(path) then
