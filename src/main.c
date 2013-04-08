@@ -38,7 +38,7 @@ static void CreateGLWindow(const char * title) {
 	WNDCLASS wc;
 	DWORD dwExStyle;
 	DWORD dwStyle;
-	RECT WindowRect;
+	RECT WindowRect = {0, width, 0, height } ;
 
 	PIXELFORMATDESCRIPTOR pfd = {
 		sizeof(PIXELFORMATDESCRIPTOR),
@@ -59,21 +59,11 @@ static void CreateGLWindow(const char * title) {
 		0, 0, 0
 	};
 
-	WindowRect.left = (long) 0;
-	WindowRect.right = (long) width;
-	WindowRect.top = (long) 0;
-	WindowRect.bottom = (long) height;
-
 	hInstance = GetModuleHandle(NULL);
+	memset(&wc, 0, sizeof(wc));
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	wc.lpfnWndProc = WndProc;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
 	wc.hInstance = hInstance;
-	wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = NULL;
-	wc.lpszMenuName = NULL;
 	wc.lpszClassName = "OpenGL";
 
 #if _DEBUG
