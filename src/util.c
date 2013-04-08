@@ -1,24 +1,23 @@
 #include "util.h"
+#include "main.h"
 #include "winclude.h"
+#include "music.h"
 
 #if _DEBUG 
 	#include <stdio.h>
 	#include <stdarg.h>
 #endif
 
-static DWORD _start_time, _last_time;
+#define SAMPLE_RATE_FLT (float)SAMPLE_RATE
 
-void start_time() {
-	_start_time = GetTickCount();
-	_last_time = _start_time;
-}
+static DWORD _last_time = 0;
 
-float get_time(float * dt, unsigned long * ldt) {
-	DWORD t = GetTickCount();
-	*ldt = (t - _last_time);
-	*dt = (float) *ldt / 1000.f;
-	_last_time = t;
-	return (t - _start_time) / 1000.f;
+void update_time(unsigned long * ldt) {
+	const DWORD * t = music_time();
+	*ldt = (*t - _last_time);
+	dt = (float) *ldt / SAMPLE_RATE_FLT;
+	_last_time = *t;
+	time = *t / SAMPLE_RATE_FLT;
 }
 
 void * memset(void * s, int c, size_t n) {

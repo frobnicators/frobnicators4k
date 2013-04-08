@@ -2,7 +2,7 @@
 #define UTIL_H
 	#include <crtdefs.h>
 
-	float get_time(float * dt, unsigned long * ldt);
+	void update_time(unsigned long * ldt);
 
 	void start_time();
 

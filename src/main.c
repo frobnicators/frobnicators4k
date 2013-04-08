@@ -3,13 +3,14 @@
 #include "klister.h"
 #include "shader.h"
 #include "demo.h"
+#include "music.h"
 
 #if _DEBUG
 #include <stdio.h>
 #endif
 
 #define FRAME_RATE 60
-#define MIN_DT (1000/FRAME_RATE)
+#define MIN_DT (SAMPLE_RATE/FRAME_RATE)
 
 static HDC		hDC; 
 static HGLRC	hRC; 
@@ -213,6 +214,7 @@ static void initGL() {
 	initKlister();
 	init_shaders();
 	init_demo();
+	init_music();
 }
 
 static void do_the_magic() {
@@ -228,13 +230,13 @@ static void do_the_magic() {
 				DispatchMessage(&msg);
 			}
 		} else {
-			time = get_time(&dt, &ldt);
+			update_time(&ldt);
 #if _DEBUG
-			printf("Time: %f\n", time);
+			printf("Time: %f, %ld\n", time, ldt);
 #endif
 			render_demo();
 			SwapBuffers(hDC);
-			if(ldt < MIN_DT) Sleep(MIN_DT - ldt);
+			if(ldt < MIN_DT) Sleep( ( MIN_DT - ldt) / SAMPLE_RATE);
 		}
 	}
 }
@@ -250,7 +252,6 @@ static void run() {
 #endif
 	CreateGLWindow(DEMO_NAME);
 	initGL();
-	start_time();
 
 	do_the_magic();
 }
