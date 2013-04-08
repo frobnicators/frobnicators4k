@@ -7,5 +7,5 @@ struct shader_entry_t {
 };
 
 #define NUM_SHADERS 4
-extern struct shader_entry_t _shaders[NUM_SHADERS];
+extern const struct shader_entry_t const _shaders[NUM_SHADERS];
 #endif
