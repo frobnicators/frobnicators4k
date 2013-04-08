@@ -5,6 +5,8 @@ if dir.nil?
 	exit -1
 end
 
+@tmp_file = "shader_tmp~"
+
 header_file = "generated/shaders.h"
 cfile_file = "generated/shaders.c"
 
@@ -21,18 +23,13 @@ def hndl_dir(dir, named_path)
 		if File.file?(path) then
 			name = "#{named_path}#{f}"
 			next if @files.include? name
-
-			data = IO.read(path)
-			data = 
-			data = data.
-				gsub("\r", "").
-				gsub("\t", " ").
-				gsub(/ +/, " ").
-				gsub(/\n+/, "\n").
-				gsub("\\", "\\\\").
-				gsub("\n", "\\n").
-				gsub("\r", "\\r").
-				gsub("\"", "\\\"")
+			
+			# Minifiy
+			puts "Minifying #{path}"
+			system("./shader_minifier.exe --format none --preserve-externals #{path} -o #{@tmp_file}")
+			
+			data = IO.read(@tmp_file)
+			data = data.gsub(/[\r\n]+/,"\\n")
 			@files.push(name)
 			@cfile.puts "	{ \"#{name}\" , \"#{data}\" },";
 		elsif File.directory?(path) then
