@@ -26,6 +26,7 @@ def hndl_dir(dir, named_path)
 			data = 
 			data = data.
 				gsub("\r", "").
+				gsub("\t", " ").
 				gsub(/ +/, " ").
 				gsub(/\n+/, "\n").
 				gsub("\\", "\\\\").
