@@ -1,26 +1,30 @@
 #include "shader.h"
 #include "klister.h"
-#include "pack.h"
 #include "main.h"
 #include "util.h"
+#include "shaders.h"
+
 
 #if _DEBUG
 #include <stdlib.h>
 #include <stdio.h>
+
+#include "demo.h"
 #endif
 
+static const char * read_shader(const char * name);
+
 static GLuint vertex_shader, vbo[2];
+static const char * shader_src[2];
 static const unsigned char indices[] = { 0, 1, 2 , 3 };
 
 
-static GLuint build_shader(const char * src, GLenum type) {
+static GLuint build_shader(GLenum type) {
 	GLuint shader = glCreateShader(type);
 #if SOME_DEBUG
 	GLint compile_status;
 #endif
-	
-
-	glShaderSource(shader, 1, &src, NULL);
+	glShaderSource(shader, 2, shader_src, NULL);
 	glCompileShader(shader);
 #if SOME_DEBUG
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &compile_status);
@@ -28,10 +32,6 @@ static GLuint build_shader(const char * src, GLenum type) {
 		char buffer[2048];
 
 		glGetShaderInfoLog(shader, 2048, NULL, buffer);
-#if _DEBUG
-		printf("Shader compile error. Source:\n%s\n", src);
-		printf("Error in shader: %s\n", buffer);
-#endif
 		MessageBox(NULL, buffer, "Shader compile error", MB_OK | MB_ICONERROR);
 		terminate();
 	}
@@ -46,22 +46,11 @@ void init_shaders() {
 		1.f, 1.f,
 		1.f, -1.f
 	};
-	static struct file_data_t vert_data;
-#if _DEBUG
-	struct file_data_t common;
-	char * src;
 
-	read_data("shaders/vertex.glsl", &vert_data);
-	read_data("shaders/common.glsl", &common);
-	src = (char*)malloc(strlen(common.data) + strlen(vert_data.data) + 3);
-	sprintf(src, "%s\n%s\n", common.data, vert_data.data);
-#else
-	const char * src;
-	read_data("shaders/vertex.glsl", &vert_data);
-	src = vert_data.data;
-#endif
+	shader_src[0] = read_shader("common.glsl");
+	shader_src[1] = read_shader("vertex.glsl");
 
-	vertex_shader = build_shader(src, GL_VERTEX_SHADER);
+	vertex_shader = build_shader(GL_VERTEX_SHADER);
 
 	/* Create vbos */
 	glGenBuffers(2, vbo);
@@ -72,27 +61,12 @@ void init_shaders() {
 }
 
 void load_shader(const char * name, struct shader_t * shader) {
-	struct file_data_t frag_data;
 	GLuint fragment_shader;
 #if SOME_DEBUG
 	GLint link_status;
 #endif
-
-#if _DEBUG
-	struct file_data_t common;
-	char * src;
-	read_data(name, &frag_data);
-
-	read_data("shaders/common.glsl", &common);
-	src = (char*)malloc(strlen(common.data) + strlen(frag_data.data) + 3);
-	sprintf(src, "%s\n%s\n", common.data, frag_data.data);
-
-#else
-	const char * src;
-	read_data(name, &frag_data);
-	src = frag_data.data;
-#endif
-	fragment_shader = build_shader(src, GL_FRAGMENT_SHADER);
+	shader_src[1] = read_shader(name);
+	fragment_shader = build_shader(GL_FRAGMENT_SHADER);
 	shader->program = glCreateProgram();
 	glAttachShader(shader->program, vertex_shader);
 	glAttachShader(shader->program, fragment_shader);
@@ -120,4 +94,113 @@ void render(struct shader_t * shader) {
 	glUseProgram(shader->program);
 	glUniform1f(shader->time, time);
 	glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, 0);
+}
+
+/* Functions for reading shader */
+
+#if _DEBUG
+char * find_path(const char * name) {
+	char * path;
+	const char * fmt_shared = "shaders/shared/%s";
+	const char * fmt_special = "shaders/" DEMO_FOLDER "/%s"; 
+
+	int len = _scprintf(fmt_special	, name) + 1; /* Include null terminator */
+	DWORD dwAttrib;
+
+	path = (char*) malloc(len);
+	sprintf_s(path, len, fmt_special	, name);
+
+	dwAttrib = GetFileAttributes(path);
+	if(dwAttrib != INVALID_FILE_ATTRIBUTES && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
+		return path;
+	}
+
+	len = _scprintf(fmt_shared, name) + 1; /* Include null terminator */
+
+	path = (char*) malloc(len);
+	sprintf_s(path, len, fmt_shared, name);
+
+	dwAttrib = GetFileAttributes(path);
+	if(dwAttrib != INVALID_FILE_ATTRIBUTES && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
+		return path;
+	} else {
+		char buffer[128];
+		sprintf(buffer, "Could not find file: %s", name);
+		MessageBox(NULL, buffer, "File error", MB_OK | MB_ICONEXCLAMATION);
+		terminate();
+	}
+}
+#endif
+
+#if _DEBUG
+struct shader_entry_t * shaders = NULL;
+int num_shaders = 0;
+
+static void add_file(const char * name, const char * data) {
+	struct shader_entry_t entry;
+	entry.name = _strdup(name);
+	entry.data = data;
+
+	num_shaders++;
+
+	shaders = (struct shader_entry_t *) realloc(shaders, sizeof(struct shader_entry_t) * num_shaders);
+	shaders[num_shaders-1] = entry;
+}
+
+#endif
+
+
+
+const char * read_shader( const char * name ) {
+	int i;
+#if	_DEBUG
+	for(i=0; i<num_shaders; ++i) {
+		if(strcmp(_shaders[i].name, name) == 0) {
+			return _shaders[i].data;
+		}
+	}
+	{
+		char * _name = find_path(name);	
+		char * data;
+		unsigned long size, res;
+		FILE * file = fopen(_name, "rb");
+		free(_name);
+
+		if(file == NULL) {
+			printf("Couldn't open file `%s'\n", name);
+			terminate();
+		}
+
+		{
+			const long cur = ftell(file);
+			fseek (file , 0 , SEEK_END);
+			size = ftell(file);
+			fseek(file, cur, SEEK_SET);
+		}
+
+		data = (char*) malloc(size+1);
+		data[size] = 0;
+		res = fread(data, 1, size, file);
+		if ( res != size ) {
+			if ( ferror(file) ){
+				printf("Error when reading file `%s': %s\n", name, strerror(errno));
+			} else {
+				printf("Error when reading file `%s': read size was not the expected size (read %lu bytes, expected %lu)\n", name, res, size);
+			}
+		}
+		fclose(file);
+		add_file(name, data);
+		return data;
+	}
+#else
+	for(i=0; i<NUM_SHADERS; ++i) {
+		if(strcmp(_shaders[i].name, name) == 0) {
+			return _shaders[i].data;
+		}
+	}
+#endif
+#if SOME_DEBUG
+	MessageBox(NULL, "File failure", name, MB_OK | MB_ICONEXCLAMATION);
+#endif
+	terminate(); /* Failed to open file */
 }

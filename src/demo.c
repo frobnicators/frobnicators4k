@@ -4,7 +4,7 @@
 struct shader_t shader;
 
 void init_demo() {
-	load_shader("shaders/gradient.glsl", &shader);
+	load_shader("gradient.glsl", &shader);
 }
 
 void update_demo() {

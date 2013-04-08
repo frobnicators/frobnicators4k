@@ -5,53 +5,65 @@ if dir.nil?
 	exit -1
 end
 
+header_file = "generated/shaders.h"
+cfile_file = "generated/shaders.c"
+
+@header = File.open(header_file, "w")
+@cfile = File.open(cfile_file, "w")
+
 @files = Array.new
-
-@common = nil
-if File.exists? "data/#{dir}/shaders/common.glsl" then
-	@common = File.read("data/#{dir}/shaders/common.glsl")
-else
-	@common = File.read("data/shared/shaders/common.glsl")
-end
-
-# Put common.glsl in files list so it is not included
-@files.push("shaders/common.glsl")
-
-
 
 def hndl_dir(dir, named_path)
 	Dir.foreach("#{dir}") do |f|
-		if f[0] != '.' then
-			path = "#{dir}/#{f}"
-			if File.file?(path) then
-				name = "#{named_path}#{f}"
-				next if @files.include? name
+		next if f[0] == '.' || f[-1] == "~"
 
-				size = File.size(path)
-				if(name[-4..-1] == "glsl") then
-					data = @common + "\n" +IO.read(path)
-					data = data.gsub("\r", "")
-				elsif name[-1] != "~" then
-					data = IO.binread(path)
-				else
-					next
-				end
+		path = "#{dir}/#{f}"
+		if File.file?(path) then
+			name = "#{named_path}#{f}"
+			next if @files.include? name
 
-				data = data.gsub("\\", "\\\\").gsub("\n", "\\n").gsub("\r", "\\r").gsub("\"", "\\\"")
-				@files.push(name)
-				puts "	{ \"#{name}\" , \"#{data}\", #{size} },";
-			elsif File.directory?(path) then
-				hndl_dir(path, "#{named_path}#{f}/")
-			end
+			data = IO.read(path)
+			data = 
+			data = data.
+				gsub("\r", "").
+				gsub(/ +/, " ").
+				gsub(/\n+/, "\n").
+				gsub("\\", "\\\\").
+				gsub("\n", "\\n").
+				gsub("\r", "\\r").
+				gsub("\"", "\\\"")
+			@files.push(name)
+			@cfile.puts "	{ \"#{name}\" , \"#{data}\" },";
+		elsif File.directory?(path) then
+			hndl_dir(path, "#{named_path}#{f}/")
 		end
 	end
 end
 
-puts "struct data_t files[] = {";
-hndl_dir("data/#{dir}", "")
-hndl_dir("data/shared", "")
-puts "};"
+@header.puts "#ifndef SHADERS_H"
+@header.puts "#define SHADERS_H\n\n"
 
-puts "const int num_files = #{@files.size};"
+@header.puts "struct shader_entry_t {
+	const char * name;
+	const char * data;
+};\n\n"
 
-$stderr.puts "Done"
+
+@cfile.puts "#include \"shaders.h\"\n"
+
+@cfile.puts "#pragma data_seg(\".shaders\")\n"
+
+@cfile.puts "struct shader_entry_t _shaders[NUM_SHADERS] = {";
+hndl_dir("shaders/#{dir}", "")
+hndl_dir("shaders/shared", "")
+
+@cfile.puts "};\n"
+
+@header.puts "#define NUM_SHADERS #{@files.size}"
+@header.puts "extern struct shader_entry_t _shaders[NUM_SHADERS];\n"
+
+@header.puts "#endif"
+
+
+puts "Header written to #{header_file}"
+puts ".C-file written to #{cfile_file}"

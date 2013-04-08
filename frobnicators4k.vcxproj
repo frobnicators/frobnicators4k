@@ -56,14 +56,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
-    <IncludePath>D:\3d\deps\include;$(IncludePath);$(SolutionDir);$(SolutionDir)\4klang</IncludePath>
-    <LibraryPath>D:\3d\deps\lib;$(LibraryPath);$(SolutionDir)\4klang</LibraryPath>
+    <IncludePath>D:\3d\deps\include;$(IncludePath);$(SolutionDir)\generated</IncludePath>
+    <LibraryPath>D:\3d\deps\lib;$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
-    <IncludePath>D:\3d\deps\include;$(IncludePath);$(SolutionDir);$(SolutionDir)\4klang</IncludePath>
-    <LibraryPath>D:\3d\deps\lib;$(LibraryPath);$(SolutionDir)\4klang</LibraryPath>
+    <IncludePath>D:\3d\deps\include;$(IncludePath);$(SolutionDir)\generated</IncludePath>
+    <LibraryPath>D:\3d\deps\lib;$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SemiRelease|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -172,24 +172,23 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="4klang\4klang.h" />
-    <ClInclude Include="data.h" />
+    <ClInclude Include="generated\4klang.h" />
+    <ClInclude Include="generated\shaders.h" />
     <ClInclude Include="src\demo.h" />
     <ClInclude Include="src\klister.h" />
     <ClInclude Include="src\main.h" />
     <ClInclude Include="src\music.h" />
-    <ClInclude Include="src\pack.h" />
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\util.h" />
     <ClInclude Include="src\winclude.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="generated\shaders.c" />
     <ClCompile Include="src\demo.c" />
     <ClCompile Include="src\klister.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\music.c" />
-    <ClCompile Include="src\pack.c" />
     <ClCompile Include="src\shader.c" />
     <ClCompile Include="src\util.c" />
   </ItemGroup>

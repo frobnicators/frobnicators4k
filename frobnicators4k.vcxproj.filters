@@ -18,35 +18,32 @@
     <ClInclude Include="util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\util.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\klister.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="generated\4klang.h">
+      <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="src\demo.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\winclude.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\pack.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="src\klister.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\main.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\shader.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="data.h">
-      <Filter>Resource Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\music.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="4klang\4klang.h">
-      <Filter>Resource Files</Filter>
+    <ClInclude Include="src\shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="generated\shaders.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\winclude.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -59,9 +56,6 @@
     <ClCompile Include="src\demo.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\pack.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\shader.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -69,6 +63,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\music.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="generated\shaders.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
