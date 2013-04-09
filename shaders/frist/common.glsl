@@ -54,15 +54,6 @@ vec3 light(vec3 pos, vec3 dir, float d, vec3 color) { /* calculate light */
 	vec3 normal = n_at(pos);
 	float lambert_term = max(dot(-light_dir, normal), 0.0);
 
-	const int i_num_light_steps = 10;
-	const float i_step_size = 1.0/i_num_light_steps;
-
-	for(int i=0;i<i_num_light_steps;++i) {
-		if(lambert_term < i_step_size * (i+1)) {
-			lambert_term = i_step_size*i;
-			break;
-		}
-	}
 	vec3 ocolor = color * lambert_term * i_light_color;
 	float border = brdr(pos, dir, normal, d);
 	return mix(ocolor + color*i_ambient_light, vec3(0), border);
