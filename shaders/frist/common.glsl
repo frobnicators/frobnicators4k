@@ -4,14 +4,15 @@
 
 uniform float t; /* time */
 uniform float b; /* Base sync */
-const int max_steps = 500;
-const float max_dist = 1000;
-const vec3 bgcolor = vec3(0);
 
-const vec3 light_color = vec3(0.8);
-const vec3 ambient_light = vec3(0.2);
+#define max_steps 500
+#define max_dist 1000
+#define bgcolor vec3(0)
 
-const float epsilon = 0.001;
+#define light_color vec3(0.8)
+#define ambient_light vec3(0.2)
+
+#define epsilon 0.001
 
 float _db(vec3 eye, vec3 pos, vec3 extends) {
 	vec3 delta = abs( pos - eye ) - extends;

@@ -7,7 +7,7 @@ void main() {
 	oc = raymarch(vec3(0, 0, 0/*-t*10.0*/), 	p);
 }
 
-const vec3 field_size = vec3(50);
+#define field_size vec3(50)
 
 float df(vec3 p, out vec3 color) {
 	color = vec3(0.7,0,0.7);
