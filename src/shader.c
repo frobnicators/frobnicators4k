@@ -44,7 +44,6 @@ static GLuint build_shader(GLenum type) {
 
 		glGetShaderInfoLog(shader, 2048, NULL, buffer);
 #if _DEBUG
-//		printf("%s\n%s\n", shader_src[0], shader_src[1]);
 		{
 			char * src = strdup(shader_src[0]);
 			char * split;

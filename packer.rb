@@ -2,21 +2,24 @@ def usage
 	$stderr.puts "Usage: ruby packer.rb [options] demo_folder"
 	$stderr.puts "Options:"
 	$stderr.puts " --keep-tmp: Keep temporaries"
+	$stderr.puts " --verbose: Keep temporaries"
 	$stderr.puts " --no-minify: Don't minify"
-	$stderr.puts " --no-preprocess: Don't replace defines"
+	$stderr.puts " --multiline: Split into multiple lines"
 	exit
 end
 
 i = 0
 @keep_tmp = false
+@verbose = ""
 @minify = true
-@preprocess = true
+@multiline = false
 dir = nil
 ARGV.each do |a|
 	if a =~ /--/ then
 		@keep_tmp = true if a == "--keep-tmp"
 		@minify = false if a == "--no-minify"
-		@preprocess = false if a == "--no-preprocess"
+		@verbose = "-v" if a == "--verbose"
+		@multiline = true if a == "--multiline"
 		usage if a == "--help"
 	else
 		dir = a
@@ -33,16 +36,23 @@ cfile_file = "generated/shaders.c"
 
 @files = Array.new
 
+@exports
+
 def preprocess(path) 
+	export_fields = []
+	@exports = {}
 	tmp_name = "." + File.basename(path) + ".tmp"
-	defines = {}
 	out = File.open(tmp_name, "w")
 	File.open(path).readlines.each do |l|
-		if l =~ /#define (.+) (.+)$/ then
-			defines[$1] = $2
+		l = l.gsub(/[\r\n]+/,"")
+		if l =~ /#pragma export\s*\((.+)\)/ then
+			export_fields = export_fields + $1.split(",").map{|s| s.strip }
 		else
-			defines.each do |define, val|
-				l = l.gsub(/(?<=\W)#{define}(?=\W)/,val)
+			export_fields.each do |f|
+				if l =~ /^\s*\w+\s+#{f}\s*\(.*\)\s*;/ then
+					@exports[f] = l.gsub(/\/\*.*\*\//,"").gsub(/\/\/.*$/,"").strip
+					l = "#pragma func(#{f})"
+				end
 			end
 			out.puts l
 		end
@@ -62,37 +72,45 @@ def hndl_dir(dir, named_path)
 
 			puts "#{path}:"
 
-			if @preprocess then
-				puts "	Preprocessing..."
-				intermediate_file = preprocess(path)
-			else
-				intermediate_file = path
-			end
 
 			
 			# Minifiy
 			if @minify then
+				puts "	Preprocessing..."
+				intermediate_file = preprocess(path)
 				puts "	Minifying..."
 				tmp_name = "." + File.basename(path) + ".min"
-				system("./shader_minifier.exe --format none --preserve-all-globals --preserve-externals #{intermediate_file} -o #{tmp_name}")
+				unless system("./shader_minifier.exe --format none --preserve-all-globals #@verbose --preserve-externals #{intermediate_file} -o #{tmp_name}")
+					puts "Minifying failed"
+					exit
+				end
+
 			else
-				tmp_name = intermediate_file
+				tmp_name = path
 			end
 
 			puts "	Outputing..."
 			
 			data = IO.read(tmp_name)
-			data = data
 				.gsub("\r","")
 				.gsub(/\n+/,"\n")
+				.gsub(/;\n(?!#)/,";")
+			if @minify then
+				@exports.each do |f, l|
+					data = data.gsub("#pragma func(#{f})\n", l);
+				end
+				data = data.gsub(";",";\n").gsub("{","{\n").gsub("}","\n}\n") if @multiline
+				IO.write(tmp_name, data)
+			end
+			data = data
 				.gsub(/\n/, "\\n")
 			@files.push(name)
 			@cfile.puts "	{ \"#{name}\" , \"#{data}\" },"
 			puts ""
 
-			unless @keep_tmp
-				File.delete intermediate_file if @preprocess
-				File.delete tmp_name if @minify
+
+			if !@keep_tmp && @minify
+				File.delete tmp_name
 			end
 
 		elsif File.directory?(path) then

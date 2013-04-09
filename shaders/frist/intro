@@ -7,17 +7,17 @@ void main() {
 	oc = raymarch(vec3(0, 0, 0/*-t*10.0*/), 	p);
 }
 
-#define field_size vec3(50)
+const vec3 i_field_size = vec3(50);
 
-float df(vec3 p, out vec3 color) {
+float _df(vec3 p, out vec3 color) {
 	color = vec3(0.7,0,0.7);
-	p.x = (mod(abs(p.x), field_size.x) - field_size.x * 0.5);
-	p.y = (mod(abs(p.y), field_size.y) - field_size.y * 0.5);
-	p.z = (mod(abs(p.z), field_size.z) - field_size.z * 0.5);
+	p.x = (mod(abs(p.x), i_field_size.x) - i_field_size.x * 0.5);
+	p.y = (mod(abs(p.y), i_field_size.y) - i_field_size.y * 0.5);
+	p.z = (mod(abs(p.z), i_field_size.z) - i_field_size.z * 0.5);
 	return _db(p, vec3(25), vec3(40));
 }
 
-vec3 lp() { /* Shall return light position */
+vec3 _lp() { /* Shall return light position */
 //	return vec3(0);
 	return vec3(sin(t*1.0), 0, cos(t*1.0))*50.0;
 }
