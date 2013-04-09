@@ -230,6 +230,10 @@ static void do_the_magic() {
 
 static void run() {
 	int i=0;
+#if defined(STATIC_WIDTH)
+	width = STATIC_WIDTH;
+	height = STATIC_HEIGHT;
+#else
 #if FULLSCREEN
 	width = GetSystemMetrics(SM_CXSCREEN);
 	height = GetSystemMetrics(SM_CYSCREEN);
@@ -237,10 +241,11 @@ static void run() {
 	width = 800;
 	height = 600;
 #endif
+#endif
 	CreateGLWindow();
 	initGL();
-
 	init_demo();
+
 	init_music();
 
 	do_the_magic();

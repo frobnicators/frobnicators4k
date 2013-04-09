@@ -8,6 +8,9 @@
 //#define ENABLE_TEXTURES 1
 //#define ENABLE_FBOS 1
 
+#define STATIC_WIDTH 1280
+#define STATIC_HEIGHT 720
+
 #define INIT_GL_NEEDED defined(ENABLE_TEXTURES) /* Todo, any other thing that we need init_gl for */
 
 #endif

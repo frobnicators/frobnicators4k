@@ -63,7 +63,7 @@ vec3 raymarch(vec3 p, vec2 uv){
 	vec3 dir = vec3(0,0,0);
 	dir += vec3(1,0,0) * uv.x;
 	dir += vec3(0,1,0) * uv.y * 0.5625 /* aspect ratio */;
-	dir += -vec3(0,0,1) * 1;
+	dir += vec3(0,0,1) * 1;
 	dir = normalize(dir);
 
 	vec3 color;
