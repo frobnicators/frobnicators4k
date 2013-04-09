@@ -1,8 +1,7 @@
 #include "shaders.h"
 #pragma data_seg(".shaders")
-const struct shader_entry_t const _shaders[NUM_SHADERS] = {
-	{ "boxfilter.glsl" , "in vec2 pos;\n#extension GL_ARB_shading_language_420pack:enable\nlayout(binding=0)uniform sampler2D texture0;uniform vec2 res;out vec3 ocolor;\n#define INV_SUM 1.0/10.0\nconst float v[9]=float[9](INV_SUM,INV_SUM,INV_SUM,INV_SUM,2.*INV_SUM,INV_SUM,INV_SUM,INV_SUM,INV_SUM);void main(){float r=1.f/res.x,I=1.f/res.y;vec2 s=(pos+1.)/2.;ocolor=vec3(0.f,0.f,0.f);for(int f=0;f<9;f++){float M,o;M=f%3-1;o=floor(f/3)-1;ocolor+=texture(texture0,vec2(clamp(s.x+r*M,0,1),clamp(s.y+I*o,0,1))).xyz*v[f];}}" },
-	{ "gradient.glsl" , "in vec2 pos;out vec3 color;void main(){color=vec3((pos.x+1.)/2.,(pos.y+1.)/2.,mod(time/10.,1.));}" },
-	{ "common.glsl" , "#version 150\n#extension GL_ARB_explicit_attrib_location:enable\nuniform float time;" },
-	{ "vertex.glsl" , "layout(location=0)in vec2 in_pos;out vec2 pos;void main(){pos=in_pos,gl_Position=vec4(in_pos,0.,1.);}" },
+const struct shader_entry_t _shaders[NUM_SHADERS] = {
+	{ "common.glsl" , "#version 150\n#extension GL_ARB_explicit_attrib_location:enable\nuniform float t,b;const int f=200;const float x=500;const vec3 v=vec3(0),d=vec3(0,-.7,-.7);const float i=.001;float e(vec3 i,vec3 v,vec3 f){vec3 x=abs(v-i)-f;return max(x.x,max(x.y,x.z));}vec3 e(vec3 v){vec3 f,x;f.x=df(v+vec3(i,0,0),x)-df(v-vec3(i,0,0),x);f.y=df(v+vec3(0,i,0),x)-df(v-vec3(0,i,0),x);f.z=df(v+vec3(0,0,i),x)-df(v-vec3(0,0,i),x);return normalize(f);}vec3 e(vec3 v,vec3 f){vec3 x=e(v);float i=max(dot(-d,x),0.);return f*i;}vec3 s(vec3 c,vec2 s){vec3 d=vec3(0,0,0);d+=vec3(1,0,0)*s.x;d+=vec3(0,1,0)*s.y*.5625;d+=-vec3(0,0,1)*1;d=normalize(d);vec3 m;float r=0.;for(int n=0;n<f&&r<x;n++){float z=df(c,m);if(z<i)return e(c,m);r+=abs(z);c+=d*z;}return v;}" },
+	{ "intro" , "in vec2 p;in vec3 c;out vec3 oc;void main(){oc=raymarch(vec3(0),p);}const vec3 v=vec3(50);float d(vec3 a,out vec3 y){return y=vec3(1,0,0),a.x=mod(abs(a.x),v.x)-v.x*.5,a.y=mod(abs(a.y),v.y)-v.y*.5,a.z=mod(abs(a.z),v.z)-v.z*.5,_db(a,vec3(25),vec3(5));}" },
+	{ "vertex.glsl" , "layout(location=0)in vec2 ip;out vec2 p;out vec3 c;void main(){p=ip,gl_Position=vec4(ip,0.,1.);}" },
 };

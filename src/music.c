@@ -3,7 +3,7 @@
 #include "mmreg.h"
 
 /* Define to have realtime playback, costs ~10 bytes extra */
-//#define USE_SOUND_THREAD
+#define USE_SOUND_THREAD
 
 /* Song information */
 #include "4klang.h"
@@ -47,7 +47,7 @@ MMTIME MMTime = {
 
 void init_music() {
 #ifdef USE_SOUND_THREAD
-	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)_4klang_render, lpSoundBuffer, 0, 0);
+	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)_4klang_render, sound_buffer, 0, 0);
 #else
 	_4klang_render(sound_buffer);
 #endif

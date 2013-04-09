@@ -44,7 +44,25 @@ static GLuint build_shader(GLenum type) {
 
 		glGetShaderInfoLog(shader, 2048, NULL, buffer);
 #if _DEBUG
-		printf("Shader src: %s\n", shader_src[1]);
+//		printf("%s\n%s\n", shader_src[0], shader_src[1]);
+		{
+			char * src = strdup(shader_src[0]);
+			char * split;
+			int i=0;
+			split =  strtok(src, "\n");
+			while(split !=  NULL) {
+				++i;
+				printf("%d\t%s\n", i, split);
+				split = strtok(NULL, "\n");
+			}
+			src = strdup(shader_src[1]);
+			split = strtok(src, "\n");
+			while(split !=  NULL) {
+				++i;
+				printf("%d\t%s\n", i, split);
+				split = strtok(NULL, "\n");
+			}
+		}
 #endif
 		MessageBox(NULL, buffer, current_shader, MB_OK | MB_ICONERROR);
 		terminate();
@@ -102,7 +120,7 @@ void load_shader(const char * name, struct shader_t * shader) {
 #endif
 
 	glUseProgram(shader->program);
-	shader->time = glGetUniformLocation(shader->program, "time");
+	shader->time = glGetUniformLocation(shader->program, "t");
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 }

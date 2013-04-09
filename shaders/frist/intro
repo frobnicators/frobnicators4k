@@ -1,0 +1,23 @@
+in vec2 p; /* screen position (-1, 1) */
+in vec3 c; /* camera position*/
+
+out vec3 oc;
+
+void main() {
+	oc = raymarch(vec3(0, 0, 0/*-t*10.0*/), 	p);
+}
+
+const vec3 field_size = vec3(50);
+
+float df(vec3 p, out vec3 color) {
+	color = vec3(0.7,0,0.7);
+	p.x = (mod(abs(p.x), field_size.x) - field_size.x * 0.5);
+	p.y = (mod(abs(p.y), field_size.y) - field_size.y * 0.5);
+	p.z = (mod(abs(p.z), field_size.z) - field_size.z * 0.5);
+	return _db(p, vec3(25), vec3(40));
+}
+
+vec3 lp() { /* Shall return light position */
+//	return vec3(0);
+	return vec3(sin(t*1.0), 0, cos(t*1.0))*50.0;
+}

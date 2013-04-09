@@ -55,14 +55,14 @@ end
 
 @cfile.puts "#pragma data_seg(\".shaders\")\n"
 
-@cfile.puts "const struct shader_entry_t const _shaders[NUM_SHADERS] = {";
+@cfile.puts "const struct shader_entry_t _shaders[NUM_SHADERS] = {";
 hndl_dir("shaders/#{dir}", "")
 hndl_dir("shaders/shared", "")
 
 @cfile.puts "};\n"
 
 @header.puts "#define NUM_SHADERS #{@files.size}"
-@header.puts "extern const struct shader_entry_t const _shaders[NUM_SHADERS];\n"
+@header.puts "extern const struct shader_entry_t _shaders[NUM_SHADERS];\n"
 
 @header.puts "#endif"
 
