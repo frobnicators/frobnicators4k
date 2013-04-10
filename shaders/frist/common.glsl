@@ -5,8 +5,8 @@
 uniform float t; /* time */
 uniform float b; /* Base sync */
 
-const int i_max_steps = 500;
-const int i_max_dist = 1000;
+const int i_max_steps = 100;
+const int i_max_dist = 500;
 const vec3 i_bgcolor = vec3(0);
 
 const vec3 i_light_color = vec3(0.8);
@@ -22,6 +22,62 @@ float dbox(vec3 eye, vec3 pos, vec3 extends) {
 	vec3 delta = abs( pos - eye ) - extends;
 	return max( delta.x, max (delta.y, delta.z) );
 }
+
+vec3 rotateY ( vec3 p, float a ) {
+	float sinA, cosA;
+	sinA = sin(a);
+	cosA = cos(a);
+
+	return vec3(p.x *cosA +p.z *sinA, p.y, p.z *cosA -p.x *sinA);
+}
+
+int icoolfFunc3d2 (in int n) {
+    n = (n << 13) ^ n;
+    return (n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff;
+}
+
+float
+coolfFunc3d2 (in int n)
+{
+    return float (icoolfFunc3d2 (n));
+}
+
+float
+noise3f (in vec3 p)
+{
+    ivec3 ip = ivec3 (floor (p));
+    vec3 u = fract (p);
+    u = u * u * (3.0 - 2.0 * u);
+
+    int n = ip.x + ip.y * 57 + ip.z * 113;
+
+    float res = mix (mix (mix (coolfFunc3d2 (n + (0 + 57 * 0 + 113 * 0)),
+                               coolfFunc3d2 (n + (1 + 57 * 0 + 113 * 0)),
+                               u.x),
+                          mix (coolfFunc3d2 (n + (0 + 57 * 1 + 113 * 0)),
+                               coolfFunc3d2 (n + (1 + 57 * 1 + 113 * 0)),
+                               u.x), u.y),
+                     mix (mix (coolfFunc3d2 (n + (0 + 57 * 0 + 113 * 1)),
+                               coolfFunc3d2 (n + (1 + 57 * 0 + 113 * 1)),
+                               u.x),
+                          mix (coolfFunc3d2 (n + (0 + 57 * 1 + 113 * 1)),
+                               coolfFunc3d2 (n + (1 + 57 * 1 + 113 * 1)),
+                               u.x), u.y), u.z);
+
+    return 1.0 - res * (1.0 / 1073741824.0);
+}
+
+float
+noise2f (vec2 p)
+{
+    return noise3f (vec3 (p, 0));
+}
+
+float fbm( in vec3 p ) {
+	float n = 0.5000*noise3f(p*1.0)+0.2500*noise3f(p*2.0)+0.1250*noise3f(p*4.0)+0.0625*noise3f(p*8.0);
+	return n;
+}
+
 
 vec3 n_at(vec3 p){ /* Calculate normal*/
 	vec3 n;
@@ -53,9 +109,8 @@ vec3 light(vec3 pos, vec3 dir, float d, vec3 color) { /* calculate light */
 
 	vec3 normal = n_at(pos);
 	float lambert_term = max(dot(-light_dir, normal), 0.0);
-
 	vec3 ocolor = color * lambert_term * i_light_color;
-	float border = brdr(pos, dir, normal, d);
+	float border = 0;//brdr(pos, dir, normal, d);
 	return mix(ocolor + color*i_ambient_light, vec3(0), border);
 }
 

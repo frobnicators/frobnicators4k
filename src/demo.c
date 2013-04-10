@@ -8,7 +8,7 @@ static struct shader_t intro;
 //static struct fbo_t fbo;
 
 void init_demo() {
-	load_shader("intro", &intro);
+	load_shader("s2", &intro);
 //	u_res = glGetUniformLocation(boxfilter.program, "res");
 	glClearColor(1.f, 0.f, 1.f, 1.f);
 }
