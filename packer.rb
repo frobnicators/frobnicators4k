@@ -29,7 +29,7 @@ end
 usage if dir.nil?
 
 header_file = "generated/shaders.h"
-cfile_file = "generated/shaders.c"
+cfile_file = "generated/shaders.inc"
 
 @header = File.open(header_file, "w")
 @cfile = File.open(cfile_file, "w")
@@ -59,6 +59,10 @@ def preprocess(path)
 	end
 	out.close
 	return tmp_name
+end
+
+def define_name(name) 
+	"SHADER_" + name.upcase.gsub(/\W/,"_")
 end
 
 def hndl_dir(dir, named_path)
@@ -102,15 +106,17 @@ def hndl_dir(dir, named_path)
 				data = data.gsub(";",";\n").gsub("{","{\n").gsub("}","\n}\n") if @multiline
 				IO.write(tmp_name, data)
 			end
+
 			data = data
 				.gsub(/\n/, "\\n")
 			@files.push(name)
-			@cfile.puts "	{ \"#{name}\" , \"#{data}\" },"
+			@cfile.puts "	{ \"#{data}\" },"
 			puts ""
 
 
 			if !@keep_tmp && @minify
 				File.delete tmp_name
+				File.delete intermediate_file
 			end
 
 		elsif File.directory?(path) then
@@ -119,29 +125,47 @@ def hndl_dir(dir, named_path)
 	end
 end
 
-@header.puts "#ifndef SHADERS_H"
-@header.puts "#define SHADERS_H\n\n"
-
-@header.puts "struct shader_entry_t {
-	const char * name;
-	const char * data;
-};\n\n"
-
-
-@cfile.puts "#include \"shaders.h\"\n"
-
 @cfile.puts "#pragma data_seg(\".shaders\")\n"
 
-@cfile.puts "const struct shader_entry_t _shaders[NUM_SHADERS] = {";
+@cfile.puts "static const char * _shaders[] = {";
 hndl_dir("shaders/#{dir}", "")
 hndl_dir("shaders/shared", "")
 
 @cfile.puts "};\n"
 
-@header.puts "#define NUM_SHADERS #{@files.size}"
-@header.puts "extern const struct shader_entry_t _shaders[NUM_SHADERS];\n"
+# Time to build the header
 
-@header.puts "#endif"
+processed_filenames = @files.map do |f|
+	[ define_name(f), f ]
+end
+
+@header.puts "#ifndef SHADERS_H
+#define SHADERS_H
+
+#if _DEBUG
+
+#define SHADER_TYPE const char *
+
+"
+processed_filenames.each do |f|
+	@header.puts "#define #{f[0]} \"#{f[1]}\""
+end
+
+@header.puts "
+#else
+
+#define SHADER_TYPE char
+
+"
+
+processed_filenames.each_with_index do | f , index |
+	@header.puts "#define #{f[0]} #{index}"
+end
+
+@header.puts "
+#endif
+
+#endif"
 
 
 puts "Header written to #{header_file}"
