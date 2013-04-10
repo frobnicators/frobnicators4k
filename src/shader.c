@@ -5,20 +5,24 @@
 #include "shaders.h"
 #include "demo.h"
 
+#include <stdio.h>
 #if _DEBUG
 #include <stdlib.h>
-#include <stdio.h>
 
 #include "demo.h"
+
+#else
+
+#include "shaders.inc"
 
 #endif
 
 #if SOME_DEBUG
-static const char * current_shader = "vertex"; /* Current shader compiling */
+static SHADER_TYPE current_shader; /* Current shader compiling */
 #endif
 
 
-static const char * read_shader(const char * name);
+static const char * read_shader(SHADER_TYPE name);
 
 static GLuint vertex_shader, vbo[2];
 static const char * shader_src[2];
@@ -41,11 +45,13 @@ static GLuint build_shader(GLenum type) {
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &compile_status);
 	if(compile_status == GL_FALSE) {
 		char buffer[2048];
+		char shader_name[32];
 
 		glGetShaderInfoLog(shader, 2048, NULL, buffer);
 #if _DEBUG
+		memcpy(shader_name, current_shader, strlen(current_shader) + 1);
 		{
-			char * src = strdup(shader_src[0]);
+			char * src = _strdup(shader_src[0]);
 			char * split;
 			int i=0;
 			split =  strtok(src, "\n");
@@ -54,7 +60,7 @@ static GLuint build_shader(GLenum type) {
 				printf("%d\t%s\n", i, split);
 				split = strtok(NULL, "\n");
 			}
-			src = strdup(shader_src[1]);
+			src = _strdup(shader_src[1]);
 			split = strtok(src, "\n");
 			while(split !=  NULL) {
 				++i;
@@ -62,8 +68,10 @@ static GLuint build_shader(GLenum type) {
 				split = strtok(NULL, "\n");
 			}
 		}
+#else
+		sprintf(shader_name, "Shader #%d", current_shader);
 #endif
-		MessageBox(NULL, buffer, current_shader, MB_OK | MB_ICONERROR);
+		MessageBox(NULL, buffer, shader_name, MB_OK | MB_ICONERROR);
 		terminate();
 	}
 #endif
@@ -78,8 +86,8 @@ void init_shaders() {
 		1.f, -1.f
 	};
 
-	shader_src[0] = read_shader("common.glsl");
-	shader_src[1] = read_shader("vertex.glsl");
+	shader_src[0] = read_shader(SHADER_COMMON_GLSL);
+	shader_src[1] = read_shader(SHADER_VERTEX_GLSL);
 
 
 	vertex_shader = build_shader(GL_VERTEX_SHADER);
@@ -93,12 +101,14 @@ void init_shaders() {
 }
 
 /* Loads the shader. This leaves the created shader active */
-void load_shader(const char * name, struct shader_t * shader) {
+void load_shader(SHADER_TYPE name, struct shader_t * shader) {
 	GLuint fragment_shader;
+
 #if SOME_DEBUG
 	GLint link_status;
 	current_shader = name;
 #endif
+
 	shader_src[1] = read_shader(name);
 	fragment_shader = build_shader(GL_FRAGMENT_SHADER);
 	shader->program = glCreateProgram();
@@ -167,6 +177,10 @@ char * find_path(const char * name) {
 #endif
 
 #if _DEBUG
+struct shader_entry_t {
+	const char * name;
+	const char * data;
+};
 struct shader_entry_t * shaders = NULL;
 int num_shaders = 0;
 
@@ -185,9 +199,9 @@ static void add_file(const char * name, const char * data) {
 
 
 
-const char * read_shader( const char * name ) {
-	int i;
+const char * read_shader(SHADER_TYPE name) {
 #if	_DEBUG
+	int i;
 	for(i=0; i<num_shaders; ++i) {
 		if(strcmp(shaders[i].name, name) == 0) {
 			return shaders[i].data;
@@ -226,15 +240,9 @@ const char * read_shader( const char * name ) {
 		add_file(name, data);
 		return data;
 	}
-#else
-	for(i=0; i<NUM_SHADERS; ++i) {
-		if(strcmp(_shaders[i].name, name) == 0) {
-			return _shaders[i].data;
-		}
-	}
-#endif
-#if SOME_DEBUG
 	MessageBox(NULL, "File failure", name, MB_OK | MB_ICONEXCLAMATION);
-#endif
 	terminate(); /* Failed to open file */
+#else
+	return _shaders[name];
+#endif
 }

@@ -2,6 +2,7 @@
 #define SHADER_H
 
 #include "klister.h"
+#include "shaders.h"
 
 struct shader_t {
 	GLuint program;
@@ -11,7 +12,10 @@ struct shader_t {
 void init_shaders();
 void init_gl();
 
-void load_shader(const char * name, struct shader_t * shader);
+/*
+ * SHADER_TYPE is the type of the defines SHADER_{shader_name} in shaders.h
+ */
+void load_shader(SHADER_TYPE name, struct shader_t * shader);
 
 void render(struct shader_t * shader);
 

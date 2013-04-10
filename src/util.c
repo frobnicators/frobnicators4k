@@ -31,6 +31,7 @@ void * memset(void * s, int c, size_t n) {
 	return s;
 }
 
+#if _DEBUG
 int strcmp(const char * s1, const char * s2) {
 	size_t i=0;
 	while(s1[i] != 0 && s2[i] != 0) {
@@ -41,7 +42,6 @@ int strcmp(const char * s1, const char * s2) {
 	return (s1[i] - s2[i]);
 }
 
-#if _DEBUG
 void checkForGLErrors(const char * str) {
 	while ( 1 ) {
 		GLenum x = glGetError() ;

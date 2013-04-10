@@ -33,9 +33,6 @@
     <ClInclude Include="src\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="generated\shaders.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -44,6 +41,9 @@
     </ClInclude>
     <ClInclude Include="src\fbo.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="generated\shaders.h">
+      <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -65,11 +65,13 @@
     <ClCompile Include="src\music.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="generated\shaders.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\fbo.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="generated\shaders.inc">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
