@@ -48,16 +48,25 @@ def preprocess(path)
 		if l =~ /#pragma export\s*\((.+)\)/ then
 			export_fields = export_fields + $1.split(",").map{|s| s.strip }
 		else
-			export_fields.each do |f|
+			export_fields.reject! do |f|
 				if l =~ /^\s*\w+\s+#{f}\s*\(.*\)\s*;/ then
 					@exports[f] = l.gsub(/\/\*.*\*\//,"").gsub(/\/\/.*$/,"").strip
 					l = "#pragma func(#{f})"
+					true # Drop this from the list
+				else
+					false
 				end
 			end
 			out.puts l
 		end
 	end
 	out.close
+
+	if !export_fields.empty?
+		puts "Error, unknow function(s) " + export_fields.join(",") + " declared with #pragma export."
+		exit
+	end
+
 	return tmp_name
 end
 

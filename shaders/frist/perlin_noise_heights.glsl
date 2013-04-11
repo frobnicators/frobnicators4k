@@ -14,6 +14,19 @@ void main() {
 
 const vec3 i_field_size = vec3(50);
 
+
+/*
+vec4 scene(vec3 p) {
+	/*float h = snoise(vec2(p.x, p.z)/100.0)*10.0
+		+ snoise(vec2(p.x, p.z)/50.0)*5.0
+		+ snoise(vec2(p.x, p.z)/20.0)*1
+		+ snoise(vec2(p.x, p.z)/5.0)*0.1;
+	float h = fbm(p.xz / 100.0, 6)*30.0;
+	float floor_dist = p.y - (h - 50.0);
+
+	return vec4(0.1, 0.8, 0.3, floor_dist);
+}
+*/
 float pillar(vec3 p) {
 	return min(
 		dbox(p, vec3(0.0), vec3(1, 5, 1)) + 0.2 * clamp(fbm(p.xz*2.0, 1), 0, 1),
@@ -36,7 +49,9 @@ vec4 scene(vec3 p) {
 }
 
 vec3 slight(Ray r, vec4 c) {
-	return light(r, c, vec3(5+sin(t+0.5), 5+sin(t*0.1), -5));
+	//return light(r, c, r.po + vec3(0, 50, 50));
+//	return light(r, c, vec3(0));
+	return light(r, c, vec3(sin(t*0.5)*10., 1, 1-cos(t*0.5))*10.);
 }
 
 vec3 bg(Ray r, vec4 c) {

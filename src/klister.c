@@ -15,7 +15,7 @@ PFNGLUSEPROGRAMPROC glUseProgram;
 PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
 PFNGLUNIFORM1FPROC glUniform1f;
 //PFNGLUNIFORM1IPROC glUniform1i;
-PFNGLUNIFORM2IPROC glUniform2i;
+//PFNGLUNIFORM2IPROC glUniform2i;
 PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
 PFNGLGENBUFFERSPROC glGenBuffers;
 PFNGLBINDBUFFERPROC glBindBuffer;
@@ -45,7 +45,7 @@ void initKlister() {
 	glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)getProcAddr("glGetUniformLocation");
 	glUniform1f = (PFNGLUNIFORM1FPROC)getProcAddr("glUniform1f");
 	//glUniform1i = (PFNGLUNIFORM1IPROC)getProcAddr("glUniform1i");
-	glUniform2i = (PFNGLUNIFORM2IPROC)getProcAddr("glUniform2i");
+	//glUniform2i = (PFNGLUNIFORM2IPROC)getProcAddr("glUniform2i");
 	glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)getProcAddr("glUniformMatrix4fv");
 	glGenBuffers = (PFNGLGENBUFFERSPROC)getProcAddr("glGenBuffers");
 	glBindBuffer = (PFNGLBINDBUFFERPROC)getProcAddr("glBindBuffer");
@@ -74,7 +74,7 @@ void initKlister() {
 		glGetUniformLocation == NULL ||
 		glUniform1f == NULL ||
 		//glUniform1i == NULL ||
-		glUniform2i == NULL ||
+		//glUniform2i == NULL ||
 		glUniformMatrix4fv == NULL ||
 		glGenBuffers == NULL ||
 		glBindBuffer == NULL ||

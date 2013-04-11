@@ -89,6 +89,9 @@ void init_shaders() {
 	shader_src[0] = read_shader(SHADER_COMMON_GLSL);
 	shader_src[1] = read_shader(SHADER_VERTEX_GLSL);
 
+#if SOME_DEBUG
+	current_shader = SHADER_VERTEX_GLSL;
+#endif
 
 	vertex_shader = build_shader(GL_VERTEX_SHADER);
 

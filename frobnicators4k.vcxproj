@@ -297,6 +297,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="generated\shaders.inc" />
+    <None Include="shaders\frist\common.glsl" />
+    <None Include="shaders\frist\intro.glsl" />
+    <None Include="shaders\frist\perlin_noise_heights.glsl" />
+    <None Include="shaders\frist\scene2.glsl" />
+    <None Include="shaders\frist\vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

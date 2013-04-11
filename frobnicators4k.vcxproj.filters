@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Resource Files\shaders">
+      <UniqueIdentifier>{b5845b80-8c73-48fe-bacc-cc59d914b29c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\shaders\frist">
+      <UniqueIdentifier>{c50a2fe6-4ffc-48d0-b75e-0337dd21201d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="generated\4klang.h">
@@ -72,6 +78,21 @@
   <ItemGroup>
     <None Include="generated\shaders.inc">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\frist\common.glsl">
+      <Filter>Resource Files\shaders\frist</Filter>
+    </None>
+    <None Include="shaders\frist\intro.glsl">
+      <Filter>Resource Files\shaders\frist</Filter>
+    </None>
+    <None Include="shaders\frist\perlin_noise_heights.glsl">
+      <Filter>Resource Files\shaders\frist</Filter>
+    </None>
+    <None Include="shaders\frist\scene2.glsl">
+      <Filter>Resource Files\shaders\frist</Filter>
+    </None>
+    <None Include="shaders\frist\vertex.glsl">
+      <Filter>Resource Files\shaders\frist</Filter>
     </None>
   </ItemGroup>
 </Project>
