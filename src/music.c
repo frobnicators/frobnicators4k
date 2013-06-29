@@ -54,9 +54,19 @@ void init_music() {
 	waveOutOpen			( &hWaveOut, WAVE_MAPPER, &waveFMT, NULL, 0, CALLBACK_NULL );
 	waveOutPrepareHeader( hWaveOut, &waveHDR, sizeof(waveHDR) );
 	waveOutWrite		( hWaveOut, &waveHDR, sizeof(waveHDR) );	
+
 }
 
 const DWORD * music_time() {
 	waveOutGetPosition(hWaveOut, &MMTime, sizeof(MMTIME));
 	return &(MMTime.u.sample);
 }
+
+#include <stdio.h>
+
+float envelope(int instrument, int voice, INT32 time_offset) {
+	INT64 time = (INT64)*music_time() + time_offset;
+	if(time < SAMPLE_RATE ) time = SAMPLE_RATE;
+	return (&_4klang_envelope_buffer)[(( time >> 8) << 5) + 2*instrument+voice];
+}
+

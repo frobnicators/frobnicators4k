@@ -11,4 +11,6 @@ void init_music();
 /* Returns the current sample */
 const DWORD * music_time();
 
+float envelope(int instrument, int voice, DWORD time_offset);
+
 #endif

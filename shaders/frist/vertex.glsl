@@ -4,12 +4,29 @@ out vec2 p;
 out vec3 ro;
 out vec3 rd;
 
+mat3 rmat(float angle) {
+	float s = sin(angle);
+	float c = cos(angle);
+	float oc = 1.0 - c;
+	return mat3(
+		c, - s,	0,
+		s, c, 0,
+		0, 0, oc + c
+	);
+}
+
 void cam(out vec3 c[4]) {
+	mat3 r = mat3(1.);
+	float speed = 1.;
+	if(t > 16.) r = rmat((t-16.)*0.1);
+	if(t > 48.) { r = mat3(1.); speed = 2.; }
+	if(t > 73.) speed = 5.;
+	if(t > 80.) speed = 7.;
 	c = vec3[4](
-		vec3(0, 0, -5),
-		vec3(1, 0, 0),
-		vec3(0, 1, 0),
-		vec3(0, 0, -1)
+		vec3(0, 0, -5+t*speed),
+		r * vec3(1, 0, 0),
+		r * vec3(0, 1, 0),
+		r * vec3(0, 0, -1)
 	);
 }
 

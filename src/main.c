@@ -218,6 +218,7 @@ static void do_the_magic() {
 			DispatchMessage(&msg);
 		} else {
 			update_time(&ldt);
+			if(time >= DEMO_LENGTH) terminate();
 #if _DEBUG
 			printf("Time: %f, %ld\n", time, ldt);
 #endif
@@ -256,7 +257,7 @@ void __stdcall WinMainCRTStartup() {
 	run();		
 }
 
-#if _DEBUG
+#if SOME_DEBUG
 /* For debug */
 int main() { run(); }
 #endif

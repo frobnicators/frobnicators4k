@@ -2,7 +2,7 @@ def usage
 	$stderr.puts "Usage: ruby packer.rb [options] demo_folder"
 	$stderr.puts "Options:"
 	$stderr.puts " --keep-tmp: Keep temporaries"
-	$stderr.puts " --verbose: Keep temporaries"
+	$stderr.puts " --verbose: Be verbose"
 	$stderr.puts " --no-minify: Don't minify"
 	$stderr.puts " --multiline: Split into multiple lines"
 	exit

@@ -50,6 +50,9 @@ static GLuint build_shader(GLenum type) {
 		glGetShaderInfoLog(shader, 2048, NULL, buffer);
 #if _DEBUG
 		memcpy(shader_name, current_shader, strlen(current_shader) + 1);
+#else
+		sprintf(shader_name, "Shader #%d", current_shader);
+#endif
 		{
 			char * src = _strdup(shader_src[0]);
 			char * split;
@@ -68,9 +71,6 @@ static GLuint build_shader(GLenum type) {
 				split = strtok(NULL, "\n");
 			}
 		}
-#else
-		sprintf(shader_name, "Shader #%d", current_shader);
-#endif
 		MessageBox(NULL, buffer, shader_name, MB_OK | MB_ICONERROR);
 		terminate();
 	}

@@ -4,10 +4,11 @@
 
 uniform float t; /* time */
 uniform float s; /* sync */
+uniform float s2;
 
 const vec3 i_light_color = vec3(0.8);
 const vec3 i_ambient_light = vec3(0.2);
-const float i_max_dist = 100.f;
+float max_dist;
 
 const float i_epsilon = 0.001;
 
@@ -26,6 +27,10 @@ c: collision point (including color)
 */
 vec3 slight(Ray r, vec4 c);
 vec3 bg(Ray r, vec4 c);
+
+float dsphere(vec3 eye, vec3 pos, float r) {
+	return length(eye-pos) - r;
+}
 
 float dbox(vec3 eye, vec3 pos, vec3 extends) {
 	vec3 delta = abs( pos - eye ) - extends;
@@ -135,13 +140,20 @@ vec3 light(Ray r, vec4 c, vec3 light_pos) {
 	return ocolor + c.rgb*i_ambient_light;
 }
 
-vec3 raymarch(Ray r){
-	vec4 hit = cast_ray(r, i_max_dist);
-	if(hit.r > -0.5) {
-		return slight(r, hit);
-	} else {
-		return bg(r, hit);
+vec3 raymarch(Ray r, float rflc, int bounces){
+	vec3 ocolor;
+	for(int i=0; i<bounces+1; ++i) {
+		vec4 hit = cast_ray(r, max_dist);
+		if(hit.r > -0.5) {
+			ocolor = mix(slight(r, hit), ocolor, rflc*i/2.);
+			r.d = reflect(r.d, n_at(r.po));
+			r.po += r.d * 1.0;
+		} else {
+			ocolor = mix(bg(r, hit), ocolor, 1.5*rflc*i/2.);
+			break;
+		}
 	}
+	return ocolor;
 }
 
 vec3 post(vec3 color, float exposure) {
