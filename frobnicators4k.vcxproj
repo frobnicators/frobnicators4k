@@ -173,7 +173,7 @@
       <PrecompiledHeaderFile />
       <DebugInformationFormat>None</DebugInformationFormat>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <OmitFramePointers>false</OmitFramePointers>
       <StructMemberAlignment>1Byte</StructMemberAlignment>
       <FloatingPointModel>Fast</FloatingPointModel>

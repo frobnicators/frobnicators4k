@@ -18,10 +18,10 @@ mat3 rmat(float angle) {
 void cam(out vec3 c[4]) {
 	mat3 r = mat3(1.);
 	float speed = 1.;
-	if(t > 16.) r = rmat((t-16.)*0.1);
-	if(t > 48.) { r = mat3(1.); speed = 2.; }
-	if(t > 73.) speed = 5.;
-	if(t > 80.) speed = 7.;
+	if(t > 5.) r = rmat((t-5.)*0.1);
+	if(t > 33.) { r = mat3(1.); speed = 2.; }
+	if(t > 58.) speed = 5.;
+	if(t > 65.) speed = 7.;
 	c = vec3[4](
 		vec3(0, 0, -5+t*speed),
 		r * vec3(1, 0, 0),
