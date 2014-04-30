@@ -2,7 +2,7 @@
 
 #extension GL_ARB_explicit_attrib_location: enable
 
-uniform float t; /* time */
+uniform float time; /* time */
 
 const vec3 i_light_color = vec3(0.8);
 const vec3 i_ambient_light = vec3(0.2);
@@ -93,9 +93,11 @@ vec4 cry(inout Ray ray, float max_dist) {
 
 vec3 n_at(vec3 p){ /* Calculate normal*/
 	vec3 n;
+	
 	n.x = scene(p + vec3(i_epsilon,0,0)).w - scene(p - vec3(i_epsilon,0,0)).w;
 	n.y = scene(p + vec3(0,i_epsilon,0)).w - scene(p - vec3(0, i_epsilon,0)).w;
 	n.z = scene(p + vec3(0,0,i_epsilon)).w - scene(p - vec3(0,0,  i_epsilon)).w;
+	
 	return normalize(n);
 }
 
