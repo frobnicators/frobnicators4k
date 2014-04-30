@@ -9,6 +9,10 @@
 #include <stdio.h>
 #endif
 
+#if TESTING
+#include "test.h"
+#endif
+
 #define FRAME_RATE 60
 #define MIN_DT (SAMPLE_RATE/FRAME_RATE)
 
@@ -257,7 +261,13 @@ void __stdcall WinMainCRTStartup() {
 	run();		
 }
 
-#if SOME_DEBUG
+#if TESTING
+int main() {
+	run_tests();
+}
+#elif SOME_DEBUG
 /* For debug */
-int main() { run(); }
+int main() {
+	run();
+}
 #endif

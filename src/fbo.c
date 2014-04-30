@@ -1,4 +1,4 @@
-#include "demo.h"	
+#include "demo.h"
 #if ENABLE_FBOS
 
 #include "fbo.h"

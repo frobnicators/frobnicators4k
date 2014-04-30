@@ -132,7 +132,7 @@ void load_shader(SHADER_TYPE name, struct shader_t * shader) {
 #endif
 
 	glUseProgram(shader->program);
-	shader->time = glGetUniformLocation(shader->program, "t");
+	shader->time = glGetUniformLocation(shader->program, "time");
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 }
