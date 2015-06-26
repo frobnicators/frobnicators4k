@@ -256,18 +256,28 @@ static void run() {
 	do_the_magic();
 }
 
-/* For release */
-void __stdcall WinMainCRTStartup() {
-	run();		
-}
+#if !(defined(SUBSYSTEM_WINDOWS) || defined(SUBSYSTEM_CONSOLE) || defined(SUBSYSTEM_CRINKLER))
+#error Build configuration must define either SUBSYSTEM_WINDOWS, SUBSYSTEM_CONSOLE or SUBSYSTEM_CRINKLER
+#endif
 
-#if TESTING
-int main() {
-	run_tests();
-}
-#elif SOME_DEBUG
-/* For debug */
-int main() {
+#ifdef SUBSYSTEM_WINDOWS
+int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow){
 	run();
+}
+#endif
+
+#ifdef SUBSYSTEM_CRINKLER
+void __stdcall WinMainCRTStartup() {
+	run();
+}
+#endif
+
+#ifdef SUBSYSTEM_CONSOLE
+int main() {
+#if TESTING
+	run_tests();
+#else
+	run();
+#endif
 }
 #endif
