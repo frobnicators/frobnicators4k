@@ -9,12 +9,14 @@
 
 #pragma comment(lib,"opengl32.lib")
 
+#include "demo.h"
+
 /* Manual glew stuff */
 
 void initKlister();
 
 
-/* Functions */
+// Functions
 extern PFNGLCREATESHADERPROC glCreateShader;
 extern PFNGLSHADERSOURCEPROC glShaderSource;
 extern PFNGLCOMPILESHADERPROC glCompileShader;
@@ -32,9 +34,16 @@ extern PFNGLBINDBUFFERPROC glBindBuffer;
 extern PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
 extern PFNGLBUFFERDATAPROC glBufferData;
 extern PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
+
+#ifdef ENABLE_FBOS
 extern PFNGLGENFRAMEBUFFERSPROC glGenFramebuffers;
 extern PFNGLBINDFRAMEBUFFERPROC glBindFramebuffer;
 extern PFNGLFRAMEBUFFERTEXTURE2DPROC glFramebufferTexture2D;
+#endif
+
+#ifdef ENABLE_COMPUTE
+extern PFNGLDISPATCHCOMPUTEPROC glDispatchCompute;
+#endif
 
 //extern PFNGLACTIVETEXTUREPROC glActiveTexture;
 

@@ -9,6 +9,8 @@ void render_demo();
 //#define ENABLE_TEXTURES 1
 //#define ENABLE_FBOS 1
 
+#define ENABLE_COMPUTE
+
 // Defining static width saves some bytes
 //#define STATIC_WIDTH 1920
 //#define STATIC_HEIGHT 1080
