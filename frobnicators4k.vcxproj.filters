@@ -19,6 +19,9 @@
     <Filter Include="Resource Files\shaders\frist">
       <UniqueIdentifier>{c50a2fe6-4ffc-48d0-b75e-0337dd21201d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\shaders\shared">
+      <UniqueIdentifier>{c458b9eb-7361-4cd5-95aa-1eef687ab3d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="generated\4klang.h">
@@ -88,19 +91,25 @@
     <None Include="generated\shaders.inc">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="shaders\perlin_noise_heights.glsl">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="shaders\scene2.glsl">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="shaders\shared\common.glsl">
+      <Filter>Resource Files\shaders\shared</Filter>
+    </None>
+    <None Include="shaders\shared\vertex.glsl">
+      <Filter>Resource Files\shaders\shared</Filter>
+    </None>
+    <None Include="shaders\frist\vertex.glsl">
+      <Filter>Resource Files\shaders\frist</Filter>
+    </None>
     <None Include="shaders\frist\common.glsl">
       <Filter>Resource Files\shaders\frist</Filter>
     </None>
     <None Include="shaders\frist\intro.glsl">
-      <Filter>Resource Files\shaders\frist</Filter>
-    </None>
-    <None Include="shaders\frist\perlin_noise_heights.glsl">
-      <Filter>Resource Files\shaders\frist</Filter>
-    </None>
-    <None Include="shaders\frist\scene2.glsl">
-      <Filter>Resource Files\shaders\frist</Filter>
-    </None>
-    <None Include="shaders\frist\vertex.glsl">
       <Filter>Resource Files\shaders\frist</Filter>
     </None>
   </ItemGroup>
