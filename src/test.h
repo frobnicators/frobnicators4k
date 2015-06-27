@@ -44,7 +44,8 @@ void run_tests() {
 	{
 		complex c1 = { 4.f, 13.f };
 		complex c2 = { 25.f, 57.f };
-		complex result = complex_mul(&c1, &c2);
+		complex result;
+		complex_mul(&c1, &c2, &result);
 		assert_floats_equal(result.x, -641.f);
 		assert_floats_equal(result.y, 553.f);
 	}

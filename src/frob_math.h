@@ -47,6 +47,6 @@ __forceinline void complex_add(const complex* c1, const complex* c2, complex* ou
 __forceinline void complex_sub(const complex* c1, const complex* c2, complex* out) { subvv2(c1, c2, out); }
 void complex_mul(const complex* c1, const complex* c2, complex* out);
 
-__forceinline void complex_make_conj(complex* c) { c->y *= -1.f; }
+__forceinline void complex_conj(complex* c) { c->y *= -1.f; }
 
 #endif
