@@ -113,39 +113,38 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
-    <IncludePath>D:\3d\deps\include;$(IncludePath);$(SolutionDir)\generated</IncludePath>
-    <IncludePath>$(SolutionDir)\src;D:\3d\deps\include;$(IncludePath);$(SolutionDir)\generated</IncludePath>
-    <LibraryPath>D:\3d\deps\lib;$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
+    <IncludePath>$(SolutionDir)\src;$(IncludePath);$(SolutionDir)\generated</IncludePath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
-    <IncludePath>D:\3d\deps\include;$(IncludePath);$(SolutionDir)\generated</IncludePath>
-    <LibraryPath>D:\3d\deps\lib;$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
+    <IncludePath>$(SolutionDir)\src;$(IncludePath);$(SolutionDir)\generated</IncludePath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Derp|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
-    <IncludePath>D:\3d\deps\include;$(IncludePath);$(SolutionDir)\generated</IncludePath>
-    <LibraryPath>D:\3d\deps\lib;$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
+    <IncludePath>$(SolutionDir)\src;$(IncludePath);$(SolutionDir)\generated</IncludePath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>D:\3d\deps\include;$(IncludePath);$(SolutionDir)\generated</IncludePath>
-    <LibraryPath>D:\3d\deps\lib;$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
+    <IncludePath>$(SolutionDir)\src;$(IncludePath);$(SolutionDir)\generated</IncludePath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (no crinkler)|Win32'">
-    <IncludePath>D:\3d\deps\include;$(IncludePath);$(SolutionDir)\generated</IncludePath>
-    <LibraryPath>D:\3d\deps\lib;$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
+    <IncludePath>$(SolutionDir)\src;$(IncludePath);$(SolutionDir)\generated</IncludePath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='HardCompressed|Win32'">
-    <IncludePath>D:\3d\deps\include;$(IncludePath);$(SolutionDir)\generated</IncludePath>
-    <LibraryPath>D:\3d\deps\lib;$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
+    <IncludePath>$(SolutionDir)\src;$(IncludePath);$(SolutionDir)\generated</IncludePath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SemiRelease|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
-    <IncludePath>D:\3d\deps\include;$(IncludePath);$(SolutionDir)\generated</IncludePath>
-    <LibraryPath>D:\3d\deps\lib;$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
+    <IncludePath>$(SolutionDir)\src;$(IncludePath);$(SolutionDir)\generated</IncludePath>
+    <LibraryPath>$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -166,7 +165,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;4klang.obj;winmm.lib;msvcrt_old.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;4klang.obj;winmm.lib;msvcrt.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -190,7 +189,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>unit_test_c.lib;opengl32.lib;4klang.obj;winmm.lib;msvcrt_old.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>msvcrt.lib;unit_test_c.lib;opengl32.lib;4klang.obj;winmm.lib;msvcrt_old.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -226,6 +225,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/CRINKLER /UNSAFEIMPORT /COMPMODE:SLOW /PROGRESSGUI /TRUNCATEFLOATS:32 /REPORT:crinkler.html %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>msvcrt.lib;opengl32.lib;4klang.obj;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -239,7 +239,7 @@
       </PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>msvcrt.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>msvcrt.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -254,6 +254,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/CRINKLER /UNSAFEIMPORT /COMPMODE:SLOW  /ORDERTRIES:10000 /PROGRESSGUI /HASHTRIES:100 /HASHSIZE:200 /TRUNCATEFLOATS:32 /REPORT:crinkler.html %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>msvcrt.lib;opengl32.lib;4klang.obj;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -291,7 +292,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <AdditionalDependencies>opengl32.lib;4klang.obj;winmm.lib;msvcrt_old.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>msvcrt.lib;opengl32.lib;4klang.obj;winmm.lib;msvcrt_old.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/CRINKLER %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreBuildEvent>
@@ -307,7 +308,6 @@
     <ClInclude Include="src\fbo.h" />
     <ClInclude Include="src\klister.h" />
     <ClInclude Include="src\main.h" />
-    <ClInclude Include="src\math.h" />
     <ClInclude Include="src\frob_math.h" />
     <ClInclude Include="src\music.h" />
     <ClInclude Include="src\shader.h" />
@@ -339,7 +339,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Derp|Win32'">true</ExcludedFromBuild>
       <InlineFunctionExpansion Condition="'$(Configuration)|$(Platform)'=='HardCompressed|Win32'">Disabled</InlineFunctionExpansion>
     </ClCompile>
-    <ClCompile Include="src\math.c" />
     <ClCompile Include="src\frob_math.c" />
     <ClCompile Include="src\music.c" />
     <ClCompile Include="src\shader.c" />

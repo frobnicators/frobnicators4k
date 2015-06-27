@@ -116,7 +116,9 @@ void initKlister() {
 
 		) {
 			FROB_ERROR("GL Init Error", "Failed to get GL functions");
+#if _DEBUG
 			terminate();
+#endif
 	}
 #endif
 }

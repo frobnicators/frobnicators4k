@@ -73,7 +73,9 @@ static GLuint build_shader(GLenum type) {
 			}
 		}
 		FROB_ERROR(shader_name, "Failed to build shader %s\n%s", shader_name, buffer);
+#if _DEBUG
 		terminate();
+#endif
 	}
 #endif
 	return shader;
