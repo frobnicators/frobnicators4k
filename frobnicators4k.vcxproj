@@ -305,6 +305,7 @@
     <ClInclude Include="generated\shaders.h" />
     <ClInclude Include="src\debug.h" />
     <ClInclude Include="src\demo.h" />
+    <ClInclude Include="src\edison2015\ocean.h" />
     <ClInclude Include="src\fbo.h" />
     <ClInclude Include="src\klister.h" />
     <ClInclude Include="src\main.h" />
@@ -325,6 +326,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (no crinkler)|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\demo.c" />
+    <ClCompile Include="src\edison2015\ocean.c" />
     <ClCompile Include="src\fbo.c" />
     <ClCompile Include="src\klister.c" />
     <ClCompile Include="src\main_debug.c">
@@ -347,6 +349,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="generated\shaders.inc" />
+    <None Include="shaders\edison2015\common.glsl" />
+    <None Include="shaders\edison2015\fft.glsl" />
+    <None Include="shaders\edison2015\ocean_compute.glsl" />
+    <None Include="shaders\edison2015\ocean_draw.glsl" />
+    <None Include="shaders\edison2015\vertex.glsl" />
     <None Include="shaders\frist\common.glsl" />
     <None Include="shaders\frist\intro.glsl" />
     <None Include="shaders\frist\vertex.glsl" />

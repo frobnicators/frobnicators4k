@@ -1,6 +1,6 @@
 #ifndef DEMO_H
 #define DEMO_H
-#define DEMO_FOLDER "compute_example"
+#define DEMO_FOLDER "edison2015"
 void init_demo();
 void render_demo();
 

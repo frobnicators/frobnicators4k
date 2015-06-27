@@ -22,6 +22,12 @@
     <Filter Include="Resource Files\shaders\shared">
       <UniqueIdentifier>{c458b9eb-7361-4cd5-95aa-1eef687ab3d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\edison2015">
+      <UniqueIdentifier>{310b241d-fd75-4d95-bb46-003f5ae9e695}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\shaders\edison2015">
+      <UniqueIdentifier>{da7d053e-f67f-474f-a7ff-95e42977d758}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="generated\4klang.h">
@@ -60,6 +66,9 @@
     <ClInclude Include="src\debug.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\edison2015\ocean.h">
+      <Filter>Source Files\edison2015</Filter>
+    </ClInclude>
     <ClInclude Include="src\frob_math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -95,6 +104,9 @@
     <ClCompile Include="src\debug.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\edison2015\ocean.c">
+      <Filter>Source Files\edison2015</Filter>
+    </ClCompile>
     <ClCompile Include="src\frob_math.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -123,6 +135,21 @@
     </None>
     <None Include="shaders\frist\intro.glsl">
       <Filter>Resource Files\shaders\frist</Filter>
+    </None>
+    <None Include="shaders\edison2015\ocean_draw.glsl">
+      <Filter>Resource Files\shaders\edison2015</Filter>
+    </None>
+    <None Include="shaders\edison2015\vertex.glsl">
+      <Filter>Resource Files\shaders\edison2015</Filter>
+    </None>
+    <None Include="shaders\edison2015\common.glsl">
+      <Filter>Resource Files\shaders\edison2015</Filter>
+    </None>
+    <None Include="shaders\edison2015\fft.glsl">
+      <Filter>Resource Files\shaders\edison2015</Filter>
+    </None>
+    <None Include="shaders\edison2015\ocean_compute.glsl">
+      <Filter>Resource Files\shaders\edison2015</Filter>
     </None>
   </ItemGroup>
 </Project>

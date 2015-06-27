@@ -4,10 +4,7 @@
 #include "util.h"
 #include "music.h"
 #include "frob_math.h"
-
-static struct shader_t intro;
-static struct shader_t compute;
-static GLuint output;
+#include "edison2015/ocean.h"
 
 static float synth = 0.f;
 
@@ -26,37 +23,22 @@ void init_demo() {
 			colors[index].w = 1.f;
 		}
 	}
-	load_shader(ShaderType_Visual, SHADER_INTRO_GLSL, &intro);
-	load_shader(ShaderType_Compute, SHADER_COMPUTE_GLSL, &compute);
+
+	ocean_init();
+
 	//load_shader(SHADER_PERLIN_NOISE_HEIGHTS_GLSL, &pnh);
 	//u_sync = glGetUniformLocation(intro.program, "syc");
 	//u_sync2 = glGetUniformLocation(intro.program, "s2");
 
 	//glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, 64);
-	glGenBuffers(1, &output);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, output);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, 1024 * 1024 * sizeof(vec4), NULL, GL_STATIC_DRAW);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, output);
-	glUseProgram(intro.program);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, output);
-
 	glClearColor(1.f, 0.f, 1.f, 1.f);
 }
 
 void render_demo() {
-	//if(time < 33.f) {
-	//} else {
-		//current = &pnh;
-	//}
 
-	//glUniform1f(u_sync, envelope(0, 0, 0) + envelope(0, 1, 0));
-	//glUniform1f(u_sync2,envelope(2, 0, 0) + envelope(2, 1, 0));
-
-	glUseProgram(compute.program);
-	glDispatchCompute(1024 / 32, 1024, 1);
+	ocean_calculate();
 
 	glClear(GL_COLOR_BUFFER_BIT);
-	render(&intro);
+	render(&ocean_draw);
 }
