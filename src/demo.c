@@ -31,13 +31,17 @@ void init_demo() {
 	//u_sync2 = glGetUniformLocation(intro.program, "s2");
 
 	//glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, 64);
+
+#ifdef _DEBUG
+	checkForGLErrors("postInit");
+#endif
 	
 	glClearColor(1.f, 0.f, 1.f, 1.f);
 }
 
 void render_demo() {
 
-	ocean_calculate();
+	//ocean_calculate();
 
 	glClear(GL_COLOR_BUFFER_BIT);
 	render(&ocean_draw);

@@ -59,6 +59,8 @@ typedef vec2 complex;
 
 __forceinline void complex_add(const complex* c1, const complex* c2, complex* out) { addvv2(c1, c2, out); }
 __forceinline void complex_sub(const complex* c1, const complex* c2, complex* out) { subvv2(c1, c2, out); }
+
+// Note that out must not be c1 or c2
 void complex_mul(const complex* c1, const complex* c2, complex* out);
 
 __forceinline void complex_conj(complex* c) { c->y *= -1.f; }
