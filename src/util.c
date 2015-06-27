@@ -2,6 +2,7 @@
 #include "main.h"
 #include "winclude.h"
 #include "music.h"
+#include "debug.h"
 
 
 #if _DEBUG 
@@ -42,14 +43,24 @@ int strcmp(const char * s1, const char * s2) {
 	return (s1[i] - s2[i]);
 }
 
-void checkForGLErrors(const char * str) {
+#if SOME_DEBUG
+void checkForGLErrors(const char *s) {
+	int errors = 0 ;
+
 	while ( 1 ) {
 		GLenum x = glGetError() ;
 
-		if ( x == GL_NO_ERROR )
+		if (x == GL_NO_ERROR)
 			return;
 
-		MessageBox(NULL, (LPCSTR) gluErrorString(x), str, MB_OK);
+		FROB_PRINTF("%s: OpenGL error: %s\n", s, gluErrorString(x));
+		errors++;
 	}
+	if (errors > 0) {
+		FROB_ERROR("OpenGL", "%d OpenGL Errors in context %s.", errors, s);
+	}
+
 }
+#endif
+
 #endif
