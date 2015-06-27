@@ -95,11 +95,11 @@
     <ClCompile Include="src\main_release.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="libv2\v2mplayer.cpp">
-      <Filter>Source Files\libv2</Filter>
-    </ClCompile>
     <ClCompile Include="src\music.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libv2\v2mplayer.cpp">
+      <Filter>Source Files\libv2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

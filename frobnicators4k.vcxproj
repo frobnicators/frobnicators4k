@@ -271,6 +271,7 @@
     <ClInclude Include="src\winclude.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="libv2\v2mplayer.cpp" />
     <ClCompile Include="src\demo.c" />
     <ClCompile Include="src\fbo.c" />
     <ClCompile Include="src\klister.c" />
