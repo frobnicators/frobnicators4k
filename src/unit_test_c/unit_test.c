@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <malloc.h>
+#include <stdarg.h>
 #include <assert.h>
 #include <string.h>
 #include <math.h>
@@ -7,6 +9,14 @@
 
 #ifndef NO_COLOR
 #include "sh_colors.h"
+#endif
+
+#ifdef WIN32
+#define STRICT
+#define WIN32_LEAN_AND_MEAN
+#define WIN32_EXTRA_LEAN
+
+#include <windows.h>
 #endif
 
 static int success_tests = 0;
@@ -21,6 +31,33 @@ static char current_context[64];
 static char current_test[128];
 
 static int test_status = -1;
+
+#ifdef WIN32
+static void vasprintf(char **strp, const char *fmt, va_list ap) {
+	const int len = _vscprintf(fmt, ap) + 1; /* Include null terminator */
+	*strp = (char*)malloc(len);
+	vsprintf_s(*strp, len, fmt, ap);
+}
+
+void unit_test_printf(const char* fmt, ...) {
+	char* str = NULL;
+	va_list ap;
+	va_start(ap, fmt);
+	vasprintf(&str, fmt, ap);
+	va_end(ap);
+	OutputDebugStringA(str);
+	free(str);
+}
+
+#else
+
+void unit_test_printf(const char* fmt, ...) {
+	va_start(ap, fmt);
+	vaprintf(fmt, ap);
+	va_end(ap);
+}
+
+#endif
 
 static void assert_active_test_suite() {
 	if(active_test_suite != 1) {
@@ -41,7 +78,7 @@ void begin_test_suite() {
 		fprintf(stderr, "Test suite already active!\n");
 		assert(0);
 	} else {
-		printf("============= BEGIN TEST SUITE ===============\n\n");
+		unit_test_printf("============= BEGIN TEST SUITE ===============\n\n");
 	}
 	success_tests = 0;
 	total_tests = 0;
@@ -52,7 +89,7 @@ int end_test_suite() {
 	const char * status;
 	assert_active_test_suite();
 	active_test_suite = 0;
-	printf("============= END TEST SUITE ===============\n");
+	unit_test_printf("============= END TEST SUITE ===============\n");
 	if(success_tests == total_tests) {
 		status = "succeeded";
 #ifndef NO_COLOR
@@ -64,7 +101,7 @@ int end_test_suite() {
 		color(SH_FG_RED);
 #endif
 	}
-	printf("Test suite %s. Succesive tests: %d/%d\n", status, success_tests, total_tests);
+	unit_test_printf("Test suite %s. Successive tests: %d/%d\n", status, success_tests, total_tests);
 #ifndef NO_COLOR
 	reset_color();
 #endif
@@ -77,14 +114,14 @@ void begin_context(const char * context) {
 	context_success = 0;
 	test_status = -1;
 	strcpy(current_context, context);
-	printf("==== %s ====\n", context);
+	unit_test_printf("==== %s ====\n", context);
 }
 
 int end_context() {
 	end_test();
 
-	printf("==============================\n");
-	printf("Result for %s: %d/%d successfull tests\n\n", current_context, context_success, context_tests);
+	unit_test_printf("==============================\n");
+	unit_test_printf("Result for %s: %d/%d successfull tests\n\n", current_context, context_success, context_tests);
 	return !(context_success == context_tests);
 }
 
@@ -111,7 +148,7 @@ int end_test() {
 #ifndef NO_COLOR
 			color(SH_FG_GREEN);
 #endif
-			printf("Test %s: OK\n", current_test);
+			unit_test_printf("Test %s: OK\n", current_test);
 #ifndef NO_COLOR
 			reset_color();
 #endif
@@ -134,7 +171,7 @@ static void core_assert(int expr, const char * error_msg) {
 #ifndef NO_COLOR
 			color(SH_FG_RED);
 #endif
-			printf("Test %s: FAIL. Expected %s\n", current_test, error_msg);
+			unit_test_printf("Test %s: FAIL. Expected %s\n", current_test, error_msg);
 			test_status=1;
 #ifndef NO_COLOR
 			reset_color();

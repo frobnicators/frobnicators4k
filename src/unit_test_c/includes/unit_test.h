@@ -9,6 +9,8 @@
 
 #define NO_COLOR
 
+void unit_test_printf(const char* fmt, ...);
+
 /**
  * Start test suite. Must be called before anything else
  */
