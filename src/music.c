@@ -51,7 +51,7 @@ void init_music() {
 #else
 	_4klang_render(sound_buffer);
 #endif
-	waveOutOpen			( &hWaveOut, WAVE_MAPPER, &waveFMT, NULL, 0, CALLBACK_NULL );
+	waveOutOpen			( &hWaveOut, WAVE_MAPPER, &waveFMT, (DWORD_PTR)NULL, 0, CALLBACK_NULL );
 	waveOutPrepareHeader( hWaveOut, &waveHDR, sizeof(waveHDR) );
 	waveOutWrite		( hWaveOut, &waveHDR, sizeof(waveHDR) );	
 
