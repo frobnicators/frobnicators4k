@@ -23,6 +23,7 @@ void update_time(unsigned long * ldt) {
 	time = *t / SAMPLE_RATE_FLT;
 }
 
+/*
 void * memset(void * s, int c, size_t n) {
 	char * b = (char*) s;
 	size_t i;
@@ -31,6 +32,7 @@ void * memset(void * s, int c, size_t n) {
 	}
 	return s;
 }
+*/
 
 #if _DEBUG
 int strcmp(const char * s1, const char * s2) {
