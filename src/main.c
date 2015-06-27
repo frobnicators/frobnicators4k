@@ -44,24 +44,13 @@ static void CreateGLWindow() {
 	DWORD dwStyle;
 	RECT WindowRect = {0, 0, width, height } ;
 
-	PIXELFORMATDESCRIPTOR pfd = {
-		sizeof(PIXELFORMATDESCRIPTOR),
-		1,
-		PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
-		PFD_TYPE_RGBA,
-		32,
-		0, 0, 0, 0, 0, 0,
-		0,
-		0,
-		0,
-		0, 0, 0, 0,
-		24,
-		0,
-		0,
-		PFD_MAIN_PLANE,
-		0,
-		0, 0, 0
-	};
+	PIXELFORMATDESCRIPTOR pfd;
+	memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
+	pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+	pfd.nVersion = 1;
+	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+	pfd.iPixelType = PFD_TYPE_RGBA;
+	pfd.cColorBits = 32;
 
 	hInstance = GetModuleHandle(NULL);
 	memset(&wc, 0, sizeof(wc));
