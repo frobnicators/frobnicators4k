@@ -7,6 +7,14 @@ float dot(const vec4 * v1, const vec4 * v2) {
 	return v1->x * v2->x + v1->y * v2->y + v1->z * v2->z + v1->w * v2->w;
 }
 
+float dotv2(const vec2 * v1, const vec2 * v2) {
+	return v1->x * v2->x + v1->y * v2->y;
+}
+
+float dotv3(const vec3 * v1, const vec3 * v2) {
+	return v1->x * v2->x + v1->y * v2->y + v1->z + v2->z;
+}
+
 float normal(const vec4 * v) {
 	return (float)sqrt(dot(v, v));
 }
@@ -18,6 +26,28 @@ void normalize(vec4 * v) {
 	v->z /= n;
 	v->w /= n;
 }
+
+float normal_v2(const vec2 * v) {
+	return (float)sqrt(dotv2(v, v));
+}
+
+void normalize_v2(vec2 * v) {
+	float n = normal_v2(v);
+	v->x /= n;
+	v->y /= n;
+}
+
+float normal_v3(const vec3 * v) {
+	return (float)sqrt(dotv3(v, v));
+}
+
+void normalize_v3(vec3 * v) {
+	float n= normal_v3(v);
+	v->x /= n;
+	v->y /= n;
+	v->z /= n;
+}
+
 
 vec4 mulvv(const vec4 * v1, const vec4 * v2) {
 	vec4 ret = {
