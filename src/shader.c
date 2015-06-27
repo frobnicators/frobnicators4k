@@ -61,14 +61,14 @@ static GLuint build_shader(GLenum type) {
 			split =  strtok(src, "\n");
 			while(split != NULL) {
 				++i;
-				FROB_PRINTF("%d\t%s\n", i, split);
+				FROB_PRINTF("%d:\t%s\n", i, split);
 				split = strtok(NULL, "\n");
 			}
 			src = _strdup(shader_src[1]);
 			split = strtok(src, "\n");
 			while(split !=  NULL) {
 				++i;
-				FROB_PRINTF("%d\t%s\n", i, split);
+				FROB_PRINTF("%d:\t%s\n", i, split);
 				split = strtok(NULL, "\n");
 			}
 		}
