@@ -56,22 +56,10 @@ static ocean_point_t calculate_ocean_point(vec2* x);
 
 void ocean_init() {
 	const int NxN = ocean_N * ocean_N;
-	//h_tilde = malloc(NxN * sizeof(h_tilde_t));
+	h_tilde = malloc(NxN * sizeof(h_tilde_t));
 	h_tilde0 = malloc(NxN * sizeof(h_tilde0_t));
 
-	vec4* colors = malloc(NxN * sizeof(vec4));
-	for (int m = 0; m < ocean_N; ++m) {
-		for (int n = 0; n < ocean_N; ++n) {
-			int index = m * ocean_N + n;
-			colors[index].x = 1.f;
-			colors[index].y = 0.f;
-			colors[index].z = 0.f;
-			colors[index].w = 1.f;
-		}
-
-	}
-
-	//ocean_calculate_initial_state();
+	ocean_calculate_initial_state();
 
 	load_shader(ShaderType_Visual, SHADER_OCEAN_DRAW_GLSL, &ocean_draw);
 	//load_shader(ShaderType_Compute, SHADER_OCEAN_COMPUTE_GLSL, &ocean_compute);
@@ -80,7 +68,6 @@ void ocean_init() {
 	glGenBuffers(OceanBuffer_Count, ocean_buffers);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER,  ocean_buffers[OceanBuffer_Ocean]);
 	//glBufferData(GL_SHADER_STORAGE_BUFFER, NxN * sizeof(ocean_point_t), NULL, GL_DYNAMIC_DRAW); // TODO: Change to COPY
-	glBufferData(GL_SHADER_STORAGE_BUFFER, NxN * sizeof(vec4), colors, GL_STATIC_DRAW); // TODO: Change to COPY
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ocean_buffers[OceanBuffer_Ocean]);
@@ -183,7 +170,6 @@ static ocean_point_t calculate_ocean_point(vec2* x) {
 	for (int m = 0; m < ocean_N; ++m) {
 		k.y = (m - ocean_N / 2.f) * m2pi_over_length;
 		for (int n = 0; n < ocean_N; ++n) {
-			/*
 			k.x = (n - ocean_N / 2.f) * m2pi_over_length;
 			k_norm = normal_v2(&k);
 			k_dot_x = dotv2(&k, x);
@@ -206,7 +192,6 @@ static ocean_point_t calculate_ocean_point(vec2* x) {
 
 			point.displacement.x += (k.x / k_norm) * htilde_c.y;
 			point.displacement.y += (k.y / k_norm) * htilde_c.y;
-			*/
 		}
 	}
 
@@ -225,16 +210,16 @@ void ocean_calculate()
 		for (int n = 0; n < ocean_N; ++n) {
 			vec2 x = { (float)n, (float)m };
 			ocean_point_t point = calculate_ocean_point(&x);
-			int index = m * ocean_N + m;
-			//colors[index].x = colors[index].y = colors[index].z = 0.f;// point.height*10.f;
-			//colors[index].w = 1.f;
-			//FROB_PRINTF("%d,%d => %f, (%f, %f) -> (%f, %f, %f)\n", n, m, point.height, point.displacement.x, point.displacement.y, point.normal.x, point.normal.y, point.normal.z);
+			int index = m * ocean_N + n;
+			colors[index].x = colors[index].y = colors[index].z = point.height*1000.f;
+			colors[index].w = 1.f;
+			FROB_PRINTF("%d,%d => %f, (%f, %f) -> (%f, %f, %f)\n", n, m, point.height, point.displacement.x, point.displacement.y, point.normal.x, point.normal.y, point.normal.z);
 		}
 	}
 	//glUseProgram(ocean_compute.program);
 	//glDispatchCompute(N / 32, N, 1);
 
-	//glBindBuffer(GL_SHADER_STORAGE_BUFFER,  ocean_buffers[OceanBuffer_Ocean]);
-	//glBufferData(GL_SHADER_STORAGE_BUFFER, ocean_N * ocean_N * sizeof(vec4), colors, GL_DYNAMIC_DRAW); // TODO: Change to COPY
-	//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER,  ocean_buffers[OceanBuffer_Ocean]);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, ocean_N * ocean_N * sizeof(vec4), colors, GL_DYNAMIC_DRAW); // TODO: Change to COPY
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
