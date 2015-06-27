@@ -20,6 +20,7 @@ PFNGLUNIFORM1FPROC glUniform1f;
 PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
 PFNGLGENBUFFERSPROC glGenBuffers;
 PFNGLBINDBUFFERPROC glBindBuffer;
+PFNGLBINDBUFFERBASEPROC glBindBufferBase;
 PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
 PFNGLBUFFERDATAPROC glBufferData;
 PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
@@ -58,6 +59,7 @@ void initKlister() {
 	glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)getProcAddr("glUniformMatrix4fv");
 	glGenBuffers = (PFNGLGENBUFFERSPROC)getProcAddr("glGenBuffers");
 	glBindBuffer = (PFNGLBINDBUFFERPROC)getProcAddr("glBindBuffer");
+	glBindBufferBase = (PFNGLBINDBUFFERBASEPROC)getProcAddr("glBindBufferBase");
 	glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)getProcAddr("glEnableVertexAttribArray");
 	glBufferData = (PFNGLBUFFERDATAPROC)getProcAddr("glBufferData");
 	glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)getProcAddr("glVertexAttribPointer");
@@ -94,6 +96,7 @@ void initKlister() {
 		glUniformMatrix4fv == NULL ||
 		glGenBuffers == NULL ||
 		glBindBuffer == NULL ||
+		glBindBufferBase == NULL ||
 		glEnableVertexAttribArray == NULL ||
 		glBufferData == NULL ||
 		glVertexAttribPointer == NULL ||
