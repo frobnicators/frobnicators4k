@@ -114,6 +114,7 @@
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
     <IncludePath>D:\3d\deps\include;$(IncludePath);$(SolutionDir)\generated</IncludePath>
+    <IncludePath>$(SolutionDir)\src;D:\3d\deps\include;$(IncludePath);$(SolutionDir)\generated</IncludePath>
     <LibraryPath>D:\3d\deps\lib;$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|Win32'">
@@ -307,6 +308,7 @@
     <ClInclude Include="src\klister.h" />
     <ClInclude Include="src\main.h" />
     <ClInclude Include="src\math.h" />
+    <ClInclude Include="src\frob_math.h" />
     <ClInclude Include="src\music.h" />
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\test.h" />
@@ -338,6 +340,7 @@
       <InlineFunctionExpansion Condition="'$(Configuration)|$(Platform)'=='HardCompressed|Win32'">Disabled</InlineFunctionExpansion>
     </ClCompile>
     <ClCompile Include="src\math.c" />
+    <ClCompile Include="src\frob_math.c" />
     <ClCompile Include="src\music.c" />
     <ClCompile Include="src\shader.c" />
     <ClCompile Include="src\shader_data.c" />

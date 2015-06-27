@@ -54,14 +54,14 @@
     <ClInclude Include="generated\shaders.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\math.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\test.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\debug.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\frob_math.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -83,9 +83,6 @@
     <ClCompile Include="src\fbo.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\math.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\shader_data.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -96,6 +93,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\debug.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\frob_math.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,6 +1,6 @@
 #include "unit_test_c/includes/unit_test.h"
 
-#include "math.h"
+#include "frob_math.h"
 
 void run_tests() {
 	begin_test_suite();

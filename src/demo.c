@@ -3,7 +3,7 @@
 #include "main.h"
 #include "util.h"
 #include "music.h"
-#include "math.h"
+#include "frob_math.h"
 
 static struct shader_t intro;
 static struct shader_t compute;
