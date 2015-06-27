@@ -85,26 +85,25 @@ mat4 mulmm(const mat4* m1, const mat4* m2)
 	}
 	return ret;
 }
-vec2 addvv2(const vec2 * v1, const vec2 * v2) {
-	vec2 ret = { v1->x + v2->x, v1->y + v2->y };
-	return ret;
-}
-vec2 subvv2(const vec2 * v1, const vec2 * v2) {
-	vec2 ret = { v1->x - v2->x, v1->y - v2->y };
-	return ret;
+
+void addvv2(const vec2 * v1, const vec2 * v2, vec2* out) {
+	out->x = v1->x + v2->x;
+	out->y = v1->y + v2->y;
 }
 
-vec2 mulvv2(const vec2 * v1, const vec2 * v2) {
-	vec2 ret = { v1->x * v2->x, v1->y * v2->y };
-	return ret;
+void subvv2(const vec2 * v1, const vec2 * v2, vec2* out) {
+	out->x = v1->x - v2->x;
+	out->y = v1->y - v2->y;
 }
 
-complex complex_mul(const complex* c1, const complex* c2) {
-	complex ret = {
-		(c1->x * c2->x) - (c1->y * c2->y),
-		(c1->y * c2->x) + (c1->x * c2->y)
-	};
-	return ret;
+void mulvv2(const vec2 * v1, const vec2 * v2, vec2* out) {
+	out->x = v1->x * v2->x;
+	out->y = v1->y * v2->y;
+}
+
+void complex_mul(const complex* c1, const complex* c2, complex* out) {
+	out->x = (c1->x * c2->x) - (c1->y * c2->y);
+	out->y = (c1->y * c2->x) + (c1->x * c2->y);
 }
 
 #endif
