@@ -320,6 +320,7 @@
     <ClCompile Include="src\math.c" />
     <ClCompile Include="src\music.c" />
     <ClCompile Include="src\shader.c" />
+    <ClCompile Include="src\shader_data.c" />
     <ClCompile Include="src\util.c" />
   </ItemGroup>
   <ItemGroup>

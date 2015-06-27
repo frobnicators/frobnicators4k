@@ -136,7 +136,7 @@ end
 
 @cfile.puts "#pragma data_seg(push, \".shaders\")\n"
 
-@cfile.puts "static const char * _shaders[] = {";
+@cfile.puts "const char * _shaders[] = {";
 hndl_dir("shaders/#{dir}", "")
 hndl_dir("shaders/shared", "")
 

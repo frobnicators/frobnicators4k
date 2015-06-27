@@ -13,7 +13,7 @@
 
 #else
 
-#include "shaders.inc"
+extern const char * _shaders[];
 
 #endif
 
