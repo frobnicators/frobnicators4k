@@ -59,14 +59,10 @@ static void CreateGLWindow() {
 	wc.hInstance = hInstance;
 	wc.lpszClassName = "OpenGL";
 
-#if _DEBUG
 	if(!RegisterClass(&wc)) {
 		MessageBox(NULL, "Failed to register the window class.", "ERROR", MB_OK | MB_ICONEXCLAMATION);
 		terminate();
 	}
-#else
-	RegisterClass(&wc);
-#endif
 
 #if FULLSCREEN
 	{
@@ -97,9 +93,7 @@ static void CreateGLWindow() {
 
 	AdjustWindowRectEx(&WindowRect, dwStyle, FALSE, dwExStyle);
 	/* This hack be pretty ... */
-#if _DEBUG
 	if ((
-#endif
 		hWnd=CreateWindowEx(  dwExStyle,
 				"OpenGL",
 				"",
@@ -113,60 +107,36 @@ static void CreateGLWindow() {
 				NULL,
 				hInstance,
 				NULL)
-#if _DEBUG 
 				) == NULL) {
 		printf("Failed to create window: %d\n", GetLastError());
 		terminate();
 	}
-#else
-	;
-#endif
 
 	
-#if _DEBUG
 	if (!(hDC=GetDC(hWnd))) {
 		printf("Can't Create A GL Device Context: %d", GetLastError());
 		terminate(); 
 	}
-#else
-	hDC = GetDC(hWnd);
-#endif
 
-#if _DEBUG
 	if (!(PixelFormat=ChoosePixelFormat(hDC,&pfd))) {
 		printf("Can't Find A Suitable PixelFormat: %d", GetLastError());
 		terminate();
 	}
-#else
-	PixelFormat=ChoosePixelFormat(hDC,&pfd);
-#endif
 
-#if _DEBUG
 	if(!SetPixelFormat(hDC, PixelFormat, &pfd)) {
 		printf("Can't set the pixel format: %d", GetLastError());
 		terminate();
 	}
-#else
-	SetPixelFormat(hDC, PixelFormat, &pfd);
-#endif
 
-#if _DEBUG
 	if(!(hRC = wglCreateContext(hDC))) {
 		printf("Can't create a opengl context: %d", GetLastError());
 		terminate();
 	}
-#else
-	hRC = wglCreateContext(hDC);
-#endif
 
-#if _DEBUG
 	if(!wglMakeCurrent(hDC, hRC)) {
 		printf("Failed to make context current: %d", GetLastError());
 		terminate();
 	}
-#else
-	wglMakeCurrent(hDC, hRC);
-#endif
 
 	ShowWindow(hWnd,SW_SHOW);
 	//SetForegroundWindow(hWnd);

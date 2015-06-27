@@ -62,9 +62,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\util.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -87,6 +84,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\shader_data.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main_debug.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main_release.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

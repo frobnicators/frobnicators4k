@@ -316,7 +316,18 @@
     <ClCompile Include="src\demo.c" />
     <ClCompile Include="src\fbo.c" />
     <ClCompile Include="src\klister.c" />
-    <ClCompile Include="src\main.c" />
+    <ClCompile Include="src\main_debug.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='HardCompressed|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (no crinkler)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SemiRelease|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\main_release.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Test|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Derp|Win32'">true</ExcludedFromBuild>
+      <InlineFunctionExpansion Condition="'$(Configuration)|$(Platform)'=='HardCompressed|Win32'">Disabled</InlineFunctionExpansion>
+    </ClCompile>
     <ClCompile Include="src\math.c" />
     <ClCompile Include="src\music.c" />
     <ClCompile Include="src\shader.c" />
