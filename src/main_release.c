@@ -13,9 +13,6 @@
 #include "test.h"
 #endif
 
-#define FRAME_RATE 60
-#define MIN_DT (SAMPLE_RATE/FRAME_RATE)
-
 static HDC		hDC; 
 static HWND	hWnd;
 DWORD width, height;
@@ -85,9 +82,6 @@ static void run() {
 		update_time(&ldt);
 		render_demo();
 		SwapBuffers(hDC);
-		if (ldt < MIN_DT){
-			Sleep((MIN_DT - ldt) / SAMPLE_RATE);
-		}
 	} while (time < DEMO_LENGTH && !GetAsyncKeyState(VK_ESCAPE));
 
 #if FULLSCREEN

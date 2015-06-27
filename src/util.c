@@ -10,15 +10,13 @@
 	#include <GL/GLU.h>
 #endif
 
-#define SAMPLE_RATE_FLT (float)SAMPLE_RATE
-
 static DWORD _last_time = 0;
 
 void update_time(unsigned long * ldt) {
 	const DWORD * t = music_time();
 	*ldt = (*t - _last_time);
 	_last_time = *t;
-	time = *t / SAMPLE_RATE_FLT;
+	time = (float)*t;
 }
 
 void * memset(void * s, int c, size_t n) {

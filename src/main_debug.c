@@ -13,9 +13,6 @@
 #include "test.h"
 #endif
 
-#define FRAME_RATE 60
-#define MIN_DT (SAMPLE_RATE/FRAME_RATE)
-
 static HDC		hDC; 
 static HGLRC	hRC; 
 static HWND	hWnd;
@@ -187,7 +184,6 @@ static void do_the_magic() {
 #endif
 			render_demo();
 			SwapBuffers(hDC);
-			if(ldt < MIN_DT) Sleep( ( MIN_DT - ldt) / SAMPLE_RATE);
 		}
 	}
 }

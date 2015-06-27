@@ -5,7 +5,7 @@
 
 void init_music();
 
-/* Returns the current sample */
+/* Returns the current time in ms */
 const DWORD * music_time();
 
 float envelope(int instrument, int voice, INT32 time_offset);

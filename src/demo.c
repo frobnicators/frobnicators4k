@@ -27,8 +27,8 @@ void render_demo() {
 		//current = &pnh;
 	//}
 
-	glUniform1f(u_sync, envelope(0, 0, 0) + envelope(0, 1, 0));
-	glUniform1f(u_sync2,envelope(2, 0, 0) + envelope(2, 1, 0));
+	glUniform1f(u_sync,  envelope(0, 0, 0) + envelope(0, 1, 0));
+	glUniform1f(u_sync2, envelope(2, 0, 0) + envelope(2, 1, 0));
 
 	glClear(GL_COLOR_BUFFER_BIT);
 	render(&intro);
