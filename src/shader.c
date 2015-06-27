@@ -105,19 +105,25 @@ void init_shaders() {
 }
 
 /* Loads the shader. This leaves the created shader active */
-void load_shader(SHADER_TYPE name, struct shader_t * shader) {
-	GLuint fragment_shader;
+void load_shader(enum ShaderType type, SHADER_TYPE name, struct shader_t * shader) {
+	GLuint frag_or_compute_shader;
 
 #if SOME_DEBUG
 	GLint link_status;
 	current_shader = name;
 #endif
+	shader->program = glCreateProgram();
 
 	shader_src[1] = read_shader(name);
-	fragment_shader = build_shader(GL_FRAGMENT_SHADER);
-	shader->program = glCreateProgram();
-	glAttachShader(shader->program, vertex_shader);
-	glAttachShader(shader->program, fragment_shader);
+
+	if (type == ShaderType_Visual) {
+		frag_or_compute_shader = build_shader(GL_FRAGMENT_SHADER);
+		glAttachShader(shader->program, vertex_shader);
+	} else {
+		frag_or_compute_shader = build_shader(GL_COMPUTE_SHADER);
+	}
+
+	glAttachShader(shader->program, frag_or_compute_shader);
 	glLinkProgram(shader->program);
 
 #if SOME_DEBUG
@@ -134,8 +140,10 @@ void load_shader(SHADER_TYPE name, struct shader_t * shader) {
 
 	glUseProgram(shader->program);
 	shader->time = glGetUniformLocation(shader->program, "time");
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	if (type == ShaderType_Visual) {
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	}
 }
 
 void render(struct shader_t * shader) {
@@ -198,7 +206,6 @@ static void add_file(const char * name, const char * data) {
 }
 
 #endif
-
 
 
 const char * read_shader(SHADER_TYPE name) {
