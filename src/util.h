@@ -2,8 +2,6 @@
 #define UTIL_H
 	#include <crtdefs.h>
 
-	void update_time(unsigned long * ldt);
-
 	void start_time();
 
 	//void * memset(void * s, int c, size_t n);
