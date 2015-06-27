@@ -18,6 +18,16 @@ static HWND	hWnd;
 DWORD width, height;
 float time;
 
+#ifdef SOME_DEBUG
+void __declspec(noreturn) terminate() {
+#if FULLSCREEN
+	ChangeDisplaySettings(NULL, 0);
+	ShowCursor(TRUE);
+#endif
+	ExitProcess(0);
+}
+#endif
+
 static void CreateGLWindow() {
 	DWORD dwStyle;
 
