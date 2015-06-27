@@ -207,7 +207,7 @@ static void run() {
 	height = 600;
 #endif
 #endif
-	OutputDebugString("Starting frob4k");
+	FROB_PRINTF("Starting frob4k\n");
 	CreateGLWindow();
 	initGL();
 	init_demo();
