@@ -194,11 +194,13 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		}
 		break;
 	case WM_CLOSE:
+
+	if (wParam == VK_ESCAPE){
+	case WM_KEYDOWN:
+		; /* fall through */
+	}
 	case WM_DESTROY:
 		terminate();
-		break;
-	case WM_KEYDOWN:
-		if(wParam == VK_ESCAPE) terminate();
 		break;
 	}
 	return DefWindowProc(hWnd,uMsg,wParam,lParam);
