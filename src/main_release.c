@@ -102,24 +102,12 @@ static void run() {
 	ExitProcess(0);
 }
 
-#if !(defined(SUBSYSTEM_WINDOWS) || defined(SUBSYSTEM_CONSOLE) || defined(SUBSYSTEM_CRINKLER))
-#error Build configuration must define either SUBSYSTEM_WINDOWS, SUBSYSTEM_CONSOLE or SUBSYSTEM_CRINKLER
-#endif
-
-#ifdef SUBSYSTEM_WINDOWS
+#ifndef CRINKLER
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow){
 	run();
 }
-#endif
-
-#ifdef SUBSYSTEM_CRINKLER
+#else /* CRINKLER */
 void __stdcall WinMainCRTStartup() {
 	run();
 }
-#endif
-
-#ifdef SUBSYSTEM_CONSOLE
-int main() {
-	run();
-}
-#endif
+#endif /* CRINKLER */

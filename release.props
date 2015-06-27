@@ -17,9 +17,7 @@
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <AssemblerOutput>AssemblyCode</AssemblerOutput>
       <OmitDefaultLibName>true</OmitDefaultLibName>
-      <PreprocessorDefinitions>WIN32;NDEBUG;FULLSCREEN=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <FloatingPointModel>Fast</FloatingPointModel>
-      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <PreprocessorDefinitions>NDEBUG;FULLSCREEN=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
