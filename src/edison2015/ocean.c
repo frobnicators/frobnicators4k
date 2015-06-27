@@ -182,7 +182,7 @@ static ocean_point_t calculate_ocean_point(vec2 x) {
 	for (int m = 0; m < ocean_N; ++m) {
 		k.y = (m - ocean_N / 2.f) * m2pi_over_length;
 		for (int n = 0; n < ocean_N; ++n) {
-			k.x = (m - ocean_N / 2.f) * m2pi_over_length;
+			k.x = (n - ocean_N / 2.f) * m2pi_over_length;
 			k_norm = normal_v2(&k);
 			k_dot_x = dotv2(&k, &x);
 
