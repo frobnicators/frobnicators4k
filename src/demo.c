@@ -13,24 +13,7 @@ static float synth = 0.f;
 #endif
 
 void init_demo() {
-	static vec4 colors[1024*1024];
-	for (int y = 0; y < 1024; ++y) {
-		for (int x = 0; x < 1024; ++x) {
-			int index = y*1024 + x;
-			colors[index].x = x / 1024.f;
-			colors[index].y = y / 1024.f;
-			colors[index].z = 0.f;
-			colors[index].w = 1.f;
-		}
-	}
-
 	ocean_init();
-
-	//load_shader(SHADER_PERLIN_NOISE_HEIGHTS_GLSL, &pnh);
-	//u_sync = glGetUniformLocation(intro.program, "syc");
-	//u_sync2 = glGetUniformLocation(intro.program, "s2");
-
-	//glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, 64);
 
 #ifdef _DEBUG
 	checkForGLErrors("postInit");
@@ -41,8 +24,14 @@ void init_demo() {
 
 void render_demo() {
 
-	//ocean_calculate();
+	ocean_calculate();
+#ifdef _DEBUG
+	checkForGLErrors("postCalculate");
+#endif
 
 	glClear(GL_COLOR_BUFFER_BIT);
 	render(&ocean_draw);
+#ifdef _DEBUG
+	checkForGLErrors("postFrame");
+#endif
 }
