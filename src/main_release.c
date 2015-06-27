@@ -19,7 +19,7 @@
 static HDC		hDC; 
 static HWND	hWnd;
 DWORD width, height;
-float dt, time;
+float time;
 
 static void CreateGLWindow() {
 	DWORD dwStyle;

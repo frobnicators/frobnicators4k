@@ -21,7 +21,7 @@ static HGLRC	hRC;
 static HWND	hWnd;
 static HINSTANCE hInstance;
 DWORD width, height;
-float dt, time;
+float time;
 
 static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 

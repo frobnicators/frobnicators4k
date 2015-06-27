@@ -17,7 +17,6 @@ static DWORD _last_time = 0;
 void update_time(unsigned long * ldt) {
 	const DWORD * t = music_time();
 	*ldt = (*t - _last_time);
-	dt = (float) *ldt / SAMPLE_RATE_FLT;
 	_last_time = *t;
 	time = *t / SAMPLE_RATE_FLT;
 }
