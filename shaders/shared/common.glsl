@@ -1,5 +1,3 @@
-#version 150
-
-#extension GL_ARB_explicit_attrib_location: enable
+#version 430
 
 uniform float time;
