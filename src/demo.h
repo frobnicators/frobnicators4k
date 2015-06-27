@@ -1,6 +1,6 @@
 #ifndef DEMO_H
 #define DEMO_H
-#define DEMO_FOLDER "frist"
+#define DEMO_FOLDER "example"
 void init_demo();
 void render_demo();
 
