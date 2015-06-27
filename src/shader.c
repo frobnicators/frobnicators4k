@@ -4,6 +4,7 @@
 #include "util.h"
 #include "shaders.h"
 #include "demo.h"
+#include "debug.h"
 
 #include <stdio.h>
 #if _DEBUG
@@ -58,20 +59,20 @@ static GLuint build_shader(GLenum type) {
 			char * split;
 			int i=0;
 			split =  strtok(src, "\n");
-			while(split !=  NULL) {
+			while(split != NULL) {
 				++i;
-				printf("%d\t%s\n", i, split);
+				FROB_PRINTF("%d\t%s\n", i, split);
 				split = strtok(NULL, "\n");
 			}
 			src = _strdup(shader_src[1]);
 			split = strtok(src, "\n");
 			while(split !=  NULL) {
 				++i;
-				printf("%d\t%s\n", i, split);
+				FROB_PRINTF("%d\t%s\n", i, split);
 				split = strtok(NULL, "\n");
 			}
 		}
-		MessageBox(NULL, buffer, shader_name, MB_OK | MB_ICONERROR);
+		FROB_ERROR(shader_name, "Failed to build shader %s\n%s", shader_name, buffer);
 		terminate();
 	}
 #endif
@@ -125,9 +126,9 @@ void load_shader(SHADER_TYPE name, struct shader_t * shader) {
 		char buffer[2048];
 		glGetProgramInfoLog(shader->program, 2048, NULL, buffer);
 #if _DEBUG
-		printf("Link error in shader %s: %s\n", name, buffer);
+		FROB_PRINTF("Link error in shader %s: %s\n", name, buffer);
 #endif
-		MessageBox(NULL, buffer, "Shader compile error", MB_OK | MB_ICONERROR);
+		FROB_ERROR("Shader compile error", buffer);
 	}
 #endif
 
@@ -171,9 +172,7 @@ char * find_path(const char * name) {
 	if(dwAttrib != INVALID_FILE_ATTRIBUTES && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)) {
 		return path;
 	} else {
-		char buffer[128];
-		sprintf(buffer, "Could not find file: %s", name);
-		MessageBox(NULL, buffer, "File error", MB_OK | MB_ICONEXCLAMATION);
+		FROB_ERROR("File error", "Could not find file: %s", name);
 		terminate();
 	}
 }
@@ -218,7 +217,7 @@ const char * read_shader(SHADER_TYPE name) {
 		free(_name);
 
 		if(file == NULL) {
-			printf("Couldn't open file `%s'\n", name);
+			FROB_PRINTF("Couldn't open file `%s'\n", name);
 			terminate();
 		}
 
@@ -234,16 +233,16 @@ const char * read_shader(SHADER_TYPE name) {
 		res = fread(data, 1, size, file);
 		if ( res != size ) {
 			if ( ferror(file) ){
-				printf("Error when reading file `%s': %s\n", name, strerror(errno));
+				FROB_PRINTF("Error when reading file `%s': %s\n", name, strerror(errno));
 			} else {
-				printf("Error when reading file `%s': read size was not the expected size (read %lu bytes, expected %lu)\n", name, res, size);
+				FROB_PRINTF("Error when reading file `%s': read size was not the expected size (read %lu bytes, expected %lu)\n", name, res, size);
 			}
 		}
 		fclose(file);
 		add_file(name, data);
 		return data;
 	}
-	MessageBox(NULL, "File failure", name, MB_OK | MB_ICONEXCLAMATION);
+	FROB_ERROR("File error", "Failed to open file %s", name);
 	terminate(); /* Failed to open file */
 #else
 	return _shaders[name];

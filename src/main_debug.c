@@ -4,6 +4,7 @@
 #include "shader.h"
 #include "demo.h"
 #include "music.h"
+#include "debug.h"
 
 #if _DEBUG
 #include <stdio.h>
@@ -60,7 +61,7 @@ static void CreateGLWindow() {
 	wc.lpszClassName = "OpenGL";
 
 	if(!RegisterClass(&wc)) {
-		MessageBox(NULL, "Failed to register the window class.", "ERROR", MB_OK | MB_ICONEXCLAMATION);
+		FROB_ERROR("Startup error", "Failed to register the window class.");
 		terminate();
 	}
 
@@ -76,7 +77,7 @@ static void CreateGLWindow() {
 
 		if(ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL) {
 #if _DEBUG
-			printf("Failed to activate fullscreen.\n");
+			FROB_PRINTF("Failed to activate fullscreen.\n");
 #endif
 			dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
 			dwStyle = WS_OVERLAPPEDWINDOW;
@@ -108,33 +109,33 @@ static void CreateGLWindow() {
 				hInstance,
 				NULL)
 				) == NULL) {
-		printf("Failed to create window: %d\n", GetLastError());
+		FROB_PRINTF("Failed to create window: %d\n", GetLastError());
 		terminate();
 	}
 
 	
 	if (!(hDC=GetDC(hWnd))) {
-		printf("Can't Create A GL Device Context: %d", GetLastError());
+		FROB_PRINTF("Can't Create A GL Device Context: %d", GetLastError());
 		terminate(); 
 	}
 
 	if (!(PixelFormat=ChoosePixelFormat(hDC,&pfd))) {
-		printf("Can't Find A Suitable PixelFormat: %d", GetLastError());
+		FROB_PRINTF("Can't Find A Suitable PixelFormat: %d", GetLastError());
 		terminate();
 	}
 
 	if(!SetPixelFormat(hDC, PixelFormat, &pfd)) {
-		printf("Can't set the pixel format: %d", GetLastError());
+		FROB_PRINTF("Can't set the pixel format: %d", GetLastError());
 		terminate();
 	}
 
 	if(!(hRC = wglCreateContext(hDC))) {
-		printf("Can't create a opengl context: %d", GetLastError());
+		FROB_PRINTF("Can't create a opengl context: %d", GetLastError());
 		terminate();
 	}
 
 	if(!wglMakeCurrent(hDC, hRC)) {
-		printf("Failed to make context current: %d", GetLastError());
+		FROB_PRINTF("Failed to make context current: %d", GetLastError());
 		terminate();
 	}
 
@@ -183,7 +184,7 @@ static void do_the_magic() {
 			update_time(&ldt);
 			if(time >= DEMO_LENGTH) terminate();
 #if _DEBUG
-			printf("Time: %f, %ld\n", time, ldt);
+			FROB_PRINTF("Time: %f, %ld\n", time, ldt);
 #endif
 			render_demo();
 			SwapBuffers(hDC);
@@ -206,6 +207,7 @@ static void run() {
 	height = 600;
 #endif
 #endif
+	OutputDebugString("Starting frob4k");
 	CreateGLWindow();
 	initGL();
 	init_demo();

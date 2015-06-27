@@ -1,4 +1,5 @@
 #include "klister.h"
+#include "debug.h"
 #if SOME_DEBUG
 #include "main.h"
 #endif
@@ -91,7 +92,7 @@ void initKlister() {
 		glGetProgramiv == NULL ||
 		glGetProgramInfoLog == NULL
 		) {
-			MessageBox(NULL, "Failed to get GL functions", "ERROR", MB_OK | MB_ICONEXCLAMATION);
+			FROB_ERROR("GL Init Error", "Failed to get GL functions");
 			terminate();
 	}
 #endif

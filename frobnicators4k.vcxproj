@@ -301,6 +301,7 @@
   <ItemGroup>
     <ClInclude Include="generated\4klang.h" />
     <ClInclude Include="generated\shaders.h" />
+    <ClInclude Include="src\debug.h" />
     <ClInclude Include="src\demo.h" />
     <ClInclude Include="src\fbo.h" />
     <ClInclude Include="src\klister.h" />
@@ -313,6 +314,14 @@
     <ClInclude Include="src\winclude.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\debug.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SemiRelease|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Test|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='HardCompressed|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (no crinkler)|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\demo.c" />
     <ClCompile Include="src\fbo.c" />
     <ClCompile Include="src\klister.c" />
