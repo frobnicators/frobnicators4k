@@ -83,8 +83,7 @@
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -113,8 +112,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
-    <IncludePath>D:\3d\deps\include;$(IncludePath);$(SolutionDir)\generated</IncludePath>
-    <LibraryPath>D:\3d\deps\lib;$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
+    <IncludePath>D:\3d\deps\include;$(IncludePath);$(SolutionDir)\generated;$(SolutionDir)\libv2</IncludePath>
+    <LibraryPath>D:\3d\deps\lib;$(LibraryPath);$(SolutionDir)\generated;$(SolutionDir)\libv2</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -153,7 +152,6 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;SOME_DEBUG;_CONSOLE;FULLSCREEN=0;SUBSYSTEM_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <CompileAs>CompileAsC</CompileAs>
       <ExceptionHandling>false</ExceptionHandling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -165,7 +163,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;winmm.lib;msvcrt_old.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;winmm.lib;msvcrt_old.lib;glu32.lib;libv2.lib;tune.obj;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -176,7 +174,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;TESTING;_DEBUG;SOME_DEBUG;_CONSOLE;FULLSCREEN=0;SUBSYSTEM_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <CompileAs>CompileAsC</CompileAs>
+      <CompileAs>Default</CompileAs>
       <ExceptionHandling>false</ExceptionHandling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -200,7 +198,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;NDEBUG;SOME_DEBUG;_CONSOLE;FULLSCREEN=0</PreprocessorDefinitions>
-      <CompileAs>CompileAsC</CompileAs>
+      <CompileAs>Default</CompileAs>
       <ExceptionHandling>false</ExceptionHandling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -222,6 +220,7 @@
     <ClCompile>
       <PreprocessorDefinitions>SUBSYSTEM_CRINKLER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile />
+      <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
       <AdditionalOptions>/CRINKLER /UNSAFEIMPORT /COMPMODE:SLOW /PROGRESSGUI /TRUNCATEFLOATS:32 /REPORT:crinkler.html %(AdditionalOptions)</AdditionalOptions>
@@ -236,6 +235,7 @@
       <PreprocessorDefinitions>SUBSYSTEM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
+      <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
       <AdditionalDependencies>msvcrt.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -250,6 +250,7 @@
       <PreprocessorDefinitions>SUBSYSTEM_CRINKLER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
+      <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
       <AdditionalOptions>/CRINKLER /UNSAFEIMPORT /COMPMODE:SLOW  /ORDERTRIES:10000 /PROGRESSGUI /HASHTRIES:100 /HASHSIZE:200 /TRUNCATEFLOATS:32 /REPORT:crinkler.html %(AdditionalOptions)</AdditionalOptions>
@@ -267,7 +268,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;SOME_DEBUG;FULLSCREEN=0;SUBSYSTEM_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <CompileAs>CompileAsC</CompileAs>
+      <CompileAs>Default</CompileAs>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <ExceptionHandling>false</ExceptionHandling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
@@ -300,6 +301,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="generated\shaders.h" />
+    <ClInclude Include="libv2\libv2.h" />
+    <ClInclude Include="libv2\v2mplayer.h" />
     <ClInclude Include="src\demo.h" />
     <ClInclude Include="src\fbo.h" />
     <ClInclude Include="src\klister.h" />
@@ -328,7 +331,7 @@
       <InlineFunctionExpansion Condition="'$(Configuration)|$(Platform)'=='HardCompressed|Win32'">Disabled</InlineFunctionExpansion>
     </ClCompile>
     <ClCompile Include="src\math.c" />
-    <ClCompile Include="src\music.c" />
+    <ClCompile Include="src\music.cpp" />
     <ClCompile Include="src\shader.c" />
     <ClCompile Include="src\shader_data.c" />
     <ClCompile Include="src\util.c" />
@@ -342,8 +345,10 @@
     <None Include="shaders\scene2.glsl" />
     <None Include="shaders\shared\common.glsl" />
     <None Include="shaders\shared\vertex.glsl" />
+    <None Include="src\tune.asm">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>
