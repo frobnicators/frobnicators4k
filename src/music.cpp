@@ -7,6 +7,7 @@
 
 static V2MPlayer player;
 extern "C" const sU8 tune[];
+extern "C" float time;
 
 extern "C" void init_music() {
 	player.Init();
@@ -15,9 +16,9 @@ extern "C" void init_music() {
 	player.Play();
 }
 
-extern "C" const DWORD * music_time() {
-	static DWORD temp = 0;
-	return &temp;
+extern "C" void update_time() {
+	const long t = dsGetCurSmp();
+	time = (float)t / (44100.f*4);
 }
 
 extern "C" float envelope(int instrument, int voice, INT32 time_offset) {

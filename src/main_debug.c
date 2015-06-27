@@ -170,17 +170,15 @@ static void initGL() {
 
 static void do_the_magic() {
 	MSG msg;
-	unsigned long ldt;
-
 	while(1) {
 		if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		} else {
-			update_time(&ldt);
+			update_time();
 			if(time >= DEMO_LENGTH) terminate();
 #if _DEBUG
-			printf("Time: %f, %ld\n", time, ldt);
+			printf("Time: %f\n", time);
 #endif
 			render_demo();
 			SwapBuffers(hDC);

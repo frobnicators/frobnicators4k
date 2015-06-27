@@ -9,8 +9,7 @@ extern "C" {
 
 void init_music();
 
-/* Returns the current time in ms */
-const DWORD * music_time();
+void update_time();
 
 float envelope(int instrument, int voice, INT32 time_offset);
 

@@ -10,15 +10,6 @@
 	#include <GL/GLU.h>
 #endif
 
-static DWORD _last_time = 0;
-
-void update_time(unsigned long * ldt) {
-	const DWORD * t = music_time();
-	*ldt = (*t - _last_time);
-	_last_time = *t;
-	time = (float)*t;
-}
-
 void * memset(void * s, int c, size_t n) {
 	char * b = (char*) s;
 	size_t i;
