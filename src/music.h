@@ -1,10 +1,7 @@
 #ifndef MUSIC_H
 #define MUSIC_H
 
-
 #include "winclude.h"
-#include "4klang.h"
-
 
 void init_music();
 

@@ -24,9 +24,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="generated\4klang.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\demo.h">
       <Filter>Header Files</Filter>
     </ClInclude>

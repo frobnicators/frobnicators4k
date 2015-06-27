@@ -5,9 +5,6 @@
 /* Define to have realtime playback, costs ~10 bytes extra */
 #define USE_SOUND_THREAD
 
-/* Song information */
-#include "4klang.h"
-
 /* Always stereo */
 static SAMPLE_TYPE	sound_buffer[MAX_SAMPLES*2];  
 static HWAVEOUT	hWaveOut;
