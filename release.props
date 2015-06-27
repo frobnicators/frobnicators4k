@@ -23,7 +23,7 @@
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
-      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <AssemblerOutput>AssemblyCode</AssemblerOutput>
       <CompileAs>CompileAsC</CompileAs>
       <OmitDefaultLibName>true</OmitDefaultLibName>
       <WarningLevel>Level3</WarningLevel>
