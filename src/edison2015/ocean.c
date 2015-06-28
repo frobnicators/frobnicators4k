@@ -13,6 +13,8 @@ vec2 ocean_wind_speed = { 32.f, 1.f };
 float ocean_A = 0.0005f;
 float ocean_g = 9.81f;
 
+#define USE_FFT 1
+
 typedef struct {
 	complex h;
 	complex slope_x;
@@ -221,21 +223,7 @@ void ocean_calculate()
 {
 	vec4* colors = malloc(sizeof(vec4)* ocean_N * ocean_N);
 
-	/*
-	for (int m = 0; m < 16; ++m) {
-		for (int n = 0; n < 16; ++n) {
-			int index = m * ocean_N + n;
-
-			vec2 x = { (float)n, (float)m };
-			ocean_point_t point = calculate_ocean_point(&x);
-
-			colors[index].x = colors[index].y = colors[index].z = point.height;
-			colors[index].w = 1.f;
-			FROB_PRINTF("%d,%d => %f\n", n, m, point.height);
-		}
-	}
-	*/
-
+#if USE_FFT
 	vec2 k;
 	for (int m = 0; m < ocean_N; ++m) {
 		k.y = M_PI * (2.f* m - ocean_N) / ocean_length;
@@ -285,14 +273,26 @@ void ocean_calculate()
 			colors[index].x = colors[index].y = colors[index].z = h_tilde[index].x;
 			colors[index].w = 1.f;
 
-			/*if (n < 16 && m < 16)
-				FROB_PRINTF("%d,%d => %f\n", n, m, h_tilde[index].x);
+			//if (n < 16 && m < 16)
+				//FROB_PRINTF("%d,%d => %f\n", n, m, h_tilde[index].x);
 				//, (%f, %f) -> (%f, %f, %f)\n", n, m, point.height, point.displacement.x, point.displacement.y, point.normal.x, point.normal.y, point.normal.z);
-				*/
 		}
 	}
 
+#else
 
+	for (int m = 0; m < ocean_N; ++m) {
+		for (int n = 0; n < ocean_N; ++n) {
+			int index = m * ocean_N + n;
+
+			vec2 x = { (float)n, (float)m };
+			ocean_point_t point = calculate_ocean_point(&x);
+
+			colors[index].x = colors[index].y = colors[index].z = point.height;
+			colors[index].w = 1.f;
+		}
+	}
+#endif
 
 	//glUseProgram(ocean_compute.program);
 	//glDispatchCompute(N / 32, N, 1);
