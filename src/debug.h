@@ -12,7 +12,6 @@ void error_msg(const char* title, const char* fmt, ...);
 
 #else
 
-#define FROB_PRINT(str) {}
 #define FROB_PRINTF(format, ...) {}
 #define FROB_ERROR(title, format,...) {}
 
