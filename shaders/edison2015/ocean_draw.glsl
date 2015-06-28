@@ -85,7 +85,11 @@ float snoise(vec2 v){
 }
 
 vec3 sky_color(vec3 rd){
-	return mix(vec3(0.8, 0.8, 1.0), vec3(0.9, 0.9, 0.9), clamp(snoise(rd.yz * 5), 0, 1));
+	const float theta = acos(rd.z / length(rd));
+	const float phi = atan(rd.y, rd.x);
+	const vec2 q = vec2(theta / 3.1415, phi / 3.1415 * 0.5 + 0.5);
+	return vec3(q, 0);
+	//return mix(vec3(0.8, 0.8, 1.0), vec3(0.9, 0.9, 0.9), clamp(snoise(rd.yz * 5), 0, 1));
 }
 
 vec3 ocean_color(vec3 ro, vec3 rd, vec3 hit, float h){
