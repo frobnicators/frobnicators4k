@@ -13,13 +13,20 @@
 #include "test.h"
 #endif
 
-#define FRAME_RATE 60
-#define MIN_DT (SAMPLE_RATE/FRAME_RATE)
-
 static HDC		hDC; 
 static HWND	hWnd;
 DWORD width, height;
-float dt, time;
+float time;
+
+#ifdef SOME_DEBUG
+void __declspec(noreturn) terminate() {
+#if FULLSCREEN
+	ChangeDisplaySettings(NULL, 0);
+	ShowCursor(TRUE);
+#endif
+	ExitProcess(0);
+}
+#endif
 
 static void CreateGLWindow() {
 	DWORD dwStyle;
@@ -85,9 +92,6 @@ static void run() {
 		update_time(&ldt);
 		render_demo();
 		SwapBuffers(hDC);
-		if (ldt < MIN_DT){
-			Sleep((MIN_DT - ldt) / SAMPLE_RATE);
-		}
 	} while (time < DEMO_LENGTH && !GetAsyncKeyState(VK_ESCAPE));
 
 #if FULLSCREEN
@@ -98,24 +102,12 @@ static void run() {
 	ExitProcess(0);
 }
 
-#if !(defined(SUBSYSTEM_WINDOWS) || defined(SUBSYSTEM_CONSOLE) || defined(SUBSYSTEM_CRINKLER))
-#error Build configuration must define either SUBSYSTEM_WINDOWS, SUBSYSTEM_CONSOLE or SUBSYSTEM_CRINKLER
-#endif
-
-#ifdef SUBSYSTEM_WINDOWS
+#ifndef CRINKLER
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow){
 	run();
 }
-#endif
-
-#ifdef SUBSYSTEM_CRINKLER
+#else /* CRINKLER */
 void __stdcall WinMainCRTStartup() {
 	run();
 }
-#endif
-
-#ifdef SUBSYSTEM_CONSOLE
-int main() {
-	run();
-}
-#endif
+#endif /* CRINKLER */

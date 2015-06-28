@@ -11,29 +11,6 @@
 	#include <GL/GLU.h>
 #endif
 
-#define SAMPLE_RATE_FLT (float)SAMPLE_RATE
-
-static DWORD _last_time = 0;
-
-void update_time(unsigned long * ldt) {
-	const DWORD * t = music_time();
-	*ldt = (*t - _last_time);
-	dt = (float) *ldt / SAMPLE_RATE_FLT;
-	_last_time = *t;
-	time = *t / SAMPLE_RATE_FLT;
-}
-
-/*
-void * memset(void * s, int c, size_t n) {
-	char * b = (char*) s;
-	size_t i;
-	for(i = 0; i < n; i++, b++) {
-		*b = (char) c;
-	}
-	return s;
-}
-*/
-
 #if _DEBUG
 int strcmp(const char * s1, const char * s2) {
 	size_t i=0;
