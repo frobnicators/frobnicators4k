@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include "util.h"
 
-#define TEXTURE_SIZE 4096
+#define TEXTURE_SIZE 128 //4096
 
 static const int ocean_N = 128;
 static const float ocean_length = 128.f;
@@ -99,18 +99,6 @@ void ocean_init() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
-
-	GLfloat* temp = (GLfloat*)malloc(TEXTURE_SIZE * TEXTURE_SIZE * sizeof(GLfloat));
-	for (int y = 0; y < TEXTURE_SIZE; y++){
-		for (int x = 0; x < TEXTURE_SIZE; x++){
-			int i = x + y * TEXTURE_SIZE;
-			temp[i] = (sinf((float)x * 0.5f) + sinf((float)y * 0.5f)) * 0.25f + 0.5f;
-		}
-	}
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RED, GL_FLOAT, temp);
-
-	free(temp);
 
 #ifdef _DEBUG
 	checkForGLErrors("ocean texture");
@@ -218,7 +206,8 @@ void ocean_calculate()
 {
 	FROB_PERF_BEGIN(ocean_calculate);
 	ocean_point_t* points = malloc(sizeof(ocean_point_t)* ocean_N * ocean_N);
-	vec4* colors = malloc(sizeof(vec4)* ocean_N * ocean_N);
+//	vec4* colors = malloc(sizeof(vec4)* ocean_N * ocean_N);
+	GLfloat* texture_data = (GLfloat*)malloc(4*TEXTURE_SIZE * TEXTURE_SIZE * sizeof(GLfloat));
 
 	vec2 k;
 	for (int m = 0; m < ocean_N; ++m) {
@@ -290,23 +279,21 @@ void ocean_calculate()
 			points[index].normal.z = -h_tilde_slopez[index].x;
 			normalize_v3(&points[index].normal);
 
-
-			memcpy(&colors[index], &points[index].normal, sizeof(vec3));
-			colors[index].w = points[index].height;
-			colors[index].x = points[index].height;
-			colors[index].y = points[index].height;
-			colors[index].z = points[index].height;
+			int texture_index = index * 4;
+			texture_data[texture_index + 0] = points[index].normal.x;
+			texture_data[texture_index + 1] = points[index].normal.y;
+			texture_data[texture_index + 2] = points[index].normal.z;
+			texture_data[texture_index + 3] = points[index].height;
 		}
 	}
 
 	//glUseProgram(ocean_compute.program);
 	//glDispatchCompute(N / 32, N, 1);
 
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER,  ocean_buffers[OceanBuffer_Ocean]);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, ocean_N * ocean_N * sizeof(vec4), colors, GL_DYNAMIC_DRAW); // TODO: Change to COPY
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RGBA, GL_FLOAT, texture_data);
 
-	//free(points);
-	free(colors);
+	free(texture_data);
+
+	free(points);
 	FROB_PERF_END(ocean_calculate);
 }

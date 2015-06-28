@@ -36,7 +36,7 @@ vec3 generate_ray(vec3 dir){
  * Given a (x,z) coordinate it returns the height of the ocean.
  */
 float ocean_height(vec2 p){
-	return texture2D(texture0, p * 0.001).r * 2. - 1.;
+	return texture2D(texture0, p * 0.001).a;
 }
 
 bool terrainmarch(vec3 ro, vec3 rd, out vec3 hit, out float h){
@@ -89,7 +89,8 @@ vec3 sky_color(vec3 rd){
 }
 
 vec3 ocean_color(vec3 ro, vec3 rd, vec3 hit, float h){
-	return (h > 0 ? vec3(0, 0, 1) : vec3(-0.5, -0.5, -0.5)) * h;
+	return (texture2D(texture0, hit.xz * 0.001).rgb + 1.f) * 0.5;
+	//return (h > 0 ? vec3(0, 0, 1) : vec3(-0.5, -0.5, -0.5)) * h;
 }
 
 void main() {
