@@ -18,9 +18,9 @@ vec3 camera_origin(){
 */
 vec3 camera_direction(){
 	const float t = time * 0.1;
-	const float yaw = -0.5;
-	const float pitch = 0;
-	return vec3(cos(yaw)*cos(pitch), sin(yaw)*cos(pitch), sin(pitch));;
+	const float yaw = 1;
+	const float pitch = -0.5;
+	return vec3(-cos(pitch) * sin(yaw), sin(pitch), cos(pitch) * cos(yaw));
 }
 
 /**
