@@ -6,7 +6,7 @@ void render_demo();
 
 #define ENABLE_MATH
 
-//#define ENABLE_TEXTURES 1
+#define ENABLE_TEXTURES 1
 //#define ENABLE_FBOS 1
 
 #define ENABLE_COMPUTE
