@@ -100,6 +100,8 @@ void ocean_init() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
 
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, TEXTURE_SIZE, TEXTURE_SIZE,0, GL_RGBA, GL_FLOAT, NULL);
+
 #ifdef _DEBUG
 	checkForGLErrors("ocean texture");
 #endif
@@ -290,7 +292,9 @@ void ocean_calculate()
 	//glUseProgram(ocean_compute.program);
 	//glDispatchCompute(N / 32, N, 1);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RGBA, GL_FLOAT, texture_data);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, TEXTURE_SIZE, TEXTURE_SIZE, GL_RGBA, GL_FLOAT, texture_data);
 
 	free(texture_data);
 
