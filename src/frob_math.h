@@ -6,25 +6,25 @@
 
 #include <math.h>
 
-typedef struct {
+typedef __declspec(align(8)) struct {
 	float x;
 	float y;
 } vec2;
 
-typedef struct {
+typedef __declspec(align(16)) struct {
 	float x;
 	float y;
 	float z;
 } vec3;
 
-typedef struct {
+typedef __declspec(align(16)) struct {
 	float x;
 	float y;
 	float z;
 	float w;
 } vec4;
 
-typedef struct {
+typedef __declspec(align(16)) struct {
 	vec4 c0;
 	vec4 c1;
 	vec4 c2;
