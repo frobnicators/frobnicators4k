@@ -5,6 +5,7 @@
 #include "music.h"
 #include "frob_math.h"
 #include "debug.h"
+#include "perf.h"
 #include "edison2015/ocean.h"
 
 static float synth = 0.f;
@@ -36,7 +37,11 @@ void render_demo() {
 #endif
 
 	glClear(GL_COLOR_BUFFER_BIT);
-	render(&ocean_draw);
+	{
+		FROB_PERF_BEGIN(render);
+		render(&ocean_draw);
+		FROB_PERF_END(render);
+	}
 #ifdef _DEBUG
 	checkForGLErrors("postFrame");
 #endif

@@ -2,6 +2,7 @@
 #include "main.h"
 #include "debug.h"
 #include "fft.h"
+#include "perf.h"
 #include <stdlib.h>
 #include "util.h"
 
@@ -215,6 +216,7 @@ static void hTilde(int n, int m, complex* out) {
 
 void ocean_calculate()
 {
+	FROB_PERF_BEGIN(ocean_calculate);
 	ocean_point_t* points = malloc(sizeof(ocean_point_t)* ocean_N * ocean_N);
 	vec4* colors = malloc(sizeof(vec4)* ocean_N * ocean_N);
 
@@ -288,6 +290,7 @@ void ocean_calculate()
 			points[index].normal.z = -h_tilde_slopez[index].x;
 			normalize_v3(&points[index].normal);
 
+
 			memcpy(&colors[index], &points[index].normal, sizeof(vec3));
 			colors[index].w = points[index].height;
 			colors[index].x = points[index].height;
@@ -305,4 +308,5 @@ void ocean_calculate()
 
 	//free(points);
 	free(colors);
+	FROB_PERF_END(ocean_calculate);
 }
