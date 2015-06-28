@@ -5,6 +5,7 @@
 #include "demo.h"
 #include "music.h"
 #include "debug.h"
+#include "perf.h"
 
 #if _DEBUG
 #include <stdio.h>
@@ -31,6 +32,8 @@ void __declspec(noreturn) terminate() {
 #endif
 
 	UnregisterClass("OpenGL", hInstance);
+
+	print_perf_report();
 
 	ExitProcess(0);
 }

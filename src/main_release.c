@@ -4,6 +4,7 @@
 #include "shader.h"
 #include "demo.h"
 #include "music.h"
+#include "perf.h"
 
 #if _DEBUG
 #include <stdio.h>
@@ -97,6 +98,10 @@ static void run() {
 #if FULLSCREEN
 	ChangeDisplaySettings(NULL, 0);
 	ShowCursor(TRUE);
+#endif
+
+#if SOME_DEBUG
+	print_perf_report();
 #endif
 
 	ExitProcess(0);

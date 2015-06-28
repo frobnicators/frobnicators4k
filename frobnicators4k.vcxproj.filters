@@ -63,9 +63,6 @@
     <ClInclude Include="src\test.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\debug.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\edison2015\ocean.h">
       <Filter>Source Files\edison2015</Filter>
     </ClInclude>
@@ -80,6 +77,12 @@
     </ClInclude>
     <ClInclude Include="src\edison2015\fft.h">
       <Filter>Source Files\edison2015</Filter>
+    </ClInclude>
+    <ClInclude Include="src\perf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\debug.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -124,6 +127,9 @@
     </ClCompile>
     <ClCompile Include="src\edison2015\fft.c">
       <Filter>Source Files\edison2015</Filter>
+    </ClCompile>
+    <ClCompile Include="src\perf.c">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
