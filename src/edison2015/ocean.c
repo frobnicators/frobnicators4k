@@ -1,14 +1,15 @@
 #include "ocean.h"
 #include "main.h"
 #include "debug.h"
+#include "fft.h"
 #include <stdlib.h>
 
-static const int ocean_N = 512;
-static const float ocean_length = 512.f;
+static const int ocean_N = 64;
+static const float ocean_length = 64.f;
 
 static const float dampening = 0.001f;
 
-vec2 ocean_wind_speed = { 10.f, 1.f };
+vec2 ocean_wind_speed = { 32.f, 1.f };
 float ocean_A = 0.0005f;
 float ocean_g = 9.81f;
 
@@ -20,7 +21,12 @@ typedef struct {
 	complex dz;
 } h_tilde_t;
 
-static h_tilde_t* h_tilde;
+//static h_tilde_t* h_tilde;
+static complex* h_tilde;
+static complex* h_tilde_slopex;
+static complex* h_tilde_slopez;
+static complex* h_tilde_dx;
+static complex* h_tilde_dz;
 
 typedef struct {
 	complex val;
@@ -34,6 +40,7 @@ typedef struct {
 } ocean_point_t;
 
 static h_tilde0_t* h_tilde0;
+static fft_t ocean_fft;
 
 struct shader_t ocean_draw;
 static struct shader_t fft_shader;
@@ -56,9 +63,16 @@ static ocean_point_t calculate_ocean_point(vec2* x);
 
 void ocean_init() {
 	const int NxN = ocean_N * ocean_N;
-	h_tilde = malloc(NxN * sizeof(h_tilde_t));
 	h_tilde0 = malloc(NxN * sizeof(h_tilde0_t));
 
+	//h_tilde = malloc(NxN * sizeof(h_tilde_t));
+	h_tilde = malloc(NxN * sizeof(complex));
+	h_tilde_slopex = malloc(NxN * sizeof(complex));
+	h_tilde_slopez = malloc(NxN * sizeof(complex));
+	h_tilde_dx = malloc(NxN * sizeof(complex));
+	h_tilde_dz = malloc(NxN * sizeof(complex));
+
+	fft_init(&ocean_fft, ocean_N);
 	ocean_calculate_initial_state();
 
 	load_shader(ShaderType_Visual, SHADER_OCEAN_DRAW_GLSL, &ocean_draw);
@@ -206,20 +220,86 @@ static ocean_point_t calculate_ocean_point(vec2* x) {
 void ocean_calculate()
 {
 	vec4* colors = malloc(sizeof(vec4)* ocean_N * ocean_N);
-	for (int m = 0; m < ocean_N; ++m) {
-		for (int n = 0; n < ocean_N; ++n) {
+
+	/*
+	for (int m = 0; m < 16; ++m) {
+		for (int n = 0; n < 16; ++n) {
+			int index = m * ocean_N + n;
+
 			vec2 x = { (float)n, (float)m };
 			ocean_point_t point = calculate_ocean_point(&x);
-			int index = m * ocean_N + n;
-			colors[index].x = colors[index].y = colors[index].z = point.height*1000.f;
+
+			colors[index].x = colors[index].y = colors[index].z = point.height;
 			colors[index].w = 1.f;
-			FROB_PRINTF("%d,%d => %f, (%f, %f) -> (%f, %f, %f)\n", n, m, point.height, point.displacement.x, point.displacement.y, point.normal.x, point.normal.y, point.normal.z);
+			FROB_PRINTF("%d,%d => %f\n", n, m, point.height);
 		}
 	}
+	*/
+
+	vec2 k;
+	for (int m = 0; m < ocean_N; ++m) {
+		k.y = M_PI * (2.f* m - ocean_N) / ocean_length;
+		for (int n = 0; n < ocean_N; ++n) {
+			k.x = M_PI * (2.f* n - ocean_N) / ocean_length;
+			int index = m * ocean_N + n;
+			float k_norm = normal_v2(&k);
+
+			hTilde(n, m, h_tilde + index);
+
+			complex tmp = { 0.f, k.x };
+			complex_add(h_tilde + index, &tmp, h_tilde_slopex + index);
+			tmp.y = k.y;
+			complex_add(h_tilde + index, &tmp, h_tilde_slopez + index);
+			if (k_norm < dampening*dampening) {
+				memset(h_tilde_dx + index, 0, sizeof(complex));
+				memset(h_tilde_dz + index, 0, sizeof(complex));
+			} else {
+				tmp.x = -k.x / k_norm;
+				complex_mul(h_tilde + index, &tmp, h_tilde_dx + index);
+				tmp.x = -k.y / k_norm;
+				complex_mul(h_tilde + index, &tmp, h_tilde_dz + index);
+			}
+		}
+	}
+
+	// Resolve FFT
+	for (int m = 0; m < ocean_N; ++m) {
+		fft_execute(&ocean_fft, h_tilde, h_tilde, 1, m * ocean_N);
+	}
+
+	for (int n = 0; n < ocean_N; ++n) {
+		fft_execute(&ocean_fft, h_tilde, h_tilde, ocean_N, n);
+	}
+
+	// Resolve signs
+	float signs[2] = { 1.f, -1.f };
+	for (int m = 0; m < ocean_N; ++m) {
+		for (int n = 0; n < ocean_N; ++n) {
+			int index = m * ocean_N + n;
+
+			float sgn = signs[(n + m) & 1];
+
+			h_tilde[index].x *= sgn;
+			h_tilde[index].y *= sgn;
+
+			colors[index].x = colors[index].y = colors[index].z = h_tilde[index].x;
+			colors[index].w = 1.f;
+
+			/*if (n < 16 && m < 16)
+				FROB_PRINTF("%d,%d => %f\n", n, m, h_tilde[index].x);
+				//, (%f, %f) -> (%f, %f, %f)\n", n, m, point.height, point.displacement.x, point.displacement.y, point.normal.x, point.normal.y, point.normal.z);
+				*/
+		}
+	}
+
+
+
 	//glUseProgram(ocean_compute.program);
 	//glDispatchCompute(N / 32, N, 1);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER,  ocean_buffers[OceanBuffer_Ocean]);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, ocean_N * ocean_N * sizeof(vec4), colors, GL_DYNAMIC_DRAW); // TODO: Change to COPY
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+	free(colors);
 }

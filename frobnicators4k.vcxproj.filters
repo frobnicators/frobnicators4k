@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -78,6 +78,9 @@
     <ClInclude Include="libv2\v2mplayer.h">
       <Filter>Source Files\libv2</Filter>
     </ClInclude>
+    <ClInclude Include="src\edison2015\fft.h">
+      <Filter>Source Files\edison2015</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util.c">
@@ -118,6 +121,9 @@
     </ClCompile>
     <ClCompile Include="libv2\v2mplayer.cpp">
       <Filter>Source Files\libv2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\edison2015\fft.c">
+      <Filter>Source Files\edison2015</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

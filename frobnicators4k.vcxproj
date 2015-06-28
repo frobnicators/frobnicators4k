@@ -217,6 +217,7 @@
     <ClInclude Include="libv2\libv2.h" />
     <ClInclude Include="libv2\v2mplayer.h" />
     <ClInclude Include="src\demo.h" />
+    <ClInclude Include="src\edison2015\fft.h" />
     <ClInclude Include="src\edison2015\ocean.h" />
     <ClInclude Include="src\fbo.h" />
     <ClInclude Include="src\klister.h" />
@@ -239,6 +240,7 @@
     </ClCompile>
     <ClCompile Include="libv2\v2mplayer.cpp" />
     <ClCompile Include="src\demo.c" />
+    <ClCompile Include="src\edison2015\fft.c" />
     <ClCompile Include="src\edison2015\ocean.c" />
     <ClCompile Include="src\fbo.c" />
     <ClCompile Include="src\klister.c" />
