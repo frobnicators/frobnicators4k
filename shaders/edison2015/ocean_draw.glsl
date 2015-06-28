@@ -36,7 +36,7 @@ vec3 generate_ray(vec3 dir){
  * Given a (x,z) coordinate it returns the height of the ocean.
  */
 float ocean_height(vec2 p){
-	return (sin(p.x) + sin(p.y));
+	return texture2D(texture0, p * 0.001).r * 2. - 1.;
 }
 
 bool terrainmarch(vec3 ro, vec3 rd, out vec3 hit, out float h){

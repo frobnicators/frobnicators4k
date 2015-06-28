@@ -3,6 +3,9 @@
 #include "debug.h"
 #include "fft.h"
 #include <stdlib.h>
+#include "util.h"
+
+#define TEXTURE_SIZE 4096
 
 static const int ocean_N = 128;
 static const float ocean_length = 128.f;
@@ -59,6 +62,7 @@ static GLuint ocean_buffers[OceanBuffer_Count];
 
 __forceinline void ocean_calculate_initial_state();
 
+static GLuint texture;
 static void hTilde0(int n, int m, complex* out);
 static float phillips(int n, int m);
 static float dispersion(int n, int m);
@@ -86,6 +90,30 @@ void ocean_init() {
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ocean_buffers[OceanBuffer_Ocean]);
+
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
+
+	GLfloat* temp = (GLfloat*)malloc(TEXTURE_SIZE * TEXTURE_SIZE * sizeof(GLfloat));
+	for (int y = 0; y < TEXTURE_SIZE; y++){
+		for (int x = 0; x < TEXTURE_SIZE; x++){
+			int i = x + y * TEXTURE_SIZE;
+			temp[i] = (sinf((float)x * 0.5f) + sinf((float)y * 0.5f)) * 0.25f + 0.5f;
+		}
+	}
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_RED, GL_FLOAT, temp);
+
+	free(temp);
+
+#ifdef _DEBUG
+	checkForGLErrors("ocean texture");
+#endif
 }
 
 void ocean_seed(vec2* wind, float A, float g) {
@@ -114,7 +142,7 @@ static complex gaussianRandomVariable() {
 		x2 = 2.f * uniformRandomVariable() - 1.f;
 		w = x1 * x1 + x2 * x2;
 	} while (w >= 1.f);
-	w = sqrt((-2.f * log(w)) / w);
+	w = sqrtf((-2.f * logf(w)) / w);
 	complex c = { x1 * w, x2 * w };
 	return c;
 }
