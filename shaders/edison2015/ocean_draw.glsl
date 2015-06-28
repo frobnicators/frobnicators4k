@@ -1,5 +1,5 @@
 #define NEAR_Z 0.0f
-#define FAR_Z 50.0f
+#define FAR_Z 250.0f
 #define STEP_SIZE 0.03f
 
 in vec2 p; /* screen position (-1, 1) */
@@ -10,7 +10,7 @@ out vec3 oc;
 * Return camera origin given current time.
 */
 vec3 camera_origin(){
-	return vec3(time, 4, 0);
+	return vec3(0, 25, 0);
 }
 
 /**
@@ -18,8 +18,8 @@ vec3 camera_origin(){
 */
 vec3 camera_direction(){
 	const float t = time * 0.1;
-	const float yaw = 0.1;
-	const float pitch = -sin(t) * 3.1415;
+	const float yaw = -0.5;
+	const float pitch = 0;
 	return vec3(cos(yaw)*cos(pitch), sin(yaw)*cos(pitch), sin(pitch));;
 }
 
