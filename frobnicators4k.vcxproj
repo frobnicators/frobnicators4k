@@ -5,10 +5,6 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Derp|Win32">
-      <Configuration>Derp</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="HardCompressed|Win32">
       <Configuration>HardCompressed</Configuration>
       <Platform>Win32</Platform>
@@ -48,12 +44,6 @@
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Derp|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
-    <CharacterSet>NotSet</CharacterSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -83,149 +73,78 @@
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="frobnicators4k.props" />
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Test|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Derp|Win32'" Label="PropertySheets">
+    <Import Project="frobnicators4k.props" />
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="frobnicators4k.props" />
     <Import Project="release.props" />
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release (no crinkler)|Win32'" Label="PropertySheets">
+    <Import Project="frobnicators4k.props" />
     <Import Project="release.props" />
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='HardCompressed|Win32'" Label="PropertySheets">
+    <Import Project="frobnicators4k.props" />
     <Import Project="release.props" />
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='SemiRelease|Win32'" Label="PropertySheets">
+    <Import Project="frobnicators4k.props" />
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <GenerateManifest>false</GenerateManifest>
-    <IncludePath>$(SolutionDir)\src;$(IncludePath);$(SolutionDir)\generated</IncludePath>
-    <LibraryPath>$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <GenerateManifest>false</GenerateManifest>
-    <IncludePath>$(SolutionDir)\src;$(IncludePath);$(SolutionDir)\generated</IncludePath>
-    <LibraryPath>$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Derp|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <GenerateManifest>false</GenerateManifest>
-    <IncludePath>$(SolutionDir)\src;$(IncludePath);$(SolutionDir)\generated</IncludePath>
-    <LibraryPath>$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)\src;$(IncludePath);$(SolutionDir)\generated</IncludePath>
-    <LibraryPath>$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (no crinkler)|Win32'">
-    <IncludePath>$(SolutionDir)\src;$(IncludePath);$(SolutionDir)\generated</IncludePath>
-    <LibraryPath>$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='HardCompressed|Win32'">
-    <IncludePath>$(SolutionDir)\src;$(IncludePath);$(SolutionDir)\generated</IncludePath>
-    <LibraryPath>$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SemiRelease|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <GenerateManifest>false</GenerateManifest>
-    <IncludePath>$(SolutionDir)\src;$(IncludePath);$(SolutionDir)\generated</IncludePath>
-    <LibraryPath>$(LibraryPath);$(SolutionDir)\generated</LibraryPath>
-  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|Win32'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (no crinkler)|Win32'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='HardCompressed|Win32'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SemiRelease|Win32'" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;SOME_DEBUG;_CONSOLE;FULLSCREEN=0;SUBSYSTEM_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <CompileAs>CompileAsC</CompileAs>
-      <ExceptionHandling>false</ExceptionHandling>
-      <BufferSecurityCheck>true</BufferSecurityCheck>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <PreprocessorDefinitions>_DEBUG;SOME_DEBUG;FULLSCREEN=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions>
       </AdditionalOptions>
-      <StructMemberAlignment>1Byte</StructMemberAlignment>
-      <StringPooling>true</StringPooling>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;4klang.obj;winmm.lib;msvcrt.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <AdditionalDependencies>glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Test|Win32'">
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;TESTING;_DEBUG;SOME_DEBUG;_CONSOLE;FULLSCREEN=0;SUBSYSTEM_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <CompileAs>CompileAsC</CompileAs>
-      <ExceptionHandling>false</ExceptionHandling>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <PreprocessorDefinitions>TESTING;_DEBUG;SOME_DEBUG;FULLSCREEN=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions>
       </AdditionalOptions>
-      <StructMemberAlignment>1Byte</StructMemberAlignment>
-      <StringPooling>true</StringPooling>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>msvcrt.lib;unit_test_c.lib;opengl32.lib;4klang.obj;winmm.lib;msvcrt_old.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Derp|Win32'">
-    <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;NDEBUG;SOME_DEBUG;_CONSOLE;FULLSCREEN=0</PreprocessorDefinitions>
-      <CompileAs>CompileAsC</CompileAs>
-      <ExceptionHandling>false</ExceptionHandling>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <AdditionalOptions>
-      </AdditionalOptions>
-      <StructMemberAlignment>1Byte</StructMemberAlignment>
-      <StringPooling>true</StringPooling>
-      <DebugInformationFormat>None</DebugInformationFormat>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;4klang.obj;winmm.lib;msvcrt_old.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>unit_test_c.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>SUBSYSTEM_CRINKLER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CRINKLER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile />
     </ClCompile>
     <Link>
       <AdditionalOptions>/CRINKLER /UNSAFEIMPORT /COMPMODE:SLOW /PROGRESSGUI /TRUNCATEFLOATS:32 /REPORT:crinkler.html %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>msvcrt.lib;opengl32.lib;4klang.obj;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -234,13 +153,10 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (no crinkler)|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>SUBSYSTEM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
     </ClCompile>
-    <Link>
-      <AdditionalDependencies>msvcrt.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
+    <Link />
     <PreBuildEvent>
       <Command>
       </Command>
@@ -248,13 +164,12 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='HardCompressed|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>SUBSYSTEM_CRINKLER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CRINKLER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <AdditionalOptions>/CRINKLER /UNSAFEIMPORT /COMPMODE:SLOW  /ORDERTRIES:10000 /PROGRESSGUI /HASHTRIES:100 /HASHSIZE:200 /TRUNCATEFLOATS:32 /REPORT:crinkler.html %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>msvcrt.lib;opengl32.lib;4klang.obj;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -268,15 +183,14 @@
       <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;SOME_DEBUG;FULLSCREEN=0;SUBSYSTEM_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <CompileAs>CompileAsC</CompileAs>
+      <PreprocessorDefinitions>NDEBUG;SOME_DEBUG;FULLSCREEN=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CompileAs>Default</CompileAs>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <ExceptionHandling>false</ExceptionHandling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <AdditionalOptions>/QIfist %(AdditionalOptions)</AdditionalOptions>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <OmitFramePointers>false</OmitFramePointers>
@@ -287,12 +201,9 @@
       <StringPooling>true</StringPooling>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <AdditionalDependencies>msvcrt.lib;opengl32.lib;4klang.obj;winmm.lib;msvcrt_old.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/CRINKLER %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreBuildEvent>
@@ -301,9 +212,10 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="generated\4klang.h" />
     <ClInclude Include="generated\shaders.h" />
     <ClInclude Include="src\debug.h" />
+    <ClInclude Include="libv2\libv2.h" />
+    <ClInclude Include="libv2\v2mplayer.h" />
     <ClInclude Include="src\demo.h" />
     <ClInclude Include="src\edison2015\ocean.h" />
     <ClInclude Include="src\fbo.h" />
@@ -325,6 +237,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='HardCompressed|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (no crinkler)|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="libv2\v2mplayer.cpp" />
     <ClCompile Include="src\demo.c" />
     <ClCompile Include="src\edison2015\ocean.c" />
     <ClCompile Include="src\fbo.c" />
@@ -338,11 +251,10 @@
     <ClCompile Include="src\main_release.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Test|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Derp|Win32'">true</ExcludedFromBuild>
       <InlineFunctionExpansion Condition="'$(Configuration)|$(Platform)'=='HardCompressed|Win32'">Disabled</InlineFunctionExpansion>
     </ClCompile>
     <ClCompile Include="src\frob_math.c" />
-    <ClCompile Include="src\music.c" />
+    <ClCompile Include="src\music.cpp" />
     <ClCompile Include="src\shader.c" />
     <ClCompile Include="src\shader_data.c" />
     <ClCompile Include="src\util.c" />
@@ -361,8 +273,10 @@
     <None Include="shaders\scene2.glsl" />
     <None Include="shaders\shared\common.glsl" />
     <None Include="shaders\shared\vertex.glsl" />
+    <None Include="src\tune.asm">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

@@ -14,15 +14,12 @@
 #include "test.h"
 #endif
 
-#define FRAME_RATE 60
-#define MIN_DT (SAMPLE_RATE/FRAME_RATE)
-
 static HDC		hDC; 
 static HGLRC	hRC; 
 static HWND	hWnd;
 static HINSTANCE hInstance;
 DWORD width, height;
-float dt, time;
+float time;
 
 static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -174,21 +171,18 @@ static void initGL() {
 
 static void do_the_magic() {
 	MSG msg;
-	unsigned long ldt;
-
 	while(1) {
 		if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		} else {
-			update_time(&ldt);
+			update_time();
 			if(time >= DEMO_LENGTH) terminate();
 #if _DEBUG
-			FROB_PRINTF("Time: %f, %ld\n", time, ldt);
+			FROB_PRINTF("Time: %f\n", time);
 #endif
 			render_demo();
 			SwapBuffers(hDC);
-			if(ldt < MIN_DT) Sleep( ( MIN_DT - ldt) / SAMPLE_RATE);
 		}
 	}
 }
@@ -217,28 +211,10 @@ static void run() {
 	do_the_magic();
 }
 
-#if !(defined(SUBSYSTEM_WINDOWS) || defined(SUBSYSTEM_CONSOLE) || defined(SUBSYSTEM_CRINKLER))
-#error Build configuration must define either SUBSYSTEM_WINDOWS, SUBSYSTEM_CONSOLE or SUBSYSTEM_CRINKLER
-#endif
-
-#ifdef SUBSYSTEM_WINDOWS
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow){
-	run();
-}
-#endif
-
-#ifdef SUBSYSTEM_CRINKLER
-void __stdcall WinMainCRTStartup() {
-	run();
-}
-#endif
-
-#ifdef SUBSYSTEM_CONSOLE
-int main() {
 #if TESTING
 	run_tests();
 #else
 	run();
 #endif
 }
-#endif

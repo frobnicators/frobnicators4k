@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -28,11 +28,11 @@
     <Filter Include="Resource Files\shaders\edison2015">
       <UniqueIdentifier>{da7d053e-f67f-474f-a7ff-95e42977d758}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\libv2">
+      <UniqueIdentifier>{c80f2138-c24c-4479-9cce-22c20e7baba6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="generated\4klang.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\demo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -72,6 +72,12 @@
     <ClInclude Include="src\frob_math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="libv2\libv2.h">
+      <Filter>Source Files\libv2</Filter>
+    </ClInclude>
+    <ClInclude Include="libv2\v2mplayer.h">
+      <Filter>Source Files\libv2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\util.c">
@@ -84,9 +90,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\klister.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\music.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\fbo.c">
@@ -109,6 +112,12 @@
     </ClCompile>
     <ClCompile Include="src\frob_math.c">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\music.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libv2\v2mplayer.cpp">
+      <Filter>Source Files\libv2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +159,9 @@
     </None>
     <None Include="shaders\edison2015\ocean_compute.glsl">
       <Filter>Resource Files\shaders\edison2015</Filter>
+    </None>
+    <None Include="src\tune.asm">
+      <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
 </Project>
