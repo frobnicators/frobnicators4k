@@ -171,6 +171,10 @@ static void initGL() {
 
 static void do_the_magic() {
 	MSG msg;
+#if _DEBUG
+	int frames = 0;
+	float last_time = 0.f;
+#endif
 	while(1) {
 		if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&msg);
@@ -179,7 +183,13 @@ static void do_the_magic() {
 			update_time();
 			if(time >= DEMO_LENGTH) terminate();
 #if _DEBUG
-			FROB_PRINTF("Time: %f\n", time);
+			//FROB_PRINTF("Time: %f\n", time);
+			frames++;
+			if (frames > 30) {
+				FROB_PRINTF("FPS: %f\n", frames / (time - last_time));
+				frames = 0;
+				last_time = time;
+			}
 #endif
 			render_demo();
 			SwapBuffers(hDC);

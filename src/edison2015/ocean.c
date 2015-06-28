@@ -9,7 +9,7 @@ static const float ocean_length = 64.f;
 
 static const float dampening = 0.001f;
 
-vec2 ocean_wind_speed = { 32.f, 1.f };
+vec2 ocean_wind_speed = { 32.f, 32.f };
 float ocean_A = 0.0005f;
 float ocean_g = 9.81f;
 
@@ -100,9 +100,25 @@ void ocean_calculate_initial_state() {
 	}
 }
 
+
+__forceinline float uniformRandomVariable() {
+	return (float)rand() / RAND_MAX;
+}
+
+static complex gaussianRandomVariable() {
+	float x1, x2, w;
+	do {
+		x1 = 2.f * uniformRandomVariable() - 1.f;
+		x2 = 2.f * uniformRandomVariable() - 1.f;
+		w = x1 * x1 + x2 * x2;
+	} while (w >= 1.f);
+	w = sqrt((-2.f * log(w)) / w);
+	complex c = { x1 * w, x2 * w };
+	return c;
+}
+
 static void hTilde0(int n, int m, complex* out) {
-	// This should preferably be a Gaussian distribution
-	complex r = { (float)rand() / RAND_MAX, (float)rand() / RAND_MAX };
+	complex r = gaussianRandomVariable();
 
 	float ph = (float)sqrt(phillips(n, m) / 2.f);
 	out->x = r.x * ph;
@@ -234,6 +250,10 @@ void ocean_calculate()
 
 			hTilde(n, m, h_tilde + index);
 
+			/*if (n < 16 && m < 16)
+				FROB_PRINTF("%d,%d => (%f +%fi)\n", n, m, h_tilde[index].x, h_tilde[index].y);
+				*/
+
 			complex tmp = { 0.f, k.x };
 			complex_add(h_tilde + index, &tmp, h_tilde_slopex + index);
 			tmp.y = k.y;
@@ -269,12 +289,17 @@ void ocean_calculate()
 
 			h_tilde[index].x *= sgn;
 			h_tilde[index].y *= sgn;
+			h_tilde_slopex[index].x *= sgn;
+			h_tilde_slopez[index].y *= sgn;
+			h_tilde_dx[index].x *= sgn;
+			h_tilde_dz[index].y *= sgn;
 
 			colors[index].x = colors[index].y = colors[index].z = h_tilde[index].x;
 			colors[index].w = 1.f;
 
-			//if (n < 16 && m < 16)
-				//FROB_PRINTF("%d,%d => %f\n", n, m, h_tilde[index].x);
+			/*if (n < 16 && m < 16)
+				FROB_PRINTF("%d,%d => %f\n", n, m, h_tilde[index].x);
+				*/
 				//, (%f, %f) -> (%f, %f, %f)\n", n, m, point.height, point.displacement.x, point.displacement.y, point.normal.x, point.normal.y, point.normal.z);
 		}
 	}

@@ -1,8 +1,9 @@
 #include "fft.h"
+#include "debug.h"
 #include <stdlib.h>
 
 static unsigned int bit_revers(fft_t* fft, unsigned int i);
-static void fft_twiddle(unsigned N, unsigned int x, complex* out);
+static void fft_twiddle(unsigned int x, unsigned int N, complex* out);
 
 void fft_init(fft_t* fft, unsigned int N) {
 	fft->N = N;
@@ -18,7 +19,7 @@ void fft_init(fft_t* fft, unsigned int N) {
 	for (unsigned int i = 0; i < fft->log_2_N; ++i) {
 		fft->T[i] = malloc(sizeof(complex) * pow2);
 		for (unsigned int j = 0; j < pow2; ++j) {
-			fft_twiddle(fft->N, j, fft->T[i] + j);
+			fft_twiddle(j, pow2 * 2, fft->T[i] + j);
 		}
 		pow2 *= 2;
 	}
@@ -51,7 +52,7 @@ void fft_execute(fft_t* fft, complex* input, complex* output, int stride, int of
 
 			for (int k = half_size; k < size; ++k) {
 				complex_mul(c[which ^ 1] + (size*j + k), fft->T[w_] + (k - half_size), &temp);
-				complex_add(c[which ^ 1] + (size * j - half_size + k), &temp, c[which] + (size * j + k));
+				complex_sub(c[which ^ 1] + (size * j - half_size + k), &temp, c[which] + (size * j + k));
 			}
 		}
 		loops >>= 1;
@@ -75,8 +76,8 @@ static unsigned int bit_revers(fft_t* fft, unsigned int i) {
 	return res;
 }
 
-static void fft_twiddle(unsigned int N, unsigned int x, complex* out) {
-	float v = M_PI * x / N;
+static void fft_twiddle(unsigned int x, unsigned int N, complex* out) {
+	float v = 2.f * M_PI * x / N;
 	out->x = (float)cos(v);
 	out->y = (float)sin(v);
 }
