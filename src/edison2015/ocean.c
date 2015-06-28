@@ -7,13 +7,15 @@
 static const int ocean_N = 128;
 static const float ocean_length = 128.f;
 
+// Changing this changes the influence of the wind in the initial state
+// The correct value for the formula i 2, but higher values may give nicer results
+static const float phillips_kdw_pow = 8.f;
+
 static const float dampening = 0.001f;
 
-vec2 ocean_wind_speed = { 0.f, 50.f };
-float ocean_A = 0.0005f;
-float ocean_g = 9.81f;
-
-#define USE_FFT 1
+static vec2 ocean_wind_speed;
+static float ocean_A;
+static float ocean_g;
 
 typedef struct {
 	complex h;
@@ -73,7 +75,6 @@ void ocean_init() {
 	h_tilde_dz = malloc(NxN * sizeof(complex));
 
 	fft_init(&ocean_fft, ocean_N);
-	ocean_calculate_initial_state();
 
 	load_shader(ShaderType_Visual, SHADER_OCEAN_DRAW_GLSL, &ocean_draw);
 	//load_shader(ShaderType_Compute, SHADER_OCEAN_COMPUTE_GLSL, &ocean_compute);
@@ -87,7 +88,10 @@ void ocean_init() {
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ocean_buffers[OceanBuffer_Ocean]);
 }
 
-void ocean_calculate_initial_state() {
+void ocean_seed(vec2* wind, float A, float g) {
+	ocean_wind_speed = *wind;
+	ocean_A = A;
+	ocean_g = g;
 	for (int m = 0; m < ocean_N; ++m) {
 		for (int n = 0; n < ocean_N; ++n) {
 			h_tilde0_t* ht = h_tilde0 + (m * ocean_N + n);
@@ -131,28 +135,27 @@ static float phillips(int n, int m) {
 	};
 	float k_norm = normal_v2(&k);
 
-	if (k_norm < dampening*dampening) {
+	float dampening2 = dampening * dampening;
+
+	if (k_norm < dampening2) {
 		return 0.f;
 	}
 
 	float k_norm2 = k_norm * k_norm;
-
-	// Normalize k
-	k.x /= k_norm;
-	k.y /= k_norm;
+	float k_norm4 = k_norm2 * k_norm2;
 
 	float w_norm2 = dotv2(&ocean_wind_speed, &ocean_wind_speed);
-	float L2 = (float)pow(w_norm2 / ocean_g, 2.f);
+	float L = w_norm2 / ocean_g;
+	float L2 = L*L;
 
 	float w_norm = (float)sqrt(w_norm2);
-	vec2 w_unit = { ocean_wind_speed.x / w_norm, ocean_wind_speed.y / w_norm };
 
-	float k_dot_w = dotv2(&k, &w_unit);
-	float k_dot_w2 = k_dot_w * k_dot_w;
+	float k_dot_w = dotv2(&k, &ocean_wind_speed) / (k_norm * w_norm);
+	float k_dot_w_pow = pow(k_dot_w, phillips_kdw_pow);
 
-	float l2 = L2* dampening * dampening;
+	float l2 = L2* dampening2;
 
-	return ocean_A * ((float)exp(-1.f / (k_norm2 * L2)) / (k_norm2 * k_norm2)) * k_dot_w2 * (float)exp(-k_norm2 * l2);
+	return ocean_A * (float)exp(-1.f / (k_norm2 * L2)) / k_norm4 * k_dot_w_pow * (float)exp(-k_norm2 * l2);
 }
 
 static float dispersion(int n, int m) {
@@ -163,7 +166,7 @@ static float dispersion(int n, int m) {
 }
 
 static void hTilde(int n, int m, complex* out) {
-	h_tilde0_t* h0 = h_tilde0 + (m * ocean_N + m);
+	h_tilde0_t* h0 = h_tilde0 + (m * ocean_N + n);
 
 	float omega_t = dispersion(n, m) * time;
 
@@ -173,76 +176,20 @@ static void hTilde(int n, int m, complex* out) {
 	complex c0 = { cosw, sinw };
 
 	complex op1, op2;
-	complex_mul(&h_tilde0->val, &c0, &op1);
+	complex_mul(&h0->val, &c0, &op1);
 
 	complex_conj(&c0);
-	complex_mul(&h_tilde0->mk_conj, &c0, &op2);
+	complex_mul(&h0->mk_conj, &c0, &op2);
 	
 	complex_add(&op1, &op2, out);
 
 }
-
-#if USE_FFT == 0
-
-// This is a slow DFT calculation, will be replaced with FFT later
-// This is just to verify that it works at all
-static ocean_point_t calculate_ocean_point(vec2* x) {
-	ocean_point_t point = { 
-		.height = { 0.f },
-		.displacement = { 0.f, 0.f },
-		.normal = { 0.f, 0.f, 0.f}
-	};
-
-	complex h = { 0.f, 0.f };
-	complex c, htilde_c;
-	vec2 k;
-	float k_norm;
-	float k_dot_x;
-	float m2pi_over_length = 2.f * M_PI / ocean_length;
-	for (int m = 0; m < ocean_N; ++m) {
-		k.y = (m - ocean_N / 2.f) * m2pi_over_length;
-		for (int n = 0; n < ocean_N; ++n) {
-			k.x = (n - ocean_N / 2.f) * m2pi_over_length;
-			k_norm = normal_v2(&k);
-			k_dot_x = dotv2(&k, x);
-
-			c.x = (float)cos(k_dot_x);
-			c.y = (float)sin(k_dot_x);
-			complex htilde;
-			hTilde(n, m, &htilde);
-			complex_mul(&htilde, &c, &htilde_c);
-
-			complex_add(&h, &htilde_c, &h);
-
-			// TODO: Should we really only use the imaginary part of htilde_c here?
-			point.normal.x -= k.x * htilde_c.y;
-			point.normal.z -= k.y * htilde_c.y;
-
-			if (k_norm < dampening) {
-				continue;
-			}
-
-			point.displacement.x += (k.x / k_norm) * htilde_c.y;
-			point.displacement.y += (k.y / k_norm) * htilde_c.y;
-		}
-	}
-
-	point.normal.x *= -1.f;
-	point.normal.y = 1.f;
-	point.normal.z *= -1.f;
-	normal_v3(&point.normal);
-	point.height = h.x;
-	return point;
-}
-
-#endif
 
 void ocean_calculate()
 {
 	ocean_point_t* points = malloc(sizeof(ocean_point_t)* ocean_N * ocean_N);
 	vec4* colors = malloc(sizeof(vec4)* ocean_N * ocean_N);
 
-#if USE_FFT
 	vec2 k;
 	for (int m = 0; m < ocean_N; ++m) {
 		k.y = M_PI * (2.f* m - ocean_N) / ocean_length;
@@ -320,21 +267,6 @@ void ocean_calculate()
 			colors[index].z = points[index].height;
 		}
 	}
-
-#else
-
-	for (int m = 0; m < ocean_N; ++m) {
-		for (int n = 0; n < ocean_N; ++n) {
-			int index = m * ocean_N + n;
-
-			vec2 x = { (float)n, (float)m };
-			ocean_point_t point = calculate_ocean_point(&x);
-
-			colors[index].x = colors[index].y = colors[index].z = point.height;
-			colors[index].w = 1.f;
-		}
-	}
-#endif
 
 	//glUseProgram(ocean_compute.program);
 	//glDispatchCompute(N / 32, N, 1);
