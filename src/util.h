@@ -9,6 +9,9 @@
 	int strcmp(const char * s1, const char * s2);
 #endif
 #if SOME_DEBUG
+	#define CHECK_FOR_GL_ERRORS(context) checkForGLErrors(context)
 	void checkForGLErrors(const char * msg);
+#else
+	#define CHECK_FOR_GL_ERRORS {}
 #endif
 #endif
