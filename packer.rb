@@ -46,13 +46,16 @@ def preprocess(path)
 	File.open(path).readlines.each do |l|
 		l = l.gsub(/[\r\n]+/,"")
 		if l =~ /#pragma export\s*\((.+)\)/ then
+			# export pragma found, add to export_fields list
 			export_fields = export_fields + $1.split(",").map{|s| s.strip }
 		else
+			# check if the current line matches any fields, if so remove them
+			# from the exports list, and push them to the @exports list
 			export_fields.reject! do |f|
 				if l =~ /^\s*\w+\s+#{f}\s*\(.*\)\s*;/ then
 					@exports[f] = l.gsub(/\/\*.*\*\//,"").gsub(/\/\/.*$/,"").strip
 					l = "#pragma func(#{f})"
-					true # Drop this from the list
+					true
 				else
 					false
 				end
@@ -63,7 +66,7 @@ def preprocess(path)
 	out.close
 
 	if !export_fields.empty?
-		puts "Error, unknow function(s) " + export_fields.join(",") + " declared with #pragma export."
+		puts "Error, unknown function(s) " + export_fields.join(",") + " declared with #pragma export."
 		exit
 	end
 
