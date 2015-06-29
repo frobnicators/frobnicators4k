@@ -20,17 +20,24 @@ PFNGLUNIFORM1FPROC glUniform1f;
 PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
 PFNGLGENBUFFERSPROC glGenBuffers;
 PFNGLBINDBUFFERPROC glBindBuffer;
+PFNGLBUFFERSUBDATAPROC glBufferSubData;
 PFNGLBINDBUFFERBASEPROC glBindBufferBase;
 PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
 PFNGLBUFFERDATAPROC glBufferData;
 PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
+PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
+PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
+PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;
 
 #ifdef ENABLE_FBOS
 PFNGLGENFRAMEBUFFERSPROC glGenFramebuffers;
 PFNGLBINDFRAMEBUFFERPROC glBindFramebuffer;
 PFNGLFRAMEBUFFERTEXTURE2DPROC glFramebufferTexture2D;
 #endif
-//PFNGLACTIVETEXTUREPROC glActiveTexture;
+
+#ifdef ENABLE_TEXTURES
+PFNGLACTIVETEXTUREPROC glActiveTexture;
+#endif
 
 #ifdef ENABLE_COMPUTE
 PFNGLDISPATCHCOMPUTEPROC glDispatchCompute;
@@ -59,21 +66,28 @@ void initKlister() {
 	glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)getProcAddr("glUniformMatrix4fv");
 	glGenBuffers = (PFNGLGENBUFFERSPROC)getProcAddr("glGenBuffers");
 	glBindBuffer = (PFNGLBINDBUFFERPROC)getProcAddr("glBindBuffer");
+	glBufferSubData = (PFNGLBUFFERSUBDATAPROC)getProcAddr("glBufferSubData");
 	glBindBufferBase = (PFNGLBINDBUFFERBASEPROC)getProcAddr("glBindBufferBase");
 	glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)getProcAddr("glEnableVertexAttribArray");
 	glBufferData = (PFNGLBUFFERDATAPROC)getProcAddr("glBufferData");
 	glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)getProcAddr("glVertexAttribPointer");
+	glBindVertexArray = (PFNGLBINDVERTEXARRAYPROC)getProcAddr("glBindVertexArray");
+	glDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC)getProcAddr("glDeleteVertexArrays");
+	glGenVertexArrays = (PFNGLGENVERTEXARRAYSPROC)getProcAddr("glGenVertexArrays");
 #ifdef ENABLE_FBOS
 	glGenFramebuffers = (PFNGLGENFRAMEBUFFERSPROC)getProcAddr("glGenFramebuffers");
 	glBindFramebuffer = (PFNGLBINDFRAMEBUFFERPROC)getProcAddr("glBindFramebuffer");
 	glFramebufferTexture2D = (PFNGLFRAMEBUFFERTEXTURE2DPROC)getProcAddr("glFramebufferTexture2D");
 #endif
 
+#ifdef ENABLE_TEXTURES
+	glActiveTexture = (PFNGLACTIVETEXTUREPROC)getProcAddr("glActiveTexture");
+#endif
+
 #ifdef ENABLE_COMPUTE
 	glDispatchCompute = (PFNGLDISPATCHCOMPUTEPROC)getProcAddr("glDispatchCompute");
 #endif
 
-	//glActiveTexture = (PFNGLACTIVETEXTUREPROC)getProcAddr("glActiveTexture");
 
 #if SOME_DEBUG
 	glGetShaderiv = (PFNGLGETSHADERIVPROC)getProcAddr("glGetShaderiv");
