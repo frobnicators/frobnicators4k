@@ -10,18 +10,21 @@
 #error "Textures must be enabled for fbos to work"
 #endif
 
-void create_fbo(int w, int h, GLenum format, struct fbo_t * fbo) {
+void create_fbo(int w, int h, GLenum internalformat, GLenum format, GLenum type, unsigned int depth, fbo_t * fbo) {
 	glGenFramebuffers(1, &(fbo->fbo));
-	glGenTextures(1, &(fbo->texture));
+	glGenTextures(1 + depth, &(fbo->textures));
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo->fbo);
 	init_gl();
-	glBindTexture(GL_TEXTURE_2D, fbo->texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-	//glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, format, w, h, 0, format == GL_RGB8 ? GL_RGB : GL_RGBA, GL_UNSIGNED_INT, 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo->texture, 0);
+
+	glBindTexture(GL_TEXTURE_2D, fbo->textures[TextureType_Color]);
+	glTexImage2D(GL_TEXTURE_2D, 0, internalformat, w, h, 0, format, type, NULL);
+
+	glBindTexture(GL_TEXTURE_2D, fbo->textures[TextureType_Depth]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, w, h, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo->textures[TextureType_Color], 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, fbo->textures[TextureType_Depth], 0);
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

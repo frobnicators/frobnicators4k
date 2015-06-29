@@ -106,8 +106,8 @@ void initKlister() {
 		glGetProgramInfoLog == NULL
 #ifdef ENABLE_FBOS
 		|| glGenFramebuffers == NULL
-		glBindFramebuffer == NULL ||
-		glFramebufferTexture2D == NULL
+		|| glBindFramebuffer == NULL
+		|| glFramebufferTexture2D == NULL
 #endif
 
 #ifdef ENABLE_COMPUTE
