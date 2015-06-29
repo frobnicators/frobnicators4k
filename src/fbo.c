@@ -17,6 +17,7 @@ void create_fbo(int w, int h, GLenum internalformat, GLenum format, GLenum type,
 	init_gl();
 
 	glBindTexture(GL_TEXTURE_2D, fbo->textures[TextureType_Color]);
+	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
 	glTexImage2D(GL_TEXTURE_2D, 0, internalformat, w, h, 0, format, type, NULL);
 
 	glBindTexture(GL_TEXTURE_2D, fbo->textures[TextureType_Depth]);

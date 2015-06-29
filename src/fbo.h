@@ -22,8 +22,4 @@ typedef struct {
 // @param depth: 1 to enable depth. MUST NOT BE more than 1
 void create_fbo(int w, int h, GLenum internalformat, GLenum format, GLenum type, unsigned int depth, fbo_t * fbo);
 
-void __forceinline bind_fbo(fbo_t* fbo) {
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo->fbo);
-}
-
 #endif
