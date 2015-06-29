@@ -50,9 +50,11 @@ typedef struct {
 static h_tilde0_t* h_tilde0;
 static fft_t ocean_fft;
 
-struct shader_t ocean_draw;
-static struct shader_t fft_shader;
-static struct shader_t ocean_compute;
+shader_t ocean_draw;
+static shader_t fft_shader;
+static shader_t ocean_compute;
+
+static shader_stage_t ocean_draw_frag = { GL_FRAGMENT_SHADER, 2, { SHADER_COMMON_GLSL, SHADER_OCEAN_DRAW_GLSL } };
 
 typedef enum {
 	OceanBuffer_Ocean = 0,
@@ -81,7 +83,7 @@ void ocean_init() {
 
 	fft_init(&ocean_fft, ocean_N);
 
-	load_shader(ShaderType_Visual, SHADER_OCEAN_DRAW_GLSL, &ocean_draw);
+	load_shader(&ocean_draw, 1, 2, &default_vertex_stage, &ocean_draw_frag);
 	//load_shader(ShaderType_Compute, SHADER_OCEAN_COMPUTE_GLSL, &ocean_compute);
 	//load_shader(ShaderType_Compute, SHADER_FFT_GLSL, &fft_shader);
 
@@ -170,7 +172,7 @@ static float phillips(int n, int m) {
 	float w_norm = (float)sqrt(w_norm2);
 
 	float k_dot_w = dotv2(&k, &ocean_wind_speed) / (k_norm * w_norm);
-	float k_dot_w_pow = pow(k_dot_w, phillips_kdw_pow);
+	float k_dot_w_pow = (float)pow(k_dot_w, phillips_kdw_pow);
 
 	float l2 = L2* dampening2;
 

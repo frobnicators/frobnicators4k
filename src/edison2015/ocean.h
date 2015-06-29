@@ -3,7 +3,7 @@
 #include "frob_math.h"
 #include "shader.h"
 
-extern struct shader_t ocean_draw;
+extern shader_t ocean_draw;
 
 void ocean_init();
 
