@@ -18,16 +18,12 @@ extern const char * _shaders[];
 
 #endif
 
-#if SOME_DEBUG
-static SHADER_TYPE current_shader; /* Current shader compiling */
-#endif
-
-
 static const char * read_shader(SHADER_TYPE name);
 
-static GLuint vertex_shader, vbo[2];
-static const char * shader_src[2];
+static GLuint vbo[2];
 static const unsigned char indices[] = { 0, 1, 2 , 3 };
+
+extern const shader_stage_t default_vertex_stage = { GL_VERTEX_SHADER, 2, { SHADER_COMMON_GLSL, SHADER_VERTEX_GLSL } };
 
 void init_gl() {
 #if ENABLE_TEXTURES
@@ -35,27 +31,31 @@ void init_gl() {
 #endif
 }
 
-static GLuint build_shader(GLenum type) {
-	GLuint shader = glCreateShader(type);
+static GLuint build_shader(const shader_stage_t* stage) {
+	GLuint shader = glCreateShader(stage->type);
+	const char** source_parts = malloc(sizeof(char*)*stage->num_parts);
 #if SOME_DEBUG
 	GLint compile_status;
 #endif
-	glShaderSource(shader, 2, shader_src, NULL);
+	for (unsigned i = 0; i < stage->num_parts; ++i) {
+		source_parts[i] = read_shader(stage->parts[i]);
+	}
+
+	glShaderSource(shader, stage->num_parts, source_parts, NULL);
 	glCompileShader(shader);
 #if SOME_DEBUG
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &compile_status);
 	if(compile_status == GL_FALSE) {
 		char buffer[2048];
-		char shader_name[32];
 
 		glGetShaderInfoLog(shader, 2048, NULL, buffer);
+		for (unsigned int i = 0; i < stage->num_parts; ++i) {
 #if _DEBUG
-		memcpy(shader_name, current_shader, strlen(current_shader) + 1);
+			FROB_PRINTF("<< From %s >>\n", stage->parts[stage->num_parts - 1]);
 #else
-		sprintf(shader_name, "Shader #%d", current_shader);
+			FROB_PRINTF("<< From shader %d >>", i);
 #endif
-		{
-			char * src = _strdup(shader_src[0]);
+			char * src = _strdup(source_parts[i]);
 			char * split;
 			int i=0;
 			split =  strtok(src, "\n");
@@ -64,20 +64,15 @@ static GLuint build_shader(GLenum type) {
 				FROB_PRINTF("%d:\t%s\n", i, split);
 				split = strtok(NULL, "\n");
 			}
-			src = _strdup(shader_src[1]);
-			split = strtok(src, "\n");
-			while(split !=  NULL) {
-				++i;
-				FROB_PRINTF("%d:\t%s\n", i, split);
-				split = strtok(NULL, "\n");
-			}
 		}
-		FROB_ERROR(shader_name, "Failed to build shader %s\n%s", shader_name, buffer);
+		FROB_ERROR("Shader build error", "Failed to build shader\n%s", buffer);
 #if _DEBUG
 		terminate();
 #endif
 	}
 #endif
+
+	free((void*)source_parts);
 	return shader;
 }
 
@@ -89,15 +84,6 @@ void init_shaders() {
 		1.f, -1.f
 	};
 
-	shader_src[0] = read_shader(SHADER_COMMON_GLSL);
-	shader_src[1] = read_shader(SHADER_VERTEX_GLSL);
-
-#if SOME_DEBUG
-	current_shader = SHADER_VERTEX_GLSL;
-#endif
-
-	vertex_shader = build_shader(GL_VERTEX_SHADER);
-
 	/* Create vbos */
 	glGenBuffers(2, vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
@@ -107,25 +93,24 @@ void init_shaders() {
 }
 
 /* Loads the shader. This leaves the created shader active */
-void load_shader(enum ShaderType type, SHADER_TYPE name, struct shader_t * shader) {
-	GLuint frag_or_compute_shader;
-
+void load_shader(shader_t* shader, char setup_default_rendering, unsigned int num_stages, ...) {
 #if SOME_DEBUG
 	GLint link_status;
-	current_shader = name;
+	SHADER_TYPE* stages = malloc(sizeof(SHADER_TYPE)*num_stages);
 #endif
+	va_list ap;
+	va_start(ap, num_stages);
+
 	shader->program = glCreateProgram();
 
-	shader_src[1] = read_shader(name);
-
-	if (type == ShaderType_Visual) {
-		frag_or_compute_shader = build_shader(GL_FRAGMENT_SHADER);
-		glAttachShader(shader->program, vertex_shader);
-	} else {
-		frag_or_compute_shader = build_shader(GL_COMPUTE_SHADER);
+	for (unsigned int i = 0; i < num_stages; ++i) {
+		shader_stage_t* stage = va_arg(ap, void*);
+		glAttachShader(shader->program, build_shader(stage));
+#if SOME_DEBUG
+		stages[i] = stage->parts[stage->num_parts];
+#endif
 	}
-
-	glAttachShader(shader->program, frag_or_compute_shader);
+	va_end(ap);
 	glLinkProgram(shader->program);
 
 #if SOME_DEBUG
@@ -133,22 +118,29 @@ void load_shader(enum ShaderType type, SHADER_TYPE name, struct shader_t * shade
 	if(!link_status) {
 		char buffer[2048];
 		glGetProgramInfoLog(shader->program, 2048, NULL, buffer);
+		FROB_PRINTF("When linking shaders: ");
+		for (unsigned int i = 0; i < num_stages; ++i) {
 #if _DEBUG
-		FROB_PRINTF("Link error in shader %s: %s\n", name, buffer);
+			FROB_PRINTF("%s, ", stages[i]);
+#else
+			FROB_PRINTF("%d, ", (int)stages[i]);
 #endif
-		FROB_ERROR("Shader compile error", buffer);
+		}
+		FROB_PRINTF("\n");
+		FROB_ERROR("Shader error", "Link error(s): %s\n", buffer);
 	}
+	free((void*)stages);
 #endif
 
-	glUseProgram(shader->program);
-	shader->time = glGetUniformLocation(shader->program, "time");
-	if (type == ShaderType_Visual) {
+	if (setup_default_rendering == 1) {
+		glUseProgram(shader->program);
+		shader->time = glGetUniformLocation(shader->program, "time");
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	}
 }
 
-void render(struct shader_t * shader) {
+void render(shader_t * shader) {
 	glUseProgram(shader->program);
 	glUniform1f(shader->time, time);
 	glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, 0);

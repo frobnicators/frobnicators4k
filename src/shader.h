@@ -4,24 +4,31 @@
 #include "klister.h"
 #include "shaders.h"
 
-struct shader_t {
+typedef struct {
 	GLuint program;
 	GLuint time;
-};
+} shader_t;
 
 void init_shaders();
 void init_gl();
 
-enum ShaderType {
-	ShaderType_Visual,
-	ShaderType_Compute
-};
-
 /*
  * SHADER_TYPE is the type of the defines SHADER_{shader_name} in shaders.h
  */
-void load_shader(enum ShaderType type, SHADER_TYPE name, struct shader_t * shader);
+typedef struct {
+	GLenum type; // vertex,fragment etc
+	unsigned int num_parts;
+	SHADER_TYPE parts[];
+} shader_stage_t;
 
-void render(struct shader_t * shader);
+extern const shader_stage_t default_vertex_stage;
+
+// Create a shader.
+// @param setup_default_rendering Set to 1 to set parameters used for the standard (fullscreen quad) rendering
+// Varargs: *shader_stages
+void load_shader(shader_t * shader, char setup_default_rendering, unsigned int num_stages, ...);
+
+
+void render(shader_t * shader);
 
 #endif
