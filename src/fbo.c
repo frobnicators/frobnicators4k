@@ -12,7 +12,7 @@
 
 void create_fbo(int w, int h, GLenum internalformat, GLenum format, GLenum type, unsigned int depth, fbo_t * fbo) {
 	glGenFramebuffers(1, &(fbo->fbo));
-	glGenTextures(1 + depth, &(fbo->textures));
+	glGenTextures(1 + depth, fbo->textures);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo->fbo);
 	init_gl();
 
