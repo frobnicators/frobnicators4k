@@ -21,6 +21,7 @@ extern const char * _shaders[];
 static const char * read_shader(SHADER_TYPE name);
 
 static GLuint vbo[2];
+static GLuint default_vao;
 static const unsigned char indices[] = { 0, 1, 2 , 3 };
 
 extern const shader_stage_t default_vertex_stage = { GL_VERTEX_SHADER, 2, { SHADER_COMMON_GLSL, SHADER_VERTEX_GLSL } };
@@ -84,12 +85,20 @@ void init_shaders() {
 		1.f, -1.f
 	};
 
-	/* Create vbos */
+	/* Create vbos & vao */
 	glGenBuffers(2, vbo);
+	glGenVertexArrays(1, &default_vao);
+
+	glBindVertexArray(default_vao);
+
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[1]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 }
 
 /* Loads the shader. This leaves the created shader active */
@@ -135,12 +144,13 @@ void load_shader(shader_t* shader, char setup_default_rendering, unsigned int nu
 	if (setup_default_rendering == 1) {
 		glUseProgram(shader->program);
 		shader->time = glGetUniformLocation(shader->program, "time");
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	}
+
+	CHECK_FOR_GL_ERRORS("load_shader");
 }
 
 void render(shader_t * shader) {
+	glBindVertexArray(default_vao);
 	glUseProgram(shader->program);
 	glUniform1f(shader->time, time);
 	glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, 0);
