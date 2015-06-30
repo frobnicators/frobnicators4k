@@ -8,10 +8,10 @@
 
 #include <stdlib.h>
 
-#define TEXTURE_SIZE 4096
+#define TEXTURE_SIZE 2048
 
-static const int ocean_N = 32;
-static const float ocean_length = 32.f;
+static const int ocean_N = 128;
+static const float ocean_length = 128.f;
 
 // Changing this changes the influence of the wind in the initial state
 // The correct value for the formula i 2, but higher values may give nicer results
