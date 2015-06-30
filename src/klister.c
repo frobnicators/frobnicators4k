@@ -25,6 +25,7 @@ PFNGLBINDBUFFERBASEPROC glBindBufferBase;
 PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
 PFNGLBUFFERDATAPROC glBufferData;
 PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
+PFNGLVERTEXATTRIBIPOINTERPROC glVertexAttribIPointer;
 PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
 PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
 PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;
@@ -71,6 +72,7 @@ void initKlister() {
 	glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)getProcAddr("glEnableVertexAttribArray");
 	glBufferData = (PFNGLBUFFERDATAPROC)getProcAddr("glBufferData");
 	glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)getProcAddr("glVertexAttribPointer");
+	glVertexAttribIPointer = (PFNGLVERTEXATTRIBIPOINTERPROC)getProcAddr("glVertexAttribIPointer");
 	glBindVertexArray = (PFNGLBINDVERTEXARRAYPROC)getProcAddr("glBindVertexArray");
 	glDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC)getProcAddr("glDeleteVertexArrays");
 	glGenVertexArrays = (PFNGLGENVERTEXARRAYSPROC)getProcAddr("glGenVertexArrays");
@@ -113,11 +115,16 @@ void initKlister() {
 		glBindBufferBase == NULL ||
 		glEnableVertexAttribArray == NULL ||
 		glBufferData == NULL ||
+		glBufferSubData == NULL ||
 		glVertexAttribPointer == NULL ||
+		glVertexAttribIPointer == NULL ||
 		glGetShaderiv == NULL ||
 		glGetShaderInfoLog == NULL ||
 		glGetProgramiv == NULL ||
-		glGetProgramInfoLog == NULL
+		glGetProgramInfoLog == NULL ||
+		glGenVertexArrays == NULL ||
+		glBindVertexArray == NULL ||
+		glDeleteVertexArrays == NULL
 #ifdef ENABLE_FBOS
 		|| glGenFramebuffers == NULL
 		|| glBindFramebuffer == NULL

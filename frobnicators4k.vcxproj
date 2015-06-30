@@ -269,6 +269,8 @@
     <None Include="shaders\edison2015\fft.glsl" />
     <None Include="shaders\edison2015\ocean_compute.glsl" />
     <None Include="shaders\edison2015\ocean_draw.glsl" />
+    <None Include="shaders\edison2015\ocean_rasterize_frag.glsl" />
+    <None Include="shaders\edison2015\ocean_rasterize_vert.glsl" />
     <None Include="shaders\edison2015\vertex.glsl" />
     <None Include="shaders\frist\common.glsl" />
     <None Include="shaders\frist\intro.glsl" />

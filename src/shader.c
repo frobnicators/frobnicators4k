@@ -105,7 +105,6 @@ void init_shaders() {
 void load_shader(shader_t* shader, char setup_default_rendering, unsigned int num_stages, ...) {
 #if SOME_DEBUG
 	GLint link_status;
-	SHADER_TYPE* stages = malloc(sizeof(SHADER_TYPE)*num_stages);
 #endif
 	va_list ap;
 	va_start(ap, num_stages);
@@ -115,9 +114,6 @@ void load_shader(shader_t* shader, char setup_default_rendering, unsigned int nu
 	for (unsigned int i = 0; i < num_stages; ++i) {
 		shader_stage_t* stage = va_arg(ap, void*);
 		glAttachShader(shader->program, build_shader(stage));
-#if SOME_DEBUG
-		stages[i] = stage->parts[stage->num_parts];
-#endif
 	}
 	va_end(ap);
 	glLinkProgram(shader->program);
@@ -127,18 +123,8 @@ void load_shader(shader_t* shader, char setup_default_rendering, unsigned int nu
 	if(!link_status) {
 		char buffer[2048];
 		glGetProgramInfoLog(shader->program, 2048, NULL, buffer);
-		FROB_PRINTF("When linking shaders: ");
-		for (unsigned int i = 0; i < num_stages; ++i) {
-#if _DEBUG
-			FROB_PRINTF("%s, ", stages[i]);
-#else
-			FROB_PRINTF("%d, ", (int)stages[i]);
-#endif
-		}
-		FROB_PRINTF("\n");
 		FROB_ERROR("Shader error", "Link error(s): %s\n", buffer);
 	}
-	free((void*)stages);
 #endif
 
 	if (setup_default_rendering == 1) {
@@ -150,6 +136,7 @@ void load_shader(shader_t* shader, char setup_default_rendering, unsigned int nu
 }
 
 void render(shader_t * shader) {
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[1]);
 	glBindVertexArray(default_vao);
 	glUseProgram(shader->program);
 	glUniform1f(shader->time, time);

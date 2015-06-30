@@ -175,5 +175,11 @@
     <None Include="src\tune.asm">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="shaders\edison2015\ocean_rasterize_frag.glsl">
+      <Filter>Resource Files\shaders\edison2015</Filter>
+    </None>
+    <None Include="shaders\edison2015\ocean_rasterize_vert.glsl">
+      <Filter>Resource Files\shaders\edison2015</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -10,7 +10,7 @@ out vec3 oc;
 * Return camera origin given current time.
 */
 vec3 camera_origin(){
-	return vec3(0, 25, 0);
+	return vec3(10, 50, 100);
 }
 
 /**
@@ -19,7 +19,7 @@ vec3 camera_origin(){
 vec3 camera_direction(){
 	const float t = time * 0.1;
 	const float yaw = 1;
-	const float pitch = -0.5;
+	const float pitch = -0.1;
 	return vec3(-cos(pitch) * sin(yaw), sin(pitch), cos(pitch) * cos(yaw));
 }
 
@@ -61,12 +61,15 @@ vec3 sky_color(vec3 ro, vec3 rd){
 }
 
 vec3 ocean_color(vec3 ro, vec3 rd, vec3 hit, float h){
-	return (texture2D(texture0, hit.xz * 0.001).rgb + 1.f) * 0.5;
+	vec3 normal = normalize(texture2D(texture0, hit.xz * 0.001).rgb);
+	vec3 rd_out = reflect(rd, normal);
+	return sky_color(hit, rd_out);
 }
 
 void main() {
 	vec2 uv = (p + 1.)/2.;
-	vec3 d  = camera_direction();                             /* camera direction */
+
+	vec3 d = camera_direction();                             /* camera direction */
 	vec3 ro = camera_origin();                                /* ray origin */
 	vec3 rd = generate_ray(d);                                /* ray direction */
 
@@ -74,16 +77,9 @@ void main() {
 	float h;
 	if (terrainmarch(ro, rd, hit, h)){
 		oc = ocean_color(ro, rd, hit, h);
-	} else {
+	}
+	else {
 		oc = sky_color(ro, rd);
 	}
-
-	/*
-	vec2 x = uv*float(ocean_size);
-	vec2 index_v;
-	vec2 blend = modf(x, index_v);
-	ivec2 index = ivec2(index_v.x,index_v.y);
-	vec3 color = colors[index.y * ocean_size + index.x].rgb;
-	oc = color;
-	*/
+	//oc = texture(texture0, uv).aaa;
 }

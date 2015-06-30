@@ -10,7 +10,7 @@
 
 static float synth = 0.f;
 
-vec2 wind = { 32.f, 16.f };
+vec2 wind = { 32.f, 32.f };
 float A = 0.0005f;
 float g = 9.81f;
 
@@ -36,12 +36,14 @@ void render_demo() {
 	checkForGLErrors("postCalculate");
 #endif
 
-	glClear(GL_COLOR_BUFFER_BIT);
+#if !OCEAN_DEBUG
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	{
 		FROB_PERF_BEGIN(render);
 		render(&ocean_draw);
 		FROB_PERF_END(render);
 	}
+#endif
 #ifdef _DEBUG
 	checkForGLErrors("postFrame");
 #endif

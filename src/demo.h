@@ -7,9 +7,11 @@ void render_demo();
 #define ENABLE_MATH
 
 #define ENABLE_TEXTURES 1
-//#define ENABLE_FBOS 1
+#define ENABLE_FBOS 1
 
 #define ENABLE_COMPUTE
+
+#define OCEAN_DEBUG 0
 
 // Defining static width saves some bytes
 //#define STATIC_WIDTH 1920
