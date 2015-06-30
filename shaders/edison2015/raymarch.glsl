@@ -12,7 +12,7 @@ bool terrainmarch(vec3 ro, vec3 rd, out vec3 hit, out float h){
 }
 
 vec3 ocean_color(vec3 ro, vec3 rd, vec3 hit, float h){
-	vec3 normal = normalize(texture2D(texture0, hit.xz * 0.001).rgb);
+	vec3 normal = normalize(texture2D(texture0, hit.xz * TEXTURE_SCALE).rgb);
 	//return .5f*(normal + 1.f);
 	vec3 rd_out = reflect(rd, normal);
 	return sky_color(hit, rd_out);

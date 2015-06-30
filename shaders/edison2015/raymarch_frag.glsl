@@ -1,6 +1,7 @@
 #define NEAR_Z 0.0f
 #define FAR_Z 250.0f
 #define STEP_SIZE 0.03f
+#define TEXTURE_SCALE 0.001f
 
 uniform mat4 PV;
 
