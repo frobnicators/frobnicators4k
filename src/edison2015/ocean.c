@@ -280,7 +280,7 @@ static float dispersion(int n, int m) {
 static void hTilde(int n, int m, complex* out) {
 	h_tilde0_t* h0 = h_tilde0 + (m * ocean_N + n);
 
-	float omega_t = dispersion(n, m) * time;
+	float omega_t = dispersion(n, m) *0.f;// time;
 
 	float cosw = (float)cos(omega_t);
 	float sinw = (float)sin(omega_t);
@@ -314,9 +314,9 @@ void ocean_calculate()
 			hTilde(n, m, h_tilde + index);
 
 			complex tmp = { 0.f, k.x };
-			complex_add(h_tilde + index, &tmp, h_tilde_slopex + index);
+			complex_mul(h_tilde + index, &tmp, h_tilde_slopex + index);
 			tmp.y = k.y;
-			complex_add(h_tilde + index, &tmp, h_tilde_slopez + index);
+			complex_mul(h_tilde + index, &tmp, h_tilde_slopez + index);
 			if (k_norm < dampening*dampening) {
 				memset(h_tilde_dx + index, 0, sizeof(complex));
 				memset(h_tilde_dz + index, 0, sizeof(complex));
@@ -423,6 +423,7 @@ void ocean_calculate()
 	glBindVertexArray(ocean_rasterize_vao);
 	glUseProgram(ocean_rasterize.program);
 
+	glClearColor(0.f, 1.f, 0.f, 0.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ocean_buffers[OceanBuffer_Indices]);

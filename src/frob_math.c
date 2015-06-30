@@ -1,4 +1,5 @@
 #include "demo.h"
+#include "debug.h"
 #ifdef ENABLE_MATH
 
 #include "frob_math.h"
@@ -12,7 +13,7 @@ float dotv2(const vec2 * v1, const vec2 * v2) {
 }
 
 float dotv3(const vec3 * v1, const vec3 * v2) {
-	return v1->x * v2->x + v1->y * v2->y + v1->z + v2->z;
+	return v1->x * v2->x + v1->y * v2->y + v1->z * v2->z;
 }
 
 float normal(const vec4 * v) {
@@ -43,6 +44,7 @@ float normal_v3(const vec3 * v) {
 
 void normalize_v3(vec3 * v) {
 	float n= normal_v3(v);
+		
 	v->x /= n;
 	v->y /= n;
 	v->z /= n;
