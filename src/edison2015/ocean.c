@@ -5,7 +5,6 @@
 #include "perf.h"
 #include "util.h"
 #include "fbo.h"
-#include "main.h"
 
 #include <stdlib.h>
 
@@ -184,8 +183,13 @@ void ocean_init() {
 
 	create_fbo(TEXTURE_SIZE, TEXTURE_SIZE, GL_RGBA32F, GL_RGBA, GL_FLOAT, 0, &ocean_rasterize_fbo);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, ocean_rasterize_fbo.textures[TextureType_Color]);
+	glBindTexture(GL_TEXTURE_2D, ocean_rasterize_fbo.textures[TextureType_Color0]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBindTexture(GL_TEXTURE_2D, ocean_rasterize_fbo.textures[TextureType_Color1]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -411,6 +415,8 @@ void ocean_calculate()
 
 #if !OCEAN_DEBUG
 	glBindFramebuffer(GL_FRAMEBUFFER, ocean_rasterize_fbo.fbo);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ocean_rasterize_fbo.textures[ocean_rasterize_fbo.back_buffer], 0);
+	glPushAttrib(GL_VIEWPORT_BIT);
 	glViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
 #endif
 
@@ -423,8 +429,10 @@ void ocean_calculate()
 	glDrawElements(GL_TRIANGLE_STRIP, ocean_num_indices, GL_UNSIGNED_INT, 0);
 
 #if !OCEAN_DEBUG
+	ocean_rasterize_fbo.back_buffer = (ocean_rasterize_fbo.back_buffer + 1) % 2;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, width, height);
+	glBindTexture(GL_TEXTURE_2D, ocean_rasterize_fbo.textures[ocean_rasterize_fbo.back_buffer]);
+	glPopAttrib();
 #endif
 	FROB_PERF_END(ocean_rasterize);
 
