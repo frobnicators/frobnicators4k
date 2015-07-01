@@ -38,6 +38,17 @@ void run_tests() {
 		assert_floats_equal(v2.z, 1.f/(float)sqrt(2.f));
 		assert_floats_equal(v2.w, 0.f);
 	}
+
+	begin_test("cross");
+	{
+		vec3 v1 = { 3.f, -3.f, 1.f };
+		vec3 v2 = { 4.f, 9.f, 2.f };
+		vec3 r = cross(&v1, &v2);
+		assert_floats_equal(r.x, -15.f);
+		assert_floats_equal(r.y, -2.f);
+		assert_floats_equal(r.z, 39.f);
+	}
+
 	end_test();
 
 	end_context();

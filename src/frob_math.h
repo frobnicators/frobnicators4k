@@ -44,6 +44,8 @@ void normalize_v2(vec2 * v);
 float normal_v3(const vec3 * v);
 void normalize_v3(vec3 * v);
 
+vec3 cross(const vec3* v1, const vec3* v2);
+
 vec4 mulvv(const vec4 * v1, const vec4 * v2);
 vec4 mulvs(const vec4 * v, const float s);
 vec4 addvv(const vec4 * v1, const vec4 * v2);

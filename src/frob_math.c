@@ -2,6 +2,8 @@
 #include "debug.h"
 #ifdef ENABLE_MATH
 
+#include <string.h>
+
 #include "frob_math.h"
 
 float dot(const vec4 * v1, const vec4 * v2) {
@@ -101,6 +103,15 @@ vec4 addvs(const vec4 * v, const float s) {
 	return ret;
 }
 
+vec3 cross(const vec3* u, const vec3* v) {
+	vec3 ret = {
+		u->y * v->z - u->z * v->y,
+		u->z * v->x - u->x * v->z,
+		u->x*v->y - u->y * v->x
+	};
+	return ret;
+}
+
 mat4 mulmm(const mat4* m1, const mat4* m2)
 {
 	mat4 ret;
@@ -108,6 +119,7 @@ mat4 mulmm(const mat4* m1, const mat4* m2)
 	const float* fm1 = (float*)m1;
 	const float* fm2 = (float*)m2;
 	float* fret = (float*)&ret;
+	memset(fret, 0, sizeof(mat4));
 	for (j=0; j<4; ++j) {
 		for (i=0; i<4; ++i) {
 			for(k=0; k<4; ++k) {
