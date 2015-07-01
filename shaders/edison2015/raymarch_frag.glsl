@@ -2,7 +2,11 @@
 #define FAR_Z 250.0f
 #define STEP_SIZE 0.03f
 
+uniform mat4 PV;
+
 in vec2 p; /* screen position (-1, 1) */
+in vec3 cp; /* camera position (worldspace) */
+in vec3 cd; /* camera direction */
 
 out vec4 oc;
 
@@ -17,10 +21,13 @@ vec3 camera_origin(){
 * Return camera direction given current time.
 */
 vec3 camera_direction(){
+	return cd;
+	/*
 	const float t = time * 0.1;
 	const float yaw = 1;
 	const float pitch = -0.1;
 	return vec3(-cos(pitch) * sin(yaw), sin(pitch), cos(pitch) * cos(yaw));
+	*/
 }
 
 /**

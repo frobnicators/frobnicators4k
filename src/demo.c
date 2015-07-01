@@ -29,6 +29,7 @@ camera_t camera = {
 static shader_t raymarch, passthru;
 static shader_stage_t raymarch_frag = { GL_FRAGMENT_SHADER, 4, { SHADER_COMMON_GLSL, SHADER_NOISE_GLSL, SHADER_RAYMARCH_GLSL, SHADER_RAYMARCH_FRAG_GLSL } };
 static shader_stage_t passthru_frag = { GL_FRAGMENT_SHADER, 2, { SHADER_COMMON_GLSL, SHADER_PASSTHRU_GLSL } };
+static GLuint u_raymarch_pv;
 
 #if _DEBUG
 #include <stdio.h>
@@ -38,6 +39,7 @@ void init_demo() {
 	ocean_init();
 
 	load_shader(&raymarch, 1, 2, &default_vertex_stage, &raymarch_frag);
+	u_raymarch_pv = glGetUniformLocation(raymarch.program, "PV");
 	load_shader(&passthru, 1, 2, &default_vertex_stage, &passthru_frag);
 
 	camera.aspect = (float)width / height;
@@ -65,6 +67,8 @@ void render_demo() {
 		FROB_PERF_BEGIN(raymarch);
 		glBindFramebuffer(GL_FRAMEBUFFER, main_fbo.fbo);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glUseProgram(raymarch.program);
+		glUniformMatrix4fv(u_raymarch_pv,1, GL_FALSE, (float*)&camera.view_proj_matrix);
 		render(&raymarch);
 		FROB_PERF_END(raymarch);
 
