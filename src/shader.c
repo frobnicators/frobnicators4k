@@ -27,6 +27,8 @@ static const unsigned char indices[] = { 0, 1, 2 , 3 };
 extern const shader_stage_t default_vertex_stage = { GL_VERTEX_SHADER, 2, { SHADER_COMMON_GLSL, SHADER_VERTEX_GLSL } };
 
 void init_gl() {
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 #if ENABLE_TEXTURES
 	glEnable(GL_TEXTURE_2D);
 #endif

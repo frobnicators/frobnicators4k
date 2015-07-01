@@ -1,9 +1,9 @@
 #pragma once
 
 #include "frob_math.h"
-#include "shader.h"
+#include "fbo.h"
 
-extern shader_t ocean_draw;
+extern fbo_t ocean_fbo;
 
 void ocean_init();
 

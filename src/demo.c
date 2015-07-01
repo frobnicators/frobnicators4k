@@ -22,7 +22,7 @@ camera_t camera = {
 	.fovy = 70.f,
 	.znear = 0.1f,
 	.zfar = 1000.f,
-	.position = { 0.f, 10.f, 0.f },
+	.position = { 0.f, 15.f, 0.f },
 	.look_direction = { 0.f, -0.1f, 1.f }
 };
 
@@ -48,7 +48,7 @@ void init_demo() {
 
 	create_fbo(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_INT, 1, &main_fbo);
 
-	glClearColor(1.f, 0.f, 1.f, 1.f);
+	glClearColor(0.f, 0.f, 0.f, 0.f);
 #ifdef _DEBUG
 	checkForGLErrors("postInit");
 #endif
@@ -61,13 +61,19 @@ void render_demo() {
 	checkForGLErrors("postCalculate");
 #endif
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	{
 		FROB_PERF_BEGIN(raymarch);
+		glBindFramebuffer(GL_FRAMEBUFFER, main_fbo.fbo);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		render(&raymarch);
 		FROB_PERF_END(raymarch);
 
 		ocean_render();
+
+		glBindTexture(GL_TEXTURE_2D, main_fbo.textures[TextureType_Color]);
+		render(&passthru);
+		glBindTexture(GL_TEXTURE_2D, ocean_fbo.textures[TextureType_Color]);
+		render(&passthru);
 	}
 #ifdef _DEBUG
 	checkForGLErrors("postFrame");

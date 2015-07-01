@@ -18,6 +18,10 @@ void create_fbo(int w, int h, GLenum internalformat, GLenum format, GLenum type,
 
 	glBindTexture(GL_TEXTURE_2D, fbo->textures[TextureType_Color]);
 	glTexImage2D(GL_TEXTURE_2D, 0, internalformat, w, h, 0, format, type, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	glBindTexture(GL_TEXTURE_2D, fbo->textures[TextureType_Depth]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, w, h, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);

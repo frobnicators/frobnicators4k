@@ -4,7 +4,7 @@
 
 in vec2 p; /* screen position (-1, 1) */
 
-out vec3 oc;
+out vec4 oc;
 
 /**
 * Return camera origin given current time.
@@ -45,7 +45,9 @@ void main() {
 	//	oc = ocean_color(ro, rd, hit, h);
 	//}
 	//else {
-		oc = sky_color(ro, rd);
 	//}
 	//oc = texture(texture0, uv).aaa;
+
+	oc.rgb = sky_color(ro, rd);
+	oc.a = 1.f;
 }
