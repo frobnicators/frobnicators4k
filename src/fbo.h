@@ -10,15 +10,13 @@
 #include "klister.h"
 
 enum TextureType {
-	TextureType_Color0=0,
-	TextureType_Color1,
+	TextureType_Color=0,
 	TextureType_Depth
 };
 
-typedef struct {
+typedef struct fbo_t {
 	GLuint fbo;
-	GLuint textures[3];
-	unsigned int back_buffer;
+	GLuint textures[2];
 } fbo_t;
 
 // @param depth: 1 to enable depth. MUST NOT BE more than 1
