@@ -3,6 +3,7 @@
 #define DEMO_FOLDER "edison2015"
 void init_demo();
 void render_demo();
+void upload_light(struct shader_t* shader);
 
 #define ENABLE_MATH
 
@@ -24,5 +25,6 @@ void render_demo();
 
 extern struct camera_t camera;
 extern struct fbo_t main_fbo;
+
 
 #endif

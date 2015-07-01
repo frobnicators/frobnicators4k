@@ -4,9 +4,11 @@
 #include "klister.h"
 #include "shaders.h"
 
-typedef struct {
+typedef struct shader_t {
 	GLuint program;
 	GLuint time;
+	GLuint light_dir;
+	GLuint light_color;
 } shader_t;
 
 void init_shaders();
@@ -24,9 +26,8 @@ typedef struct {
 extern const shader_stage_t default_vertex_stage;
 
 // Create a shader.
-// @param setup_default_rendering Set to 1 to set parameters used for the standard (fullscreen quad) rendering
 // Varargs: *shader_stages
-void load_shader(shader_t * shader, char setup_default_rendering, unsigned int num_stages, ...);
+void load_shader(shader_t * shader, unsigned int num_stages, ...);
 
 
 void render(shader_t * shader);

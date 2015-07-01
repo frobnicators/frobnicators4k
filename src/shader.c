@@ -106,7 +106,7 @@ void init_shaders() {
 }
 
 /* Loads the shader. This leaves the created shader active */
-void load_shader(shader_t* shader, char setup_default_rendering, unsigned int num_stages, ...) {
+void load_shader(shader_t* shader, unsigned int num_stages, ...) {
 #if SOME_DEBUG
 	GLint link_status;
 #endif
@@ -131,10 +131,10 @@ void load_shader(shader_t* shader, char setup_default_rendering, unsigned int nu
 	}
 #endif
 
-	if (setup_default_rendering == 1) {
-		glUseProgram(shader->program);
-		shader->time = glGetUniformLocation(shader->program, "time");
-	}
+	glUseProgram(shader->program);
+	shader->time = glGetUniformLocation(shader->program, "time");
+	shader->light_dir = glGetUniformLocation(shader->program, "lightd");
+	shader->light_color = glGetUniformLocation(shader->program, "lightc");
 
 	CHECK_FOR_GL_ERRORS("load_shader");
 }

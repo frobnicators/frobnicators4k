@@ -26,6 +26,7 @@ extern PFNGLLINKPROGRAMPROC glLinkProgram;
 extern PFNGLUSEPROGRAMPROC glUseProgram;
 extern PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
 extern PFNGLUNIFORM1FPROC glUniform1f;
+extern PFNGLUNIFORM3FVPROC glUniform3fv;
 //extern PFNGLUNIFORM1IPROC glUniform1i;
 //extern PFNGLUNIFORM2IPROC glUniform2i;
 extern PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;

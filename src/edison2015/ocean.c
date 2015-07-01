@@ -99,7 +99,7 @@ void ocean_init() {
 
 	fft_init(&ocean_fft, ocean_N);
 
-	load_shader(&ocean_draw, 0, 2, &ocean_vert, &ocean_frag);
+	load_shader(&ocean_draw, 2, &ocean_vert, &ocean_frag);
 
 	// Generate index and vertex buffer
 	int Nplus1 = ocean_N + 1;
@@ -405,13 +405,6 @@ void ocean_calculate()
 static void render_internal(int x, int y) {
 	// TODO: Model matrix
 
-	glBindVertexArray(ocean_vao);
-	glUseProgram(ocean_draw.program);
-
-	glUniformMatrix4fv(u_ocean_projview,1, GL_FALSE, (float*)&camera.view_proj_matrix);
-	glUniformMatrix4fv(u_ocean_view,1, GL_FALSE, (float*)&camera.view_matrix);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ocean_buffers[OceanBuffer_Indices]);
 	glDrawElements(GL_TRIANGLE_STRIP, ocean_num_indices, GL_UNSIGNED_INT, 0);
 }
 
@@ -419,6 +412,14 @@ void ocean_render() {
 
 	FROB_PERF_BEGIN(ocean_render);
 	glBindFramebuffer(GL_FRAMEBUFFER, ocean_fbo.fbo);
+	glBindVertexArray(ocean_vao);
+	glUseProgram(ocean_draw.program);
+
+	glUniformMatrix4fv(u_ocean_projview,1, GL_FALSE, (float*)&camera.view_proj_matrix);
+	glUniformMatrix4fv(u_ocean_view,1, GL_FALSE, (float*)&camera.view_matrix);
+	upload_light(&ocean_draw);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ocean_buffers[OceanBuffer_Indices]);
 
 	glBindTexture(GL_TEXTURE_2D, main_fbo.textures[TextureType_Color]);
 

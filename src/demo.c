@@ -16,6 +16,9 @@ vec2 wind = { 32.f, 32.f };
 float A = 0.0005f;
 float g = 9.81f;
 
+vec3 light_dir = { -0.3, 1.f, 1.f };
+vec3 light_color = { 1.f, 1.f, 1.f };
+
 fbo_t main_fbo;
 
 camera_t camera = {
@@ -38,9 +41,11 @@ static GLuint u_raymarch_pv;
 void init_demo() {
 	ocean_init();
 
-	load_shader(&raymarch, 1, 2, &default_vertex_stage, &raymarch_frag);
+	normalize_v3(&light_dir);
+
+	load_shader(&raymarch, 2, &default_vertex_stage, &raymarch_frag);
 	u_raymarch_pv = glGetUniformLocation(raymarch.program, "PV");
-	load_shader(&passthru, 1, 2, &default_vertex_stage, &passthru_frag);
+	load_shader(&passthru, 2, &default_vertex_stage, &passthru_frag);
 
 	camera.aspect = (float)width / height;
 	normalize_v3(&camera.look_direction);
@@ -54,6 +59,11 @@ void init_demo() {
 #ifdef _DEBUG
 	checkForGLErrors("postInit");
 #endif
+}
+
+void upload_light(shader_t* shader) {
+	glUniform3fv(shader->light_dir,1, (float*)&light_dir);
+	glUniform3fv(shader->light_color,1, (float*)&light_color);
 }
 
 void render_demo() {
