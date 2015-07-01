@@ -213,6 +213,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="generated\shaders.h" />
+    <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\debug.h" />
     <ClInclude Include="libv2\libv2.h" />
     <ClInclude Include="libv2\v2mplayer.h" />
@@ -231,6 +232,7 @@
     <ClInclude Include="src\winclude.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\camera.c" />
     <ClCompile Include="src\debug.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
