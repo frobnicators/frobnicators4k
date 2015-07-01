@@ -7,11 +7,14 @@
 
 #define SHADER_COMMON_GLSL "common.glsl"
 #define SHADER_FFT_GLSL "fft.glsl"
+#define SHADER_NOISE_GLSL "noise.glsl"
 #define SHADER_OCEAN_COMPUTE_GLSL "ocean_compute.glsl"
-#define SHADER_OCEAN_DRAW_GLSL "ocean_draw.glsl"
-#define SHADER_OCEAN_RASTERIZE_FRAG_GLSL "ocean_rasterize_frag.glsl"
-#define SHADER_OCEAN_RASTERIZE_VERT_GLSL "ocean_rasterize_vert.glsl"
+#define SHADER_OCEAN_FRAG_GLSL "ocean_frag.glsl"
+#define SHADER_OCEAN_VERT_GLSL "ocean_vert.glsl"
+#define SHADER_RAYMARCH_GLSL "raymarch.glsl"
+#define SHADER_RAYMARCH_FRAG_GLSL "raymarch_frag.glsl"
 #define SHADER_VERTEX_GLSL "vertex.glsl"
+#define SHADER_PASSTHRU_GLSL "passthru.glsl"
 
 #else
 
@@ -19,11 +22,14 @@
 
 #define SHADER_COMMON_GLSL 0
 #define SHADER_FFT_GLSL 1
-#define SHADER_OCEAN_COMPUTE_GLSL 2
-#define SHADER_OCEAN_DRAW_GLSL 3
-#define SHADER_OCEAN_RASTERIZE_FRAG_GLSL 4
-#define SHADER_OCEAN_RASTERIZE_VERT_GLSL 5
-#define SHADER_VERTEX_GLSL 6
+#define SHADER_NOISE_GLSL 2
+#define SHADER_OCEAN_COMPUTE_GLSL 3
+#define SHADER_OCEAN_FRAG_GLSL 4
+#define SHADER_OCEAN_VERT_GLSL 5
+#define SHADER_RAYMARCH_GLSL 6
+#define SHADER_RAYMARCH_FRAG_GLSL 7
+#define SHADER_VERTEX_GLSL 8
+#define SHADER_PASSTHRU_GLSL 9
 
 #endif
 

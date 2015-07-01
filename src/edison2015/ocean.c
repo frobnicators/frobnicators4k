@@ -5,6 +5,7 @@
 #include "perf.h"
 #include "util.h"
 #include "fbo.h"
+#include "camera.h"
 
 #include <stdlib.h>
 
@@ -43,18 +44,15 @@ typedef struct {
 static h_tilde0_t* h_tilde0;
 static fft_t ocean_fft;
 
-shader_t ocean_draw;
-static shader_t ocean_rasterize;
+static shader_t ocean_draw;
 static shader_t fft_shader;
 static shader_t ocean_compute;
 
-static shader_stage_t ocean_draw_frag = { GL_FRAGMENT_SHADER, 2, { SHADER_COMMON_GLSL, SHADER_OCEAN_DRAW_GLSL } };
-static shader_stage_t ocean_rasterize_vert = { GL_VERTEX_SHADER, 1, { SHADER_OCEAN_RASTERIZE_VERT_GLSL } };
-static shader_stage_t ocean_rasterize_frag = { GL_FRAGMENT_SHADER, 1, { SHADER_OCEAN_RASTERIZE_FRAG_GLSL } };
+static shader_stage_t ocean_vert = { GL_VERTEX_SHADER, 1, { SHADER_OCEAN_VERT_GLSL } };
+static shader_stage_t ocean_frag = { GL_FRAGMENT_SHADER, 1, { SHADER_OCEAN_FRAG_GLSL } };
 
-static GLuint ocean_rasterize_vao;
-static mat4 ocean_rasterize_projection;
-static fbo_t ocean_rasterize_fbo;
+static GLuint ocean_vao;
+static fbo_t ocean_fbo;
 
 typedef enum {
 	OceanBuffer_VertexData,
@@ -75,7 +73,10 @@ typedef struct {
 } ocean_vertex_data_t;
 
 static GLuint ocean_buffers[OceanBuffer_Count];
+
 static GLuint u_ocean_proj;
+static GLuint u_ocean_model;
+
 static unsigned ocean_num_indices = 0;
 
 __forceinline void ocean_calculate_initial_state();
@@ -96,8 +97,7 @@ void ocean_init() {
 
 	fft_init(&ocean_fft, ocean_N);
 
-	load_shader(&ocean_draw, 1, 2, &default_vertex_stage, &ocean_draw_frag);
-	load_shader(&ocean_rasterize, 0, 2, &ocean_rasterize_vert, &ocean_rasterize_frag);
+	load_shader(&ocean_draw, 0, 2, &ocean_vert, &ocean_frag);
 
 	// Generate index and vertex buffer
 	int Nplus1 = ocean_N + 1;
@@ -110,8 +110,8 @@ void ocean_init() {
 			int index = m * Nplus1 + n;
 
 			vertices[index].pos.x = (n - ocean_N / 2.f)*ocean_length/ocean_N;
-			vertices[index].pos.y = (m - ocean_N / 2.f)*ocean_length/ocean_N;
-			vertices[index].pos.z = 0.f;
+			vertices[index].pos.y = 0.f;
+			vertices[index].pos.z = (m - ocean_N / 2.f)*ocean_length/ocean_N;
 
 			int ni = 0;
 			int mi = 0;
@@ -139,29 +139,17 @@ void ocean_init() {
 	}
 	indices[ocean_num_indices++] = Nplus1 * ocean_N;
 
-	memset(&ocean_rasterize_projection, 0, sizeof(mat4));
-	const float near_far = 30.f; // near and far distance
-	float two_over_width = 2.f / (float)ocean_length;
-	float half_width = (float)ocean_length / 2.f;
+	glGenVertexArrays(1, &ocean_vao);
+	glBindVertexArray(ocean_vao);
 
-	ocean_rasterize_projection.c0.x = two_over_width;
-	ocean_rasterize_projection.c1.y = two_over_width;
-	ocean_rasterize_projection.c2.z = -1.f / near_far; // -2 / (2 * near_far)
-
-	ocean_rasterize_projection.c3.w = 1.f;
-
-	glGenVertexArrays(1, &ocean_rasterize_vao);
-	glBindVertexArray(ocean_rasterize_vao);
-
-	glUseProgram(ocean_rasterize.program);
+	glUseProgram(ocean_draw.program);
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 
-	glEnable(GL_DEPTH_TEST);
-	u_ocean_proj = glGetUniformLocation(ocean_rasterize.program, "M");
-	glUniformMatrix4fv(u_ocean_proj,1, GL_FALSE, (float*)&ocean_rasterize_projection);
+	u_ocean_proj = glGetUniformLocation(ocean_draw.program, "PV");
+	u_ocean_model = glGetUniformLocation(ocean_draw.program, "M");
 
 	glGenBuffers(OceanBuffer_Count, ocean_buffers);
 
@@ -181,19 +169,17 @@ void ocean_init() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,  ocean_buffers[OceanBuffer_Indices]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, ocean_num_indices*sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
-	create_fbo(TEXTURE_SIZE, TEXTURE_SIZE, GL_RGBA32F, GL_RGBA, GL_FLOAT, 0, &ocean_rasterize_fbo);
+	create_fbo(TEXTURE_SIZE, TEXTURE_SIZE, GL_RGBA32F, GL_RGBA, GL_FLOAT, 0, &ocean_fbo);
 
-	glBindTexture(GL_TEXTURE_2D, ocean_rasterize_fbo.textures[TextureType_Color0]);
+	glBindTexture(GL_TEXTURE_2D, ocean_fbo.textures[TextureType_Color]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glBindTexture(GL_TEXTURE_2D, ocean_rasterize_fbo.textures[TextureType_Color1]);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// Use same depth as main_fbo
+	glBindFramebuffer(GL_FRAMEBUFFER, ocean_fbo.fbo);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, main_fbo.textures[TextureType_Depth], 0);
 
 	glBindVertexArray(0);
 
@@ -280,7 +266,7 @@ static float dispersion(int n, int m) {
 static void hTilde(int n, int m, complex* out) {
 	h_tilde0_t* h0 = h_tilde0 + (m * ocean_N + n);
 
-	float omega_t = dispersion(n, m) *0.f;// time;
+	float omega_t = dispersion(n, m) * time;
 
 	float cosw = (float)cos(omega_t);
 	float sinw = (float)sin(omega_t);
@@ -320,7 +306,8 @@ void ocean_calculate()
 			if (k_norm < dampening*dampening) {
 				memset(h_tilde_dx + index, 0, sizeof(complex));
 				memset(h_tilde_dz + index, 0, sizeof(complex));
-			} else {
+			}
+			else {
 				tmp.y = -k.x / k_norm;
 				complex_mul(h_tilde + index, &tmp, h_tilde_dx + index);
 				tmp.y = -k.y / k_norm;
@@ -392,12 +379,8 @@ void ocean_calculate()
 		}
 	}
 	FROB_PERF_END(ocean_resolve);
+
 	FROB_PERF_BEGIN(ocean_upload);
-
-	//glUseProgram(ocean_compute.program);
-	//glDispatchCompute(N / 32, N, 1);
-
-
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ocean_buffers[OceanBuffer_OceanData]);
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(vec4)*ocean_N*ocean_N, ocean_data);
 
@@ -411,33 +394,38 @@ void ocean_calculate()
 
 	FROB_PERF_END(ocean_upload);
 
-	FROB_PERF_BEGIN(ocean_rasterize);
+	FROB_PERF_END(ocean_calculate);
 
-#if !OCEAN_DEBUG
-	glBindFramebuffer(GL_FRAMEBUFFER, ocean_rasterize_fbo.fbo);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ocean_rasterize_fbo.textures[ocean_rasterize_fbo.back_buffer], 0);
+	CHECK_FOR_GL_ERRORS("ocean calculate end");
+	//glUseProgram(ocean_compute.program);
+	//glDispatchCompute(N / 32, N, 1);
+}
+
+void ocean_render() {
+
+	FROB_PERF_BEGIN(ocean_render);
+
+	/*
+	glBindFramebuffer(GL_FRAMEBUFFER, ocean_fbo.fbo);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ocean_fbo.textures[ocean_fbo.back_buffer], 0);
 	glPushAttrib(GL_VIEWPORT_BIT);
 	glViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
-#endif
+	*/
 
-	glBindVertexArray(ocean_rasterize_vao);
-	glUseProgram(ocean_rasterize.program);
+	glBindVertexArray(ocean_vao);
+	glUseProgram(ocean_draw.program);
 
-	glClearColor(0.f, 1.f, 0.f, 0.f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glUniformMatrix4fv(u_ocean_proj,1, GL_FALSE, (float*)&camera.view_proj_matrix);
+
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ocean_buffers[OceanBuffer_Indices]);
 	glDrawElements(GL_TRIANGLE_STRIP, ocean_num_indices, GL_UNSIGNED_INT, 0);
 
-#if !OCEAN_DEBUG
-	ocean_rasterize_fbo.back_buffer = (ocean_rasterize_fbo.back_buffer + 1) % 2;
+	/*
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, ocean_rasterize_fbo.textures[ocean_rasterize_fbo.back_buffer]);
+	glBindTexture(GL_TEXTURE_2D, ocean_fbo.textures[ocean_fbo.back_buffer]);
 	glPopAttrib();
-#endif
-	FROB_PERF_END(ocean_rasterize);
-
-	FROB_PERF_END(ocean_calculate);
-
-	CHECK_FOR_GL_ERRORS("ocean calculate end");
+	*/
+	FROB_PERF_END(ocean_render);
 }

@@ -148,9 +148,6 @@
     <None Include="shaders\scene2.glsl">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="shaders\shared\common.glsl">
-      <Filter>Resource Files\shaders\shared</Filter>
-    </None>
     <None Include="shaders\shared\vertex.glsl">
       <Filter>Resource Files\shaders\shared</Filter>
     </None>
@@ -163,11 +160,8 @@
     <None Include="shaders\frist\intro.glsl">
       <Filter>Resource Files\shaders\frist</Filter>
     </None>
-    <None Include="shaders\edison2015\ocean_draw.glsl">
-      <Filter>Resource Files\shaders\edison2015</Filter>
-    </None>
-    <None Include="shaders\edison2015\vertex.glsl">
-      <Filter>Resource Files\shaders\edison2015</Filter>
+    <None Include="src\tune.asm">
+      <Filter>Source Files</Filter>
     </None>
     <None Include="shaders\edison2015\common.glsl">
       <Filter>Resource Files\shaders\edison2015</Filter>
@@ -175,17 +169,29 @@
     <None Include="shaders\edison2015\fft.glsl">
       <Filter>Resource Files\shaders\edison2015</Filter>
     </None>
+    <None Include="shaders\edison2015\noise.glsl">
+      <Filter>Resource Files\shaders\edison2015</Filter>
+    </None>
     <None Include="shaders\edison2015\ocean_compute.glsl">
       <Filter>Resource Files\shaders\edison2015</Filter>
     </None>
-    <None Include="src\tune.asm">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="shaders\edison2015\ocean_rasterize_frag.glsl">
+    <None Include="shaders\edison2015\ocean_frag.glsl">
       <Filter>Resource Files\shaders\edison2015</Filter>
     </None>
-    <None Include="shaders\edison2015\ocean_rasterize_vert.glsl">
+    <None Include="shaders\edison2015\ocean_vert.glsl">
       <Filter>Resource Files\shaders\edison2015</Filter>
+    </None>
+    <None Include="shaders\edison2015\raymarch.glsl">
+      <Filter>Resource Files\shaders\edison2015</Filter>
+    </None>
+    <None Include="shaders\edison2015\raymarch_frag.glsl">
+      <Filter>Resource Files\shaders\edison2015</Filter>
+    </None>
+    <None Include="shaders\edison2015\vertex.glsl">
+      <Filter>Resource Files\shaders\edison2015</Filter>
+    </None>
+    <None Include="shaders\shared\passthru.glsl">
+      <Filter>Resource Files\shaders\shared</Filter>
     </None>
   </ItemGroup>
 </Project>

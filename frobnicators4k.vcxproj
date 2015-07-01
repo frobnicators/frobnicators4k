@@ -269,17 +269,19 @@
     <None Include="generated\shaders.inc" />
     <None Include="shaders\edison2015\common.glsl" />
     <None Include="shaders\edison2015\fft.glsl" />
+    <None Include="shaders\edison2015\noise.glsl" />
     <None Include="shaders\edison2015\ocean_compute.glsl" />
-    <None Include="shaders\edison2015\ocean_draw.glsl" />
-    <None Include="shaders\edison2015\ocean_rasterize_frag.glsl" />
-    <None Include="shaders\edison2015\ocean_rasterize_vert.glsl" />
+    <None Include="shaders\edison2015\ocean_frag.glsl" />
+    <None Include="shaders\edison2015\ocean_vert.glsl" />
+    <None Include="shaders\edison2015\raymarch.glsl" />
+    <None Include="shaders\edison2015\raymarch_frag.glsl" />
     <None Include="shaders\edison2015\vertex.glsl" />
     <None Include="shaders\frist\common.glsl" />
     <None Include="shaders\frist\intro.glsl" />
     <None Include="shaders\frist\vertex.glsl" />
     <None Include="shaders\perlin_noise_heights.glsl" />
     <None Include="shaders\scene2.glsl" />
-    <None Include="shaders\shared\common.glsl" />
+    <None Include="shaders\shared\passthru.glsl" />
     <None Include="shaders\shared\vertex.glsl" />
     <None Include="src\tune.asm">
       <FileType>Document</FileType>
