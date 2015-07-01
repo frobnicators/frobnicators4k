@@ -54,6 +54,7 @@ static GLuint build_shader(const shader_stage_t* stage) {
 		char buffer[2048];
 
 		glGetShaderInfoLog(shader, 2048, NULL, buffer);
+		int line=0;
 		for (unsigned int i = 0; i < stage->num_parts; ++i) {
 #if _DEBUG
 			FROB_PRINTF("<< From %s >>\n", stage->parts[stage->num_parts - 1]);
@@ -62,11 +63,10 @@ static GLuint build_shader(const shader_stage_t* stage) {
 #endif
 			char * src = _strdup(source_parts[i]);
 			char * split;
-			int i=0;
 			split =  strtok(src, "\n");
 			while(split != NULL) {
-				++i;
-				FROB_PRINTF("%d:\t%s\n", i, split);
+				++line;
+				FROB_PRINTF("%d:\t%s\n", line, split);
 				split = strtok(NULL, "\n");
 			}
 		}
