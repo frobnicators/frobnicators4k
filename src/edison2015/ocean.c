@@ -75,8 +75,9 @@ typedef struct {
 
 static GLuint ocean_buffers[OceanBuffer_Count];
 
-static GLuint u_ocean_proj;
+static GLuint u_ocean_projview;
 static GLuint u_ocean_model;
+static GLuint u_ocean_view;
 
 static unsigned ocean_num_indices = 0;
 
@@ -149,7 +150,8 @@ void ocean_init() {
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 
-	u_ocean_proj = glGetUniformLocation(ocean_draw.program, "PV");
+	u_ocean_projview = glGetUniformLocation(ocean_draw.program, "PV");
+	u_ocean_view = glGetUniformLocation(ocean_draw.program, "V");
 	u_ocean_model = glGetUniformLocation(ocean_draw.program, "M");
 
 	glGenBuffers(OceanBuffer_Count, ocean_buffers);
@@ -401,11 +403,13 @@ void ocean_calculate()
 }
 
 static void render_internal(int x, int y) {
+	// TODO: Model matrix
 
 	glBindVertexArray(ocean_vao);
 	glUseProgram(ocean_draw.program);
 
-	glUniformMatrix4fv(u_ocean_proj,1, GL_FALSE, (float*)&camera.view_proj_matrix);
+	glUniformMatrix4fv(u_ocean_projview,1, GL_FALSE, (float*)&camera.view_proj_matrix);
+	glUniformMatrix4fv(u_ocean_view,1, GL_FALSE, (float*)&camera.view_matrix);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ocean_buffers[OceanBuffer_Indices]);
 	glDrawElements(GL_TRIANGLE_STRIP, ocean_num_indices, GL_UNSIGNED_INT, 0);

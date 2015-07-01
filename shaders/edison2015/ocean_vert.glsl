@@ -8,7 +8,8 @@ out vec3 n;
 out vec3 cd; // camera dir
 
 uniform mat4 PV; // projection matrix
-uniform mat4 M; // projection matrix
+uniform mat4 M; // model matrix
+uniform mat4 V;
 
 layout(std140, binding = 0) buffer a { // ocean data
 	vec4 ov[];
@@ -25,11 +26,14 @@ void main() {
 	pos.y += ocean_value.a;
 	pos.xz += d;
 
+	// TODO: Model matrix
+	mat3 normal_matrix = transpose(inverse(mat3(V)));
+
 	p = pos.xyz;
 
 	gl_Position = PV*pos;
 
-	n = ocean_value.rgb;
+	n = normalize(normal_matrix * ocean_value.rgb);
 
 	vec4 tmp = PV * vec4(0.f, 0.f, 1.f, 0.f);
 	cd = tmp.xyz / tmp.w;
