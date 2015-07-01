@@ -74,6 +74,7 @@ void render_demo() {
 
 		ocean_render();
 
+		glClear(GL_DEPTH_BUFFER_BIT);
 		glBindTexture(GL_TEXTURE_2D, main_fbo.textures[TextureType_Color]);
 		render(&passthru);
 		glBindTexture(GL_TEXTURE_2D, ocean_fbo.textures[TextureType_Color]);

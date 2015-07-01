@@ -57,4 +57,6 @@ void main() {
 
 	oc.rgb = sky_color(ro, rd);
 	oc.a = 1.f;
+	vec4 pv_hit = PV * vec4(hit, 1.f);
+	gl_FragDepth = (pv_hit.z / pv_hit.w);
 }

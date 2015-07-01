@@ -29,6 +29,8 @@ extern const shader_stage_t default_vertex_stage = { GL_VERTEX_SHADER, 2, { SHAD
 void init_gl() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
 #if ENABLE_TEXTURES
 	glEnable(GL_TEXTURE_2D);
 #endif
