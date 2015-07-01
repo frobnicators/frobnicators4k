@@ -179,8 +179,9 @@ void ocean_init() {
 	// Use same depth as main_fbo
 	glBindFramebuffer(GL_FRAMEBUFFER, ocean_fbo.fbo);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, main_fbo.textures[TextureType_Depth], 0);
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CW);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
