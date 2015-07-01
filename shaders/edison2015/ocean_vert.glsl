@@ -3,8 +3,9 @@
 layout (location = 0) in vec4 v;
 layout(location = 1) in int i; //index into buffers
 
+out vec3 p;
 out vec3 n;
-out float h;
+out vec3 cd; // camera dir
 
 uniform mat4 PV; // projection matrix
 uniform mat4 M; // projection matrix
@@ -24,8 +25,12 @@ void main() {
 	pos.y += ocean_value.a;
 	pos.xz += d;
 
-	gl_Position =  PV*pos;
+	p = pos.xyz;
+
+	gl_Position = PV*pos;
 
 	n = ocean_value.rgb;
-	h = ocean_value.a;
+
+	vec4 tmp = PV * vec4(0.f, 0.f, 1.f, 0.f);
+	cd = tmp.xyz / tmp.w;
 }

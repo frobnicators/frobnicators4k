@@ -50,7 +50,7 @@ static shader_t fft_shader;
 static shader_t ocean_compute;
 
 static shader_stage_t ocean_vert = { GL_VERTEX_SHADER, 1, { SHADER_OCEAN_VERT_GLSL } };
-static shader_stage_t ocean_frag = { GL_FRAGMENT_SHADER, 1, { SHADER_OCEAN_FRAG_GLSL } };
+static shader_stage_t ocean_frag = { GL_FRAGMENT_SHADER, 4, { SHADER_COMMON_GLSL, SHADER_NOISE_GLSL, SHADER_RAYMARCH_GLSL, SHADER_OCEAN_FRAG_GLSL } };
 
 static GLuint ocean_vao;
 fbo_t ocean_fbo;
@@ -409,7 +409,6 @@ static void render_internal(int x, int y) {
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ocean_buffers[OceanBuffer_Indices]);
 	glDrawElements(GL_TRIANGLE_STRIP, ocean_num_indices, GL_UNSIGNED_INT, 0);
-
 }
 
 void ocean_render() {
