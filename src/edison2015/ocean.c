@@ -78,6 +78,7 @@ static GLuint ocean_buffers[OceanBuffer_Count];
 static GLuint u_ocean_projview;
 static GLuint u_ocean_model;
 static GLuint u_ocean_view;
+static GLuint u_ocean_camera_pos;
 
 static unsigned ocean_num_indices = 0;
 
@@ -153,6 +154,7 @@ void ocean_init() {
 	u_ocean_projview = glGetUniformLocation(ocean_draw.program, "PV");
 	u_ocean_view = glGetUniformLocation(ocean_draw.program, "V");
 	u_ocean_model = glGetUniformLocation(ocean_draw.program, "M");
+	u_ocean_camera_pos = glGetUniformLocation(ocean_draw.program, "cp");
 
 	glGenBuffers(OceanBuffer_Count, ocean_buffers);
 
@@ -307,6 +309,7 @@ void ocean_calculate()
 			complex_mul(h_tilde + index, &tmp, h_tilde_slopex + index);
 			tmp.y = k.y;
 			complex_mul(h_tilde + index, &tmp, h_tilde_slopez + index);
+
 			if (k_norm < dampening*dampening) {
 				memset(h_tilde_dx + index, 0, sizeof(complex));
 				memset(h_tilde_dz + index, 0, sizeof(complex));
@@ -418,6 +421,7 @@ void ocean_render() {
 
 	glUniformMatrix4fv(u_ocean_projview,1, GL_FALSE, (float*)&camera.view_proj_matrix);
 	glUniformMatrix4fv(u_ocean_view,1, GL_FALSE, (float*)&camera.view_matrix);
+	glUniform3fv(u_ocean_camera_pos, 1, (float*)&camera.position);
 	upload_light(&ocean_draw);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ocean_buffers[OceanBuffer_Indices]);

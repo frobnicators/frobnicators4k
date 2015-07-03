@@ -21,7 +21,7 @@ void upload_light(struct shader_t* shader);
 
 #define INIT_GL_NEEDED defined(ENABLE_TEXTURES) /* Todo, any other thing that we need init_gl for */
 
-#define DEMO_LENGTH 84.5f
+#define DEMO_LENGTH 284.5f
 
 extern struct camera_t camera;
 extern struct fbo_t main_fbo;
