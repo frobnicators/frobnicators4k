@@ -10,7 +10,7 @@
 
 #include <stdlib.h>
 
-static const int ocean_N = 512;
+static const int ocean_N = 128;
 static const float ocean_length = 128.f;
 
 // Changing this changes the influence of the wind in the initial state
@@ -51,6 +51,9 @@ static shader_t ocean_compute;
 
 static shader_stage_t ocean_vert = { GL_VERTEX_SHADER, 1, { SHADER_OCEAN_VERT_GLSL } };
 static shader_stage_t ocean_frag = { GL_FRAGMENT_SHADER, 4, { SHADER_COMMON_GLSL, SHADER_NOISE_GLSL, SHADER_RAYMARCH_GLSL, SHADER_OCEAN_FRAG_GLSL } };
+
+static GLuint h_tilde_buffers[2];
+//static GLuint h_tilde_slopex_buffers[2];
 
 static GLuint ocean_vao;
 fbo_t ocean_fbo;
@@ -97,6 +100,15 @@ void ocean_init() {
 	h_tilde_slopez = malloc(NxN * sizeof(complex));
 	h_tilde_dx = malloc(NxN * sizeof(complex));
 	h_tilde_dz = malloc(NxN * sizeof(complex));
+
+	glGenBuffers(2, h_tilde_buffers);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, h_tilde_buffers[0]);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(complex)*NxN, NULL, GL_DYNAMIC_DRAW);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, h_tilde_buffers[1]);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(complex)*NxN, NULL, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
 	fft_init(&ocean_fft, ocean_N);
 
@@ -323,7 +335,27 @@ void ocean_calculate()
 	FROB_PERF_END(ocean_hTilde);
 
 	FROB_PERF_BEGIN(ocean_fft);
+
+	int buffer_size = sizeof(complex)*ocean_N* ocean_N;
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, h_tilde_buffers[0]);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, buffer_size, h_tilde);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+	GLuint outbuffer = fft_compute(&ocean_fft, h_tilde_buffers[0], h_tilde_buffers[1]);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, outbuffer);
+	complex* out = glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(complex)*ocean_N*ocean_N, GL_MAP_READ_BIT);
+
+	CHECK_FOR_GL_ERRORS("map");
+
+	memcpy(h_tilde, out, sizeof(complex)*ocean_N*ocean_N);
+
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
 	// Resolve FFT
+	/*
 	for (int m = 0; m < ocean_N; ++m) {
 		fft_compute(&ocean_fft, h_tilde, 1, m * ocean_N);
 		fft_compute(&ocean_fft, h_tilde_slopex, 1, m * ocean_N);
@@ -339,6 +371,8 @@ void ocean_calculate()
 		fft_compute(&ocean_fft, h_tilde_dx, ocean_N, n);
 		fft_compute(&ocean_fft, h_tilde_dz, ocean_N, n);
 	}
+*/
+
 	FROB_PERF_END(ocean_fft);
 
 	FROB_PERF_BEGIN(ocean_resolve);

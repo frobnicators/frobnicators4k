@@ -12,8 +12,9 @@ static shader_stage_t fft_compute_stage = { GL_COMPUTE_SHADER, 1, { SHADER_FFT_G
 
 
 #define TWIDDLE_BINDING 0
-#define INPUT_BINDING 1
-#define OUTPUT_BINDING 2
+#define BIT_REVERSE_BINDING 1
+#define INPUT_BINDING 2
+#define OUTPUT_BINDING 3
 
 void fft_init(fft_t* fft, unsigned int N) {
 	fft->N = N;
@@ -23,6 +24,7 @@ void fft_init(fft_t* fft, unsigned int N) {
 	for (unsigned i = 0; i < N; ++i) {
 		fft->reversed[i] = bit_revers(fft, i);
 	}
+
 	unsigned int pow2 = 1;
 	fft->T = malloc(sizeof(complex)*fft->log_2_N);
 
@@ -47,52 +49,72 @@ void fft_init(fft_t* fft, unsigned int N) {
 
 	load_shader(&fft->shader, 1, &fft_compute_stage);
 
-	fft->u_w = glGetUniformLocation(fft->shader.program, "w");
+	fft->u_wi = glGetUniformLocation(fft->shader.program, "wi");
+	fft->u_os = glGetUniformLocation(fft->shader.program, "os");
 
-	glGenBuffers(2, fft->buffers);
+	glGenBuffers(1, &fft->rev_buffer);
 
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, fft->rev_buffer);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(unsigned int)*N, fft->reversed, GL_STATIC_DRAW);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+	/*
 	for (int i = 0; i < 2; ++i) {
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, fft->buffers[i]);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(complex)*N, NULL, GL_DYNAMIC_DRAW);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(complex)*N*N, NULL, GL_DYNAMIC_DRAW);
 	}
+	*/
 
 	CHECK_FOR_GL_ERRORS("init fft");
 }
 
-GLuint fft_compute(fft_t* fft, complex* input, int stride, int offset) {
-	complex** c = fft->c;
-	for (unsigned int i = 0; i < fft->N; ++i) {
-		c[0][i] = input[fft->reversed[i] * stride + offset];
-	}
-
-	glUseProgram(fft->shader.program);
-
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, fft->buffers[0]);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(complex)*fft->N, c[0]);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-	CHECK_FOR_GL_ERRORS("fft buffer");
+static GLuint fft_compute_dispatch(fft_t* fft, GLuint input, GLuint swap_buffer, int stride, int offset_mul) {
+	glUniform2i(fft->u_os, offset_mul, stride);
+	GLuint buffers[] = { input, swap_buffer };
 
 	int which = 0;
+	int invert = 1;
 	for (unsigned int i = 0; i < fft->log_2_N; ++i) {
 		which ^= 1;
+		glUniform2i(fft->u_wi, i, invert);
+		if (invert == 1)
+			invert = 0;
 
+		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, TWIDDLE_BINDING, fft->twiddle_buffers[i]);
-		CHECK_FOR_GL_ERRORS("fft twid");
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, INPUT_BINDING, fft->buffers[which^1]);
-		CHECK_FOR_GL_ERRORS("fft input");
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, OUTPUT_BINDING, fft->buffers[which]);
-		CHECK_FOR_GL_ERRORS("fft out");
-		glUniform1i(fft->u_w, i);
-		CHECK_FOR_GL_ERRORS("fft uniform");
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, INPUT_BINDING, buffers[which^1]);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, OUTPUT_BINDING, buffers[which]);
 
-		glDispatchCompute(fft->N/2, 1, 1);
+		CHECK_FOR_GL_ERRORS("fft bindings");
+
+		glDispatchCompute(fft->N / 2, fft->N, 1);
 		CHECK_FOR_GL_ERRORS("fft dispatch");
 	}
 
-	FROB_PERF_BEGIN(map);
+	/*
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffers[which]);
+	complex* out = glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(complex)*fft->N*fft->N, GL_MAP_READ_BIT);
 
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, fft->buffers[which]);
+	CHECK_FOR_GL_ERRORS("map");
+
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	*/
+
+	return buffers[which];
+}
+
+GLuint fft_compute(fft_t* fft, GLuint input, GLuint swap_buffer) {
+	glUseProgram(fft->shader.program);
+
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, BIT_REVERSE_BINDING, fft->rev_buffer);
+
+	GLuint b = fft_compute_dispatch(fft, input, swap_buffer, 1, fft->N);
+	GLuint sw = b == input ? swap_buffer : input;
+	return fft_compute_dispatch(fft, b, sw, fft->N, 1);
+
+	/*
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffers[which]);
 	complex* out = glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(complex)*fft->N, GL_MAP_READ_BIT);
 
 	CHECK_FOR_GL_ERRORS("map");
@@ -110,6 +132,7 @@ GLuint fft_compute(fft_t* fft, complex* input, int stride, int offset) {
 	CHECK_FOR_GL_ERRORS("unmap");
 
 	return fft->buffers[which];
+	*/
 }
 
 // Perform FFT Butterfly combine

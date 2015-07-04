@@ -9,8 +9,9 @@ typedef struct {
 	unsigned int* reversed;
 
 	shader_t shader;
-	GLuint buffers[2];
-	GLuint u_w;
+	GLuint rev_buffer;
+	GLuint u_wi; // w & invert
+	GLuint u_os; // offset & stride
 
 	complex **T;
 	complex *c[2];
@@ -21,5 +22,4 @@ typedef struct {
 void fft_init(fft_t* fft, unsigned int N);
 void fft_execute(fft_t* fft, complex* input, int stride, int offset);
 
-GLuint fft_compute_init(fft_t* fft, complex* input);
-GLuint fft_compute(fft_t* fft, complex* input, int stride, int offset);
+GLuint fft_compute(fft_t* fft, GLuint input, GLuint swap_buffer);
