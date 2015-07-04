@@ -15,9 +15,10 @@ PFNGLLINKPROGRAMPROC glLinkProgram;
 PFNGLUSEPROGRAMPROC glUseProgram;
 PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
 PFNGLUNIFORM1FPROC glUniform1f;
+PFNGLUNIFORM2FPROC glUniform2f;
 PFNGLUNIFORM3FVPROC glUniform3fv;
-//PFNGLUNIFORM1IPROC glUniform1i;
-//PFNGLUNIFORM2IPROC glUniform2i;
+PFNGLUNIFORM1IPROC glUniform1i;
+PFNGLUNIFORM2IPROC glUniform2i;
 PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
 PFNGLGENBUFFERSPROC glGenBuffers;
 PFNGLBINDBUFFERPROC glBindBuffer;
@@ -30,6 +31,7 @@ PFNGLVERTEXATTRIBIPOINTERPROC glVertexAttribIPointer;
 PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
 PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
 PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;
+PFNGLMEMORYBARRIERPROC glMemoryBarrier;
 
 #ifdef ENABLE_FBOS
 PFNGLGENFRAMEBUFFERSPROC glGenFramebuffers;
@@ -63,9 +65,10 @@ void initKlister() {
 	glUseProgram = (PFNGLUSEPROGRAMPROC)getProcAddr("glUseProgram");
 	glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)getProcAddr("glGetUniformLocation");
 	glUniform1f = (PFNGLUNIFORM1FPROC)getProcAddr("glUniform1f");
+	glUniform2f = (PFNGLUNIFORM2FPROC)getProcAddr("glUniform2f");
 	glUniform3fv = (PFNGLUNIFORM3FVPROC)getProcAddr("glUniform3fv");
-	//glUniform1i = (PFNGLUNIFORM1IPROC)getProcAddr("glUniform1i");
-	//glUniform2i = (PFNGLUNIFORM2IPROC)getProcAddr("glUniform2i");
+	glUniform1i = (PFNGLUNIFORM1IPROC)getProcAddr("glUniform1i");
+	glUniform2i = (PFNGLUNIFORM2IPROC)getProcAddr("glUniform2i");
 	glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)getProcAddr("glUniformMatrix4fv");
 	glGenBuffers = (PFNGLGENBUFFERSPROC)getProcAddr("glGenBuffers");
 	glBindBuffer = (PFNGLBINDBUFFERPROC)getProcAddr("glBindBuffer");
@@ -78,6 +81,7 @@ void initKlister() {
 	glBindVertexArray = (PFNGLBINDVERTEXARRAYPROC)getProcAddr("glBindVertexArray");
 	glDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC)getProcAddr("glDeleteVertexArrays");
 	glGenVertexArrays = (PFNGLGENVERTEXARRAYSPROC)getProcAddr("glGenVertexArrays");
+	glMemoryBarrier = (PFNGLMEMORYBARRIERPROC)getProcAddr("glMemoryBarrier");
 #ifdef ENABLE_FBOS
 	glGenFramebuffers = (PFNGLGENFRAMEBUFFERSPROC)getProcAddr("glGenFramebuffers");
 	glBindFramebuffer = (PFNGLBINDFRAMEBUFFERPROC)getProcAddr("glBindFramebuffer");
@@ -109,9 +113,10 @@ void initKlister() {
 		glUseProgram == NULL ||
 		glGetUniformLocation == NULL ||
 		glUniform1f == NULL ||
+		glUniform2f == NULL ||
 		glUniform3fv == NULL ||
-		//glUniform1i == NULL ||
-		//glUniform2i == NULL ||
+		glUniform1i == NULL ||
+		glUniform2i == NULL ||
 		glUniformMatrix4fv == NULL ||
 		glGenBuffers == NULL ||
 		glBindBuffer == NULL ||
@@ -127,7 +132,8 @@ void initKlister() {
 		glGetProgramInfoLog == NULL ||
 		glGenVertexArrays == NULL ||
 		glBindVertexArray == NULL ||
-		glDeleteVertexArrays == NULL
+		glDeleteVertexArrays == NULL ||
+		glMemoryBarrier == NULL
 #ifdef ENABLE_FBOS
 		|| glGenFramebuffers == NULL
 		|| glBindFramebuffer == NULL
