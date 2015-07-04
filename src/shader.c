@@ -5,10 +5,11 @@
 #include "shaders.h"
 #include "demo.h"
 #include "debug.h"
+#include <stdlib.h>
 
 #include <stdio.h>
 #if _DEBUG
-#include <stdlib.h>
+
 
 #include "demo.h"
 

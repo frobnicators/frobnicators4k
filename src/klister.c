@@ -63,7 +63,7 @@ void initKlister() {
 	glUseProgram = (PFNGLUSEPROGRAMPROC)getProcAddr("glUseProgram");
 	glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)getProcAddr("glGetUniformLocation");
 	glUniform1f = (PFNGLUNIFORM1FPROC)getProcAddr("glUniform1f");
-	glUniform3fv = (PFNGLUNIFORM1FPROC)getProcAddr("glUniform3fv");
+	glUniform3fv = (PFNGLUNIFORM3FVPROC)getProcAddr("glUniform3fv");
 	//glUniform1i = (PFNGLUNIFORM1IPROC)getProcAddr("glUniform1i");
 	//glUniform2i = (PFNGLUNIFORM2IPROC)getProcAddr("glUniform2i");
 	glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)getProcAddr("glUniformMatrix4fv");

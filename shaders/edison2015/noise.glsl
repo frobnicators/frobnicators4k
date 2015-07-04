@@ -1,6 +1,6 @@
 //
-// GLSL textureless classic 2D noise "cnoise",
-// with an RSL-style periodic variant "pnoise".
+// GLSL textureless classic 2D noise cnoise,
+// with an RSL-style periodic variant pnoise.
 // Author:  Stefan Gustavson (stefan.gustavson@liu.se)
 // Version: 2011-08-22
 //
