@@ -186,6 +186,10 @@ static void do_the_magic() {
 			update_time();
 			if(time >= DEMO_LENGTH) terminate();
 #if _DEBUG
+			char title[128];
+			_snprintf(title, sizeof(title), "Demo - t=%.3f", time);
+			SetWindowText(hWnd, title);
+
 			//FROB_PRINTF("Time: %f\n", time);
 			frames++;
 			if (frames > 30) {
