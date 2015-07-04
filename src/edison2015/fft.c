@@ -75,14 +75,7 @@ GLuint fft_compute(fft_t* fft, complex* input, int stride, int offset) {
 	CHECK_FOR_GL_ERRORS("fft buffer");
 
 	int which = 0;
-	unsigned int loops = fft->N >> 1; // N / 2
-	int size = 2;
-	int half_size = 1;
-	int w_ = 0;
-	complex temp;
-	//int groups = max(fft->N, 1);
-	for (unsigned int i = 0; i < 2/*fft->log_2_N*/; ++i) {
-
+	for (unsigned int i = 0; i < fft->log_2_N; ++i) {
 		which ^= 1;
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
@@ -97,22 +90,6 @@ GLuint fft_compute(fft_t* fft, complex* input, int stride, int offset) {
 
 		glDispatchCompute(fft->N/2, 1, 1);
 		CHECK_FOR_GL_ERRORS("fft dispatch");
-
-		for (unsigned int j = 0; j < loops; ++j) {
-			for (int k = 0; k < half_size; ++k) {
-				complex_mul(c[which ^ 1] + (size*j + half_size + k), fft->T[w_] + k, &temp);
-				complex_add(c[which ^ 1] + (size * j + k), &temp, c[which] + (size * j + k));
-			}
-
-			for (int k = half_size; k < size; ++k) {
-				complex_mul(c[which ^ 1] + (size*j + k), fft->T[w_] + (k - half_size), &temp);
-				complex_sub(c[which ^ 1] + (size * j - half_size + k), &temp, c[which] + (size * j + k));
-			}
-		}
-		loops >>= 1;
-		size <<= 1;
-		half_size <<= 1;
-		++w_;
 	}
 
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);

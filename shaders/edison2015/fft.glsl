@@ -45,8 +45,7 @@ void main() {
 		res = i2 - cmul(i1, T[t_offset]);
 	}
 
-	//outputb[i].x = float(gl_LocalInvocationID.x);// 10.f + float(gid);// float(gid + 10);// res;
-	//outputb[i].y = float(gl_LocalInvocationID.y);//float(20+s);//
 	//outputb[offset] = vec2(offset, index2);
+//	outputb[offset] = T[t_offset];
 	outputb[offset] = res;
 }
