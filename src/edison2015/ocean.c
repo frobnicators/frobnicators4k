@@ -10,7 +10,7 @@
 
 #include <stdlib.h>
 
-static const int ocean_N = 128;
+static const int ocean_N = 256;
 static const float ocean_length = 128.f;
 
 // Changing this changes the influence of the wind in the initial state
@@ -387,25 +387,6 @@ void ocean_calculate()
 	run_fft(h_tilde_slopez, h_tilde_slopez_buffers);
 	run_fft(h_tilde_dx, h_tilde_dx_buffers);
 	run_fft(h_tilde_dz, h_tilde_dz_buffers);
-
-	// Resolve FFT
-	/*
-	for (int m = 0; m < ocean_N; ++m) {
-		fft_compute(&ocean_fft, h_tilde, 1, m * ocean_N);
-		fft_compute(&ocean_fft, h_tilde_slopex, 1, m * ocean_N);
-		fft_compute(&ocean_fft, h_tilde_slopez, 1, m * ocean_N);
-		fft_compute(&ocean_fft, h_tilde_dx, 1, m * ocean_N);
-		fft_compute(&ocean_fft, h_tilde_dz, 1, m * ocean_N);
-	}
-
-	for (int n = 0; n < ocean_N; ++n) {
-		fft_compute(&ocean_fft, h_tilde, ocean_N, n);
-		fft_compute(&ocean_fft, h_tilde_slopex, ocean_N, n);
-		fft_compute(&ocean_fft, h_tilde_slopez, ocean_N, n);
-		fft_compute(&ocean_fft, h_tilde_dx, ocean_N, n);
-		fft_compute(&ocean_fft, h_tilde_dz, ocean_N, n);
-	}
-*/
 
 	FROB_PERF_END(ocean_fft);
 

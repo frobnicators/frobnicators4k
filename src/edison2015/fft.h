@@ -10,6 +10,7 @@ typedef struct {
 
 	shader_t shader;
 	GLuint rev_buffer;
+	GLuint u_which;
 	GLuint u_wi; // w & invert
 	GLuint u_os; // offset & stride
 

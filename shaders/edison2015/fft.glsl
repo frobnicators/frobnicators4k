@@ -10,13 +10,14 @@ layout(std430, binding = 1) buffer b{
 };
 
 layout(std430, binding = 2) buffer c{
-	vec2 inputb[];
+	vec2 buffer1[];
 };
 
 layout(std430, binding = 3) buffer d{
-	vec2 outputb[];
+	vec2 buffer2[];
 };
 
+uniform int w; // which
 uniform ivec2 wi; // w & invert
 uniform ivec2 os; // offset & stride
 
@@ -48,8 +49,15 @@ void main() {
 	index1 = index1 * os.y + os.x*line;
 	index2 = index2 * os.y + os.x*line;
 
-	vec2 i1 = inputb[index1];
-	vec2 i2 = inputb[index2];
+	vec2 i1, i2;
+
+	if (w == 1) {
+		i1 = buffer1[index1];
+		i2 = buffer1[index2];
+	} else {
+		i1 = buffer2[index1];
+		i2 = buffer2[index2];
+	}
 
 	vec2 res;
 	if (s == 0) {
@@ -58,8 +66,9 @@ void main() {
 		res = i2 - cmul(i1, T[t_offset]);
 	}
 
-	//outputb[offset] = vec2(offset, index2);
-//	outputb[offset] = T[t_offset];
-	outputb[offset] = res;
-	//outputb[offset] = vec2(tmp, R[tmp]);
+	if (w == 1) {
+		buffer2[offset] = res;
+	} else {
+		buffer1[offset] = res;
+	}
 }
