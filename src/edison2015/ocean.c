@@ -174,13 +174,13 @@ void ocean_init() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,  ocean_buffers[OceanBuffer_Indices]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, ocean_num_indices*sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
-	create_fbo(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_INT, 0, &ocean_fbo);
+	create_fbo(width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_INT, 1, &ocean_fbo);
 
 	glBindTexture(GL_TEXTURE_2D, ocean_fbo.textures[TextureType_Color]);
 
 	// Use same depth as main_fbo
 	glBindFramebuffer(GL_FRAMEBUFFER, ocean_fbo.fbo);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, main_fbo.textures[TextureType_Depth], 0);
+	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, main_fbo.textures[TextureType_Depth], 0);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CW);
@@ -446,7 +446,7 @@ void ocean_render() {
 
 	glBindTexture(GL_TEXTURE_2D, main_fbo.textures[TextureType_Color]);
 
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	render_internal(0, 0);
 
