@@ -21,7 +21,7 @@ layout(std430, binding = 1) buffer b { // displacement
 void main() {
 	vec4 ocean_value = ov[i];
 	vec2 d = dp[i];
-	vec4 pos = v;
+	vec4 pos = M*v;
 	pos.y += ocean_value.a;
 	pos.xz += d;
 

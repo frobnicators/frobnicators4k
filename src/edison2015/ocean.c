@@ -409,7 +409,25 @@ void ocean_calculate()
 static void render_internal(int x, int y) {
 	// TODO: Model matrix
 
-	glDrawElements(GL_TRIANGLE_STRIP, ocean_num_indices, GL_UNSIGNED_INT, 0);
+	const size_t w = 15;
+	const size_t h = 15;
+	mat4 model;
+	memset(&model, 0, sizeof(mat4));
+	model.c0.x = 1;
+	model.c1.y = 1;
+	model.c2.z = 1;
+	model.c3.w = 1;
+
+	for (unsigned int y = 0; y < h; y++){
+		for (unsigned int x = 0; x < w; x++){
+			model.c3.x = x * ocean_length;
+			model.c3.y = 0;
+			model.c3.z = y * ocean_length;
+
+			glUniformMatrix4fv(u_ocean_model, 1, GL_FALSE, (float*)&model);
+			glDrawElements(GL_TRIANGLE_STRIP, ocean_num_indices, GL_UNSIGNED_INT, 0);
+		}
+	}
 }
 
 void ocean_render() {

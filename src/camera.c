@@ -12,6 +12,27 @@ void update_camera_matrices(camera_t* camera) {
 	localy = cross(&localx, &camera->look_direction);
 	normal_v3(&localy);
 	memset(&camera->view_matrix, 0, sizeof(mat4));
+
+	mat4 rot;
+	memset(&rot, 0, sizeof(mat4));
+	rot.c3.w = 1;
+	memcpy(&rot.c0, &localx, sizeof(float) * 3);
+	memcpy(&rot.c1, &localy, sizeof(float) * 3);
+	memcpy(&rot.c2, &camera->look_direction, sizeof(float) * 3);
+
+	mat4 tr;
+	memset(&tr, 0, sizeof(mat4));
+	tr.c0.x = 1;
+	tr.c1.y = 1;
+	tr.c2.z = 1;
+	tr.c3.x = -camera->position.x;
+	tr.c3.y = -camera->position.y;
+	tr.c3.z = -camera->position.z;
+	tr.c3.w = 1.f;
+
+	camera->view_matrix = mulmm(&tr, &rot);
+
+	/*
 	memcpy(&camera->view_matrix.c0, &localx, sizeof(float)*3);
 	memcpy(&camera->view_matrix.c1, &localy, sizeof(float)*3);
 	memcpy(&camera->view_matrix.c2, &camera->look_direction, sizeof(float)*3);
@@ -19,6 +40,7 @@ void update_camera_matrices(camera_t* camera) {
 	camera->view_matrix.c3.y = -dotv3(&localy, &camera->position);
 	camera->view_matrix.c3.z = -dotv3(&camera->look_direction, &camera->position);
 	camera->view_matrix.c3.w = 1.f;
+	*/
 
 	// projection matrix
 	float f = (float)(1.f / tan(camera->fovy));
