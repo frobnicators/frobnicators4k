@@ -77,7 +77,7 @@ static int fft_compute_dispatch(fft_t* fft, int which, int stride, int offset_mu
 
 		CHECK_FOR_GL_ERRORS("fft bindings");
 
-		glDispatchCompute(fft->N / 2, fft->N, 1);
+		glDispatchCompute(fft->N / 32, fft->N, 1);
 		CHECK_FOR_GL_ERRORS("fft dispatch");
 	}
 

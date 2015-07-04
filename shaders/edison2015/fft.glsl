@@ -25,7 +25,7 @@ vec2 cmul(vec2 c1, vec2 c2) {
 	return vec2(c1.x*c2.x - c1.y * c2.y, c1.y * c2.x + c1.x * c2.y);
 }
 
-layout(local_size_x = 1, local_size_y = 1, local_size_z = 2) in;
+layout(local_size_x = 16, local_size_y = 1, local_size_z = 2) in;
 void main() {
 	uint gid = gl_GlobalInvocationID.x;
 	uint line = gl_GlobalInvocationID.y;
