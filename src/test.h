@@ -71,6 +71,7 @@ void run_tests() {
 
 	begin_context("fft");
 
+	/*
 	fft_t fft;
 
 	fft_init(&fft, 16);
@@ -85,7 +86,7 @@ void run_tests() {
 		}
 
 		for (int m = 0; m < 16; ++m) {
-			fft_execute(&fft, data, data, 1, m * 16);
+			fft_execute(&fft, data, 1, m * 16);
 		}
 
 		begin_test("fft row resolve");
@@ -99,32 +100,51 @@ void run_tests() {
 	}
 
 	end_context();
+	*/
 
 	begin_context("fft_compute");
 	{
+		int size = 32;
+
+		complex* data = malloc(sizeof(complex) * size * size);
+		for (int m = 0; m < size; ++m) {
+			for (int n = 0; n < 64; ++n) {
+				data[m * size + n].x = 0.0001f * m;
+				data[m * size + n].y = 0.0001f * n - 0.0005f;
+			}
+		}
+
 
 		fft_t fft;
+		fft_init(&fft, size);
 
-		fft_init(&fft, 16);
+		complex* results_fft;
+		results_fft = malloc(sizeof(complex)*size*size);
+		{
+			for (int m = 0; m < size; ++m) {
+				fft_execute(&fft, data, 1, m * size);
+			}
+			memcpy(results_fft, data, sizeof(complex)*size*size);
+		}
+
+		for (int m = 0; m < size; ++m) {
+			for (int n = 0; n < 64; ++n) {
+				data[m * size + n].x = 0.0001f * m;
+				data[m * size + n].y = 0.0001f * n - 0.0005f;
+			}
+		}
 
 		{
-			complex* data = malloc(sizeof(complex) * 64 * 64);
-			for (int m = 0; m < 16; ++m) {
-				for (int n = 0; n < 64; ++n) {
-					data[m * 16 + n].x = 0.0001f * m;
-					data[m * 16 + n].y = 0.0001f * n - 0.0005f;
-				}
-			}
 
-			for (int m = 0; m < 16; ++m) {
-				fft_compute(&fft, data, 1, m * 16);
+			for (int m = 0; m < size; ++m) {
+				//fft_compute(&fft, data, 1, m * size);
 			}
 
 			begin_test("fft row resolve");
-			for (int m = 0; m < 16; ++m) {
-				for (int n = 0; n < 16; ++n) {
-					assert_floats_equal(data[m * 16 + n].x, row_results_fft[m][n].x);
-					assert_floats_equal(data[m * 16 + n].y, row_results_fft[m][n].y);
+			for (int m = 0; m < size; ++m) {
+				for (int n = 0; n < size; ++n) {
+					assert_floats_equal(data[m * size + n].x, results_fft[m*size +n].x);
+					assert_floats_equal(data[m * size + n].y, results_fft[m*size + n].y);
 				}
 			}
 

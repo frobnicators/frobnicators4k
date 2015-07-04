@@ -19,5 +19,7 @@ typedef struct {
 } fft_t;
 
 void fft_init(fft_t* fft, unsigned int N);
-void fft_execute(fft_t* fft, complex* input, complex* output, int stride, int offset);
+void fft_execute(fft_t* fft, complex* input, int stride, int offset);
+
+GLuint fft_compute_init(fft_t* fft, complex* input);
 GLuint fft_compute(fft_t* fft, complex* input, int stride, int offset);

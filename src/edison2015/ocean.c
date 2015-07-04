@@ -10,7 +10,7 @@
 
 #include <stdlib.h>
 
-static const int ocean_N = 128;
+static const int ocean_N = 512;
 static const float ocean_length = 128.f;
 
 // Changing this changes the influence of the wind in the initial state
@@ -165,11 +165,9 @@ void ocean_init() {
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER,  ocean_buffers[OceanBuffer_OceanData]);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, ocean_N*ocean_N * sizeof(vec4), NULL, GL_DYNAMIC_DRAW); // TODO: Change to COPY when written from GPU
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ocean_buffers[OceanBuffer_OceanData]);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER,  ocean_buffers[OceanBuffer_Displacement]);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, ocean_N*ocean_N * sizeof(vec2), NULL, GL_DYNAMIC_DRAW); // TODO: Change to COPY when written from GPU
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ocean_buffers[OceanBuffer_Displacement]);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,  ocean_buffers[OceanBuffer_Indices]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, ocean_num_indices*sizeof(unsigned int), indices, GL_STATIC_DRAW);
@@ -327,20 +325,19 @@ void ocean_calculate()
 	FROB_PERF_BEGIN(ocean_fft);
 	// Resolve FFT
 	for (int m = 0; m < ocean_N; ++m) {
-		fft_execute(&ocean_fft, h_tilde, h_tilde, 1, m * ocean_N);
-		fft_execute(&ocean_fft, h_tilde_slopex, h_tilde_slopex, 1, m * ocean_N);
-		fft_execute(&ocean_fft, h_tilde_slopez, h_tilde_slopez, 1, m * ocean_N);
-		fft_execute(&ocean_fft, h_tilde_dx, h_tilde_dx, 1, m * ocean_N);
-		fft_execute(&ocean_fft, h_tilde_dz, h_tilde_dz, 1, m * ocean_N);
+		fft_compute(&ocean_fft, h_tilde, 1, m * ocean_N);
+		fft_compute(&ocean_fft, h_tilde_slopex, 1, m * ocean_N);
+		fft_compute(&ocean_fft, h_tilde_slopez, 1, m * ocean_N);
+		fft_compute(&ocean_fft, h_tilde_dx, 1, m * ocean_N);
+		fft_compute(&ocean_fft, h_tilde_dz, 1, m * ocean_N);
 	}
 
 	for (int n = 0; n < ocean_N; ++n) {
-		fft_execute(&ocean_fft, h_tilde, h_tilde, ocean_N, n);
-
-		fft_execute(&ocean_fft, h_tilde_slopex, h_tilde_slopex, ocean_N, n);
-		fft_execute(&ocean_fft, h_tilde_slopez, h_tilde_slopez, ocean_N, n);
-		fft_execute(&ocean_fft, h_tilde_dx, h_tilde_dx, ocean_N, n);
-		fft_execute(&ocean_fft, h_tilde_dz, h_tilde_dz, ocean_N, n);
+		fft_compute(&ocean_fft, h_tilde, ocean_N, n);
+		fft_compute(&ocean_fft, h_tilde_slopex, ocean_N, n);
+		fft_compute(&ocean_fft, h_tilde_slopez, ocean_N, n);
+		fft_compute(&ocean_fft, h_tilde_dx, ocean_N, n);
+		fft_compute(&ocean_fft, h_tilde_dz, ocean_N, n);
 	}
 	FROB_PERF_END(ocean_fft);
 
@@ -413,6 +410,9 @@ static void render_internal(int x, int y) {
 }
 
 void ocean_render() {
+
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ocean_buffers[OceanBuffer_OceanData]);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ocean_buffers[OceanBuffer_Displacement]);
 
 	FROB_PERF_BEGIN(ocean_render);
 	glBindFramebuffer(GL_FRAMEBUFFER, ocean_fbo.fbo);

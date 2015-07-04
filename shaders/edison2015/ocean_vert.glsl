@@ -23,7 +23,7 @@ void main() {
 	vec2 d = dp[i];
 	vec4 pos = v;
 	pos.y += ocean_value.a;
-	//pos.xz += d;
+	pos.xz += d;
 
 	// TODO: Model matrix
 	mat3 normal_matrix = transpose(inverse(mat3(V)));
@@ -32,6 +32,5 @@ void main() {
 
 	gl_Position = PV*pos;
 
-	//n = normalize(normal_matrix * ocean_value.rgb);
-	n = vec3(0.f, 1.f, 0.f);
+	n = normalize(normal_matrix * ocean_value.rgb);
 }
