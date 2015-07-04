@@ -9,11 +9,13 @@ typedef struct {
 	unsigned int* reversed;
 
 	shader_t shader;
-	GLuint buffers[3];
+	GLuint buffers[2];
 	GLuint u_w;
 
 	complex **T;
 	complex *c[2];
+
+	GLuint* twiddle_buffers;
 } fft_t;
 
 void fft_init(fft_t* fft, unsigned int N);
