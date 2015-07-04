@@ -10,11 +10,11 @@ uniform mat4 PV; // projection matrix
 uniform mat4 M; // model matrix
 uniform mat4 V;
 
-layout(std140, binding = 0) buffer a { // ocean data
+layout(std430, binding = 0) buffer a { // ocean data
 	vec4 ov[];
 };
 
-layout(std140, binding = 1) buffer b { // displacement
+layout(std430, binding = 1) buffer b { // displacement
 	vec2 dp[];
 };
 
