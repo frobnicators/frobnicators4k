@@ -22,7 +22,7 @@ void main() {
 	float refract_cos = dot(refraction, normal);
 	float reflectance = clamp(pow((incident_cos - n2*refract_cos) / (incident_cos + refract_cos), 2.f), 0.f, 1.f);
 
-	float spec = clamp(reflect_dot, 0.f, 1.f)*2.f;
+	float spec = 0.f;
 
 	vec3 refract_color = vec3(0.f, 0.3, 0.5);
 
