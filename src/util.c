@@ -5,7 +5,7 @@
 #include "debug.h"
 
 
-#if _DEBUG 
+#if _DEBUG || SOME_DEBUG
 	#include <stdio.h>
 	#include <stdarg.h>
 	#include <GL/GLU.h>
@@ -21,8 +21,9 @@ int strcmp(const char * s1, const char * s2) {
 	}
 	return (s1[i] - s2[i]);
 }
+#endif
 
-#if SOME_DEBUG
+#if _DEBUG || SOME_DEBUG
 void checkForGLErrors(const char *s) {
 	int errors = 0 ;
 
@@ -40,6 +41,4 @@ void checkForGLErrors(const char *s) {
 	}
 
 }
-#endif
-
 #endif
