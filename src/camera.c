@@ -11,14 +11,13 @@ void update_camera_matrices(camera_t* camera) {
 	normal_v3(&localx);
 	localy = cross(&localx, &camera->look_direction);
 	normal_v3(&localy);
-	memset(&camera->view_matrix, 0, sizeof(mat4));
 
 	mat4 rot;
 	memset(&rot, 0, sizeof(mat4));
-	rot.c3.w = 1;
 	memcpy(&rot.c0, &localx, sizeof(float) * 3);
 	memcpy(&rot.c1, &localy, sizeof(float) * 3);
 	memcpy(&rot.c2, &camera->look_direction, sizeof(float) * 3);
+	rot.c3.w = 1;
 
 	mat4 tr;
 	memset(&tr, 0, sizeof(mat4));
@@ -31,8 +30,10 @@ void update_camera_matrices(camera_t* camera) {
 	tr.c3.w = 1.f;
 
 	camera->view_matrix = mulmm(&tr, &rot);
+	//camera->view_matrix = mulmm(&rot, &tr);
 
 	/*
+	memset(&camera->view_matrix, 0, sizeof(mat4));
 	memcpy(&camera->view_matrix.c0, &localx, sizeof(float)*3);
 	memcpy(&camera->view_matrix.c1, &localy, sizeof(float)*3);
 	memcpy(&camera->view_matrix.c2, &camera->look_direction, sizeof(float)*3);
