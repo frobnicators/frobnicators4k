@@ -271,8 +271,8 @@
     <None Include="shaders\edison2015\common.glsl" />
     <None Include="shaders\edison2015\fft.glsl" />
     <None Include="shaders\edison2015\noise.glsl" />
-    <None Include="shaders\edison2015\ocean_compute.glsl" />
     <None Include="shaders\edison2015\ocean_frag.glsl" />
+    <None Include="shaders\edison2015\ocean_resolve.glsl" />
     <None Include="shaders\edison2015\ocean_vert.glsl" />
     <None Include="shaders\edison2015\raymarch.glsl" />
     <None Include="shaders\edison2015\raymarch_frag.glsl" />

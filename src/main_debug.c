@@ -230,6 +230,10 @@ static void run() {
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow){
 #if TESTING
+	width = 800;
+	height = 600;
+	CreateGLWindow();
+	initGL();
 	run_tests();
 #else
 	run();

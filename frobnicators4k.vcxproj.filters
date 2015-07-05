@@ -172,9 +172,6 @@
     <None Include="shaders\edison2015\noise.glsl">
       <Filter>Resource Files\shaders\edison2015</Filter>
     </None>
-    <None Include="shaders\edison2015\ocean_compute.glsl">
-      <Filter>Resource Files\shaders\edison2015</Filter>
-    </None>
     <None Include="shaders\edison2015\ocean_frag.glsl">
       <Filter>Resource Files\shaders\edison2015</Filter>
     </None>
@@ -192,6 +189,9 @@
     </None>
     <None Include="shaders\shared\passthru.glsl">
       <Filter>Resource Files\shaders\shared</Filter>
+    </None>
+    <None Include="shaders\edison2015\ocean_resolve.glsl">
+      <Filter>Resource Files\shaders\edison2015</Filter>
     </None>
   </ItemGroup>
 </Project>

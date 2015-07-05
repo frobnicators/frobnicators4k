@@ -1,6 +1,8 @@
 #include "unit_test_c/includes/unit_test.h"
 
 #include "frob_math.h"
+#include "shader.h"
+#include "klister.h"
 #include "edison2015/fft.h"
 #include <stdlib.h>
 
@@ -94,6 +96,39 @@ void run_tests() {
 			}
 		}
 
+	}
+
+	end_context();
+
+	begin_context("fft_compute");
+	{
+
+		fft_t fft;
+
+		fft_init(&fft, 16);
+
+		{
+			complex* data = malloc(sizeof(complex) * 64 * 64);
+			for (int m = 0; m < 16; ++m) {
+				for (int n = 0; n < 64; ++n) {
+					data[m * 16 + n].x = 0.0001f * m;
+					data[m * 16 + n].y = 0.0001f * n - 0.0005f;
+				}
+			}
+
+			for (int m = 0; m < 16; ++m) {
+				fft_compute(&fft, data, 1, m * 16);
+			}
+
+			begin_test("fft row resolve");
+			for (int m = 0; m < 16; ++m) {
+				for (int n = 0; n < 16; ++n) {
+					assert_floats_equal(data[m * 16 + n].x, row_results_fft[m][n].x);
+					assert_floats_equal(data[m * 16 + n].y, row_results_fft[m][n].y);
+				}
+			}
+
+		}
 	}
 
 	end_context();

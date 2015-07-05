@@ -32,6 +32,8 @@ PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
 PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
 PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;
 PFNGLMEMORYBARRIERPROC glMemoryBarrier;
+PFNGLMAPBUFFERRANGEPROC glMapBufferRange;
+PFNGLUNMAPBUFFERPROC glUnmapBuffer;
 
 #ifdef ENABLE_FBOS
 PFNGLGENFRAMEBUFFERSPROC glGenFramebuffers;
@@ -82,6 +84,8 @@ void initKlister() {
 	glDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC)getProcAddr("glDeleteVertexArrays");
 	glGenVertexArrays = (PFNGLGENVERTEXARRAYSPROC)getProcAddr("glGenVertexArrays");
 	glMemoryBarrier = (PFNGLMEMORYBARRIERPROC)getProcAddr("glMemoryBarrier");
+	glMapBufferRange = (PFNGLMAPBUFFERRANGEPROC)getProcAddr("glMapBufferRange");
+	glUnmapBuffer = (PFNGLUNMAPBUFFERPROC)getProcAddr("glUnmapBuffer");
 #ifdef ENABLE_FBOS
 	glGenFramebuffers = (PFNGLGENFRAMEBUFFERSPROC)getProcAddr("glGenFramebuffers");
 	glBindFramebuffer = (PFNGLBINDFRAMEBUFFERPROC)getProcAddr("glBindFramebuffer");
