@@ -29,6 +29,8 @@ void error_msg(const char* title, const char* fmt, ...) {
 
 	OutputDebugString(str);
 
-	MessageBox(NULL, str, title, MB_OK | MB_ICONEXCLAMATION);
+	if (MessageBox(NULL, str, title, MB_OKCANCEL | MB_ICONERROR | MB_SETFOREGROUND) == IDCANCEL) {
+		DebugBreak();
+	}
 	free(str);
 }
