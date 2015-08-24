@@ -37,6 +37,19 @@ void init_gl() {
 #endif
 }
 
+#if SOME_DEBUG
+static void print_shader(const char* source, int* line) {
+	char * src = _strdup(source);
+	char * split;
+	split = strtok(src, "\n");
+	while (split != NULL) {
+		++(*line);
+		FROB_PRINTF("%d:\t%s\n", *line, split);
+		split = strtok(NULL, "\n");
+	}
+}
+#endif
+
 static GLuint build_shader(const shader_stage_t* stage) {
 	GLuint shader = glCreateShader(stage->type);
 	const char** source_parts = malloc(sizeof(char*)*stage->num_parts);
@@ -58,18 +71,11 @@ static GLuint build_shader(const shader_stage_t* stage) {
 		int line=0;
 		for (unsigned int i = 0; i < stage->num_parts; ++i) {
 #if _DEBUG
-			FROB_PRINTF("<< From %s >>\n", stage->parts[stage->num_parts - 1]);
+			FROB_PRINTF("<< From %s >>\n", stage->parts[i]);
 #else
 			FROB_PRINTF("<< From shader %d >>", i);
 #endif
-			char * src = _strdup(source_parts[i]);
-			char * split;
-			split =  strtok(src, "\n");
-			while(split != NULL) {
-				++line;
-				FROB_PRINTF("%d:\t%s\n", line, split);
-				split = strtok(NULL, "\n");
-			}
+			print_shader(source_parts[i], &line);
 		}
 		FROB_ERROR("Shader build error", "Failed to build shader\n%s", buffer);
 #if _DEBUG
@@ -110,6 +116,7 @@ void init_shaders() {
 void load_shader(shader_t* shader, unsigned int num_stages, ...) {
 #if SOME_DEBUG
 	GLint link_status;
+	shader_stage_t** stages = malloc(sizeof(shader_stage_t*)*num_stages);
 #endif
 	va_list ap;
 	va_start(ap, num_stages);
@@ -119,6 +126,9 @@ void load_shader(shader_t* shader, unsigned int num_stages, ...) {
 	for (unsigned int i = 0; i < num_stages; ++i) {
 		shader_stage_t* stage = va_arg(ap, void*);
 		glAttachShader(shader->program, build_shader(stage));
+#if SOME_DEBUG
+		stages[i] = stage;
+#endif
 	}
 	va_end(ap);
 	glLinkProgram(shader->program);
@@ -126,10 +136,26 @@ void load_shader(shader_t* shader, unsigned int num_stages, ...) {
 #if SOME_DEBUG
 	glGetProgramiv(shader->program, GL_LINK_STATUS, &link_status);
 	if(!link_status) {
+		FROB_PRINTF("Stage sources:\n");
+		for (unsigned int s = 0; s < num_stages; ++s) {
+			shader_stage_t* stage = stages[s];
+#if _DEBUG
+			FROB_PRINTF("======== %s ========\n", stage->parts[0]);
+#else
+			FROB_PRINTF("======== Shader %d ========\n", stage->parts[0]);
+#endif
+			for (unsigned i = 0; i < stage->num_parts; ++i) {
+				FROB_PRINTF("%s\n", read_shader(stage->parts[i]));
+			}
+			FROB_PRINTF("=====================\n", stage->parts[0]);
+		}
+
+
 		char buffer[2048];
 		glGetProgramInfoLog(shader->program, 2048, NULL, buffer);
 		FROB_ERROR("Shader error", "Link error(s): %s\n", buffer);
 	}
+	free(stages);
 #endif
 
 	glUseProgram(shader->program);
