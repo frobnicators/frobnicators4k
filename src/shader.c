@@ -153,7 +153,7 @@ void load_shader(shader_t* shader, unsigned int num_stages, ...) {
 
 		char buffer[2048];
 		glGetProgramInfoLog(shader->program, 2048, NULL, buffer);
-		FROB_ERROR("Shader error", "Link error(s): %s\n", buffer);
+		FROB_ERROR("Shader error", "(%s) Link error(s): %s\n", stages[num_stages - 1]->parts[stages[num_stages - 1]->num_parts - 1], buffer);
 	}
 	free(stages);
 #endif
