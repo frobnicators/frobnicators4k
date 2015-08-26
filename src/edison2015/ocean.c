@@ -313,35 +313,6 @@ static float phillips(int n, int m) {
 	return ocean_A * (float)exp(-1.f / (k_norm2 * L2)) / k_norm4 * k_dot_w_pow * (float)exp(-k_norm2 * l2);
 }
 
-static float dispersion(int n, int m) {
-	float w_0 = 2.f * M_PI / 200.f; // See Tessendorf, Jerry 2001
-	float kx = M_PI * (2 * n - ocean_N) / ocean_length;
-	float kz = M_PI * (2 * m - ocean_N) / ocean_length;
-	return (float)floor(sqrt(ocean_g * sqrt(kx * kx + kz * kz)) / w_0) * w_0;
-}
-
-/*
-static void hTilde(int n, int m, complex* out) {
-	h_tilde0_t* h0 = h_tilde0 + (m * ocean_N + n);
-
-	float omega_t = dispersion(n, m) * time;
-
-	float cosw = (float)cos(omega_t);
-	float sinw = (float)sin(omega_t);
-
-	complex c0 = { cosw, sinw };
-
-	complex op1, op2;
-	complex_mul(&h0->val, &c0, &op1);
-
-	complex_conj(&c0);
-	complex_mul(&h0->mk_conj, &c0, &op2);
-	
-	complex_add(&op1, &op2, out);
-
-}
-*/
-
 static GLuint run_fft(complex* data, GLuint* buffers) {
 	GLuint outbuffer = fft_compute(&ocean_fft, buffers[0], buffers[1]);
 	return outbuffer;

@@ -21,6 +21,8 @@ typedef struct {
 } fft_t;
 
 void fft_init(fft_t* fft, unsigned int N);
-void fft_execute(fft_t* fft, complex* input, int stride, int offset);
 
 GLuint fft_compute(fft_t* fft, GLuint input, GLuint swap_buffer);
+
+// CPU butterfly combine
+void fft_execute(fft_t* fft, complex* input, int stride, int offset);

@@ -101,7 +101,22 @@ GLuint fft_compute(fft_t* fft, GLuint input, GLuint swap_buffer) {
 	return buffers[which];
 }
 
-// Perform FFT Butterfly combine
+static unsigned int bit_revers(fft_t* fft, unsigned int i) {
+	unsigned int res = 0;
+	for (unsigned int j = 0; j < fft->log_2_N; ++j) {
+		res = (res << 1) + (i & 1);
+		i >>= 1;
+	}
+	return res;
+}
+
+static void fft_twiddle(unsigned int x, unsigned int N, complex* out) {
+	float v = 2.f * M_PI * x / N;
+	out->x = (float)cos(v);
+	out->y = (float)sin(v);
+}
+
+// Perform FFT Butterfly combine (CPU)
 void fft_execute(fft_t* fft, complex* input, int stride, int offset) {
 	int which = 0;
 	complex** c = fft->c;
@@ -138,19 +153,4 @@ void fft_execute(fft_t* fft, complex* input, int stride, int offset) {
 	for (unsigned int i = 0; i < fft->N; ++i) {
 		input[i * stride + offset] = c[which][i];
 	}
-}
-
-static unsigned int bit_revers(fft_t* fft, unsigned int i) {
-	unsigned int res = 0;
-	for (unsigned int j = 0; j < fft->log_2_N; ++j) {
-		res = (res << 1) + (i & 1);
-		i >>= 1;
-	}
-	return res;
-}
-
-static void fft_twiddle(unsigned int x, unsigned int N, complex* out) {
-	float v = 2.f * M_PI * x / N;
-	out->x = (float)cos(v);
-	out->y = (float)sin(v);
 }
