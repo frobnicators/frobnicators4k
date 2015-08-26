@@ -255,6 +255,12 @@ void ocean_seed(vec2* wind, float A, float g) {
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, h_tilde0_buffer);
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, 2 * sizeof(complex)*ocean_N * ocean_N, h_tilde0);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+	glUseProgram(ocean_compute.program);
+	glUniform1i(ocean_compute_N, ocean_N);
+	glUniform1f(ocean_compute_G, ocean_g);
+	glUniform1f(ocean_compute_ocean_length, ocean_length);
+	glUniform1f(ocean_compute_dampening2, dampening*dampening);
 }
 
 
@@ -332,11 +338,6 @@ void ocean_calculate()
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, h_tilde0_buffer);
 
 	glUseProgram(ocean_compute.program);
-	// TODO: Move the unform setting to do only once at setup?
-	glUniform1i(ocean_compute_N, ocean_N);
-	glUniform1f(ocean_compute_G, ocean_g);
-	glUniform1f(ocean_compute_ocean_length, ocean_length);
-	glUniform1f(ocean_compute_dampening2, dampening*dampening);
 
 	glUniform1f(ocean_compute.time, time);
 
@@ -359,11 +360,11 @@ void ocean_calculate()
 	GLuint htdx = run_fft(h_tilde_dx, h_tilde_dx_buffers);
 	GLuint htdz = run_fft(h_tilde_dz, h_tilde_dz_buffers);
 
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
 	FROB_PERF_END(ocean_fft);
 
 	FROB_PERF_BEGIN(ocean_resolve);
-
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ht);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, htsx);
