@@ -20,16 +20,9 @@ static const float phillips_kdw_pow = 8.f;
 static const float dampening = 0.001f;
 static const float lambda = -0.5f;
 
-
 static vec2 ocean_wind_speed;
 static float ocean_A;
 static float ocean_g;
-
-static complex* h_tilde;
-static complex* h_tilde_slopex;
-static complex* h_tilde_slopez;
-static complex* h_tilde_dx;
-static complex* h_tilde_dz;
 
 typedef struct {
 	vec3 normal;
@@ -51,11 +44,16 @@ static shader_stage_t ocean_frag = { GL_FRAGMENT_SHADER, 4, { SHADER_COMMON_GLSL
 static shader_stage_t ocean_resolve_stage = { GL_COMPUTE_SHADER, 3, { SHADER_MATH_GLSL, SHADER_OCEAN_COMPUTE_SHARED_GLSL, SHADER_OCEAN_RESOLVE_GLSL } };
 static shader_stage_t ocean_compute_stage = { GL_COMPUTE_SHADER, 3, { SHADER_MATH_GLSL, SHADER_OCEAN_COMPUTE_SHARED_GLSL, SHADER_OCEAN_COMPUTE_GLSL } };
 
-static GLuint h_tilde_buffers[2];
-static GLuint h_tilde_slopex_buffers[2];
-static GLuint h_tilde_slopez_buffers[2];
-static GLuint h_tilde_dx_buffers[2];
-static GLuint h_tilde_dz_buffers[2];
+#define NUM_SWAP_BUFFERS 1
+//static GLsync sync_objects[NUM_SWAP_BUFFERS];
+
+//static int swap_write = 0;
+
+static GLuint h_tilde_buffers[2 * NUM_SWAP_BUFFERS];
+static GLuint h_tilde_slopex_buffers[2 * NUM_SWAP_BUFFERS];
+static GLuint h_tilde_slopez_buffers[2 * NUM_SWAP_BUFFERS];
+static GLuint h_tilde_dx_buffers[2 * NUM_SWAP_BUFFERS];
+static GLuint h_tilde_dz_buffers[2 * NUM_SWAP_BUFFERS];
 
 static GLuint h_tilde0_buffer;
 
@@ -86,7 +84,7 @@ typedef struct {
 	int index;
 } ocean_vertex_data_t;
 
-static GLuint ocean_buffers[OceanBuffer_Count];
+static GLuint ocean_buffers[OceanBuffer_Count * NUM_SWAP_BUFFERS];
 
 static GLuint u_ocean_projview;
 static GLuint u_ocean_model;
@@ -101,29 +99,21 @@ static void hTilde0(int n, int m, complex* out);
 static float phillips(int n, int m);
 static float dispersion(int n, int m);
 
-static void create_fft_buffers(GLuint* buffers)
-{
+static void create_fft_buffers(GLuint* buffers) {
 	const int NxN = ocean_N * ocean_N;
-	glGenBuffers(2, buffers);
+	glGenBuffers(2 * NUM_SWAP_BUFFERS, buffers);
 
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffers[0]);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(complex)*NxN, NULL, GL_DYNAMIC_DRAW);
+	for (int i = 0; i < 2 * NUM_SWAP_BUFFERS; ++i) {
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffers[i]);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(complex)*NxN, NULL, GL_DYNAMIC_DRAW);
+	}
 
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffers[1]);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(complex)*NxN, NULL, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
 }
 
 void ocean_init() {
 	const int NxN = ocean_N * ocean_N;
 	h_tilde0 = malloc(NxN * sizeof(complex)*2);
-
-	h_tilde = malloc(NxN * sizeof(complex));
-	h_tilde_slopex = malloc(NxN * sizeof(complex));
-	h_tilde_slopez = malloc(NxN * sizeof(complex));
-	h_tilde_dx = malloc(NxN * sizeof(complex));
-	h_tilde_dz = malloc(NxN * sizeof(complex));
 
 	create_fft_buffers(h_tilde_buffers);
 	create_fft_buffers(h_tilde_slopex_buffers);
@@ -206,18 +196,20 @@ void ocean_init() {
 
 	// Generate ocean data render buffers
 
-	glGenBuffers(OceanBuffer_Count, ocean_buffers);
+	glGenBuffers(OceanBuffer_Count * NUM_SWAP_BUFFERS, ocean_buffers);
 
 	glBindBuffer(GL_ARRAY_BUFFER,  ocean_buffers[OceanBuffer_VertexData]);
 	glBufferData(GL_ARRAY_BUFFER, Nplus1*Nplus1 * sizeof(ocean_vertex_data_t), vertices, GL_STATIC_DRAW); // TODO: Change to COPY
 	glVertexAttribPointer(0, 3, GL_FLOAT, FALSE, sizeof(ocean_vertex_data_t), 0);
 	glVertexAttribIPointer(1, 1, GL_INT, sizeof(ocean_vertex_data_t), (GLvoid*)offsetof(ocean_vertex_data_t, index));
 
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER,  ocean_buffers[OceanBuffer_OceanData]);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, ocean_N*ocean_N * sizeof(vec4), NULL, GL_DYNAMIC_DRAW); // TODO: Change to COPY when written from GPU
+	for (int i = 0; i < NUM_SWAP_BUFFERS; ++i) {
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ocean_buffers[i*OceanBuffer_Count + OceanBuffer_OceanData]);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, ocean_N*ocean_N * sizeof(vec4), NULL, GL_DYNAMIC_DRAW); // TODO: Change to COPY when written from GPU
 
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER,  ocean_buffers[OceanBuffer_Displacement]);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, ocean_N*ocean_N * sizeof(vec2), NULL, GL_DYNAMIC_DRAW); // TODO: Change to COPY when written from GPU
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ocean_buffers[i*OceanBuffer_Count + OceanBuffer_Displacement]);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, ocean_N*ocean_N * sizeof(vec2), NULL, GL_DYNAMIC_DRAW); // TODO: Change to COPY when written from GPU
+	}
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,  ocean_buffers[OceanBuffer_Indices]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, ocean_num_indices*sizeof(unsigned int), indices, GL_STATIC_DRAW);
@@ -319,15 +311,13 @@ static float phillips(int n, int m) {
 	return ocean_A * (float)exp(-1.f / (k_norm2 * L2)) / k_norm4 * k_dot_w_pow * (float)exp(-k_norm2 * l2);
 }
 
-static GLuint run_fft(complex* data, GLuint* buffers) {
+static GLuint run_fft(GLuint* buffers) {
 	GLuint outbuffer = fft_compute(&ocean_fft, buffers[0], buffers[1]);
 	return outbuffer;
 }
 
 void ocean_calculate()
 {
-	FROB_PERF_BEGIN(ocean_calculate);
-
 	FROB_PERF_BEGIN(ocean_hTilde);
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, h_tilde_buffers[0]);
@@ -351,14 +341,11 @@ void ocean_calculate()
 
 	int buffer_size = sizeof(complex)*ocean_N* ocean_N;
 
-	FROB_PERF_BEGIN(ocean_fft_first); // This scope indicates if the problem is memory sync (which it is...)
-	GLuint ht = run_fft(h_tilde, h_tilde_buffers);
-	FROB_PERF_END(ocean_fft_first);
-
-	GLuint htsx = run_fft(h_tilde_slopex, h_tilde_slopex_buffers);
-	GLuint htsz = run_fft(h_tilde_slopez, h_tilde_slopez_buffers);
-	GLuint htdx = run_fft(h_tilde_dx, h_tilde_dx_buffers);
-	GLuint htdz = run_fft(h_tilde_dz, h_tilde_dz_buffers);
+	GLuint ht = run_fft(h_tilde_buffers);
+	GLuint htsx = run_fft(h_tilde_slopex_buffers);
+	GLuint htsz = run_fft(h_tilde_slopez_buffers);
+	GLuint htdx = run_fft(h_tilde_dx_buffers);
+	GLuint htdz = run_fft(h_tilde_dz_buffers);
 
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
@@ -383,8 +370,6 @@ void ocean_calculate()
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 	FROB_PERF_END(ocean_resolve);
-
-	FROB_PERF_END(ocean_calculate);
 
 	CHECK_FOR_GL_ERRORS("ocean calculate end");
 }
