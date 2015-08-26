@@ -346,6 +346,11 @@ void ocean_calculate()
 	GLuint htsz = run_fft(h_tilde_slopez_buffers);
 	GLuint htdx = run_fft(h_tilde_dx_buffers);
 	GLuint htdz = run_fft(h_tilde_dz_buffers);
+	/*GLuint ht = h_tilde_buffers[0];
+	GLuint htsx = h_tilde_slopex_buffers[0];
+	GLuint htsz = h_tilde_slopez_buffers[0];
+	GLuint htdx = h_tilde_dx_buffers[0];
+	GLuint htdz = h_tilde_dz_buffers[0];*/
 
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
@@ -384,6 +389,7 @@ static void render_internal(int x, int y) {
 	model.c2.z = 1;
 	model.c3.w = 1;
 
+	// This is huge performance hit, should at least use instanced rendering
 	for (unsigned int y = 0; y < h; y++){
 		for (unsigned int x = 0; x < w; x++){
 			model.c3.x = x * ocean_length;
@@ -397,11 +403,9 @@ static void render_internal(int x, int y) {
 }
 
 void ocean_render() {
-
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ocean_buffers[OceanBuffer_OceanData]);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ocean_buffers[OceanBuffer_Displacement]);
 
-	FROB_PERF_BEGIN(ocean_render);
 	glBindFramebuffer(GL_FRAMEBUFFER, ocean_fbo.fbo);
 	glBindVertexArray(ocean_vao);
 	glUseProgram(ocean_draw.program);
@@ -420,6 +424,4 @@ void ocean_render() {
 	render_internal(0, 0);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	FROB_PERF_END(ocean_render);
 }

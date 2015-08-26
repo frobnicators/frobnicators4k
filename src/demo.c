@@ -67,6 +67,7 @@ void upload_light(shader_t* shader) {
 }
 
 void render_demo() {
+	FROB_PERF_BEGIN(update);
 	if (time < 100){
 		camera.look_direction.x = 0.0f;
 		camera.look_direction.y = -0.4f;
@@ -78,6 +79,7 @@ void render_demo() {
 		camera.position.z = (128 * 2);// -time * 15 + 2000;//100;
 		update_camera_matrices(&camera);
 	}
+	FROB_PERF_END(update);
 
 	ocean_calculate();
 
@@ -94,13 +96,17 @@ void render_demo() {
 		render(&raymarch);
 		FROB_PERF_END(raymarch);
 
+		FROB_PERF_BEGIN(ocean_render);
 		ocean_render();
+		FROB_PERF_END(ocean_render);
 
+		FROB_PERF_BEGIN(blit);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glBindTexture(GL_TEXTURE_2D, main_fbo.textures[TextureType_Color]);
 		render(&passthru);
 		glBindTexture(GL_TEXTURE_2D, ocean_fbo.textures[TextureType_Color]);
 		render(&passthru);
+		FROB_PERF_END(blit);
 	}
 #ifdef _DEBUG
 	checkForGLErrors("postFrame");

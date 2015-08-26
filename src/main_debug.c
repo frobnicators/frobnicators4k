@@ -198,7 +198,9 @@ static void do_the_magic() {
 				last_time = time;
 			}
 #endif
+			FROB_PERF_BEGIN(demo);
 			render_demo();
+			FROB_PERF_END(demo);
 			SwapBuffers(hDC);
 		}
 	}
