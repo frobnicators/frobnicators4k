@@ -8,7 +8,7 @@
 static unsigned int bit_revers(fft_t* fft, unsigned int i);
 static void fft_twiddle(unsigned int x, unsigned int N, complex* out);
 
-static shader_stage_t fft_compute_stage = { GL_COMPUTE_SHADER, 1, { SHADER_FFT_GLSL } };
+static shader_stage_t fft_compute_stage = { GL_COMPUTE_SHADER, 2, { SHADER_MATH_GLSL, SHADER_FFT_GLSL } };
 
 
 #define TWIDDLE_BINDING 0

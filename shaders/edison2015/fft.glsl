@@ -1,5 +1,3 @@
-#version 430
-
 layout(std430, binding = 0) buffer a{
 	vec2 T[];
 };
@@ -20,10 +18,6 @@ layout(std430, binding = 3) buffer d{
 uniform int w; // which
 uniform ivec2 wi; // w & invert
 uniform ivec2 os; // offset & stride
-
-vec2 cmul(vec2 c1, vec2 c2) {
-	return vec2(c1.x*c2.x - c1.y * c2.y, c1.y * c2.x + c1.x * c2.y);
-}
 
 layout(local_size_x = 16, local_size_y = 1, local_size_z = 2) in;
 void main() {

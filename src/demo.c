@@ -74,8 +74,8 @@ void render_demo() {
 		normal_v3(&camera.look_direction);
 
 		camera.position.x = 0.0f; // 200.0f;
-		camera.position.y = 11.f;
-		camera.position.z = -time * 15 + (128 * 2);// -time * 15 + 2000;//100;
+		camera.position.y = 20.f;
+		camera.position.z = (128 * 2);// -time * 15 + 2000;//100;
 		update_camera_matrices(&camera);
 	}
 

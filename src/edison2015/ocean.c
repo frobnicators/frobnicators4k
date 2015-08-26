@@ -32,34 +32,38 @@ static complex* h_tilde_dx;
 static complex* h_tilde_dz;
 
 typedef struct {
-	complex val;
-	complex mk_conj;
-} h_tilde0_t;
-
-typedef struct {
 	vec3 normal;
 	float height;
 	vec2 displacement;
 } ocean_point_t;
 
-static h_tilde0_t* h_tilde0;
+static complex* h_tilde0;
 static fft_t ocean_fft;
 
 static shader_t ocean_draw;
 static shader_t fft_shader;
+static shader_t ocean_compute;
 static shader_t ocean_resolve;
 
 static shader_stage_t ocean_vert = { GL_VERTEX_SHADER, 1, { SHADER_OCEAN_VERT_GLSL } };
 static shader_stage_t ocean_frag = { GL_FRAGMENT_SHADER, 4, { SHADER_COMMON_GLSL, SHADER_NOISE_GLSL, SHADER_RAYMARCH_GLSL, SHADER_OCEAN_FRAG_GLSL } };
 
-static shader_stage_t ocean_resolve_stage = { GL_COMPUTE_SHADER, 1, { SHADER_OCEAN_RESOLVE_GLSL } };
+static shader_stage_t ocean_resolve_stage = { GL_COMPUTE_SHADER, 3, { SHADER_MATH_GLSL, SHADER_OCEAN_COMPUTE_SHARED_GLSL, SHADER_OCEAN_RESOLVE_GLSL } };
+static shader_stage_t ocean_compute_stage = { GL_COMPUTE_SHADER, 3, { SHADER_MATH_GLSL, SHADER_OCEAN_COMPUTE_SHARED_GLSL, SHADER_OCEAN_COMPUTE_GLSL } };
 
 static GLuint h_tilde_buffers[2];
 static GLuint h_tilde_slopex_buffers[2];
 static GLuint h_tilde_slopez_buffers[2];
 static GLuint h_tilde_dx_buffers[2];
 static GLuint h_tilde_dz_buffers[2];
+
+static GLuint h_tilde0_buffer;
+
 static GLuint ocean_resolve_N;
+static GLuint ocean_compute_N;
+static GLuint ocean_compute_ocean_length;
+static GLuint ocean_compute_G; //ocean_g
+static GLuint ocean_compute_dampening2;
 
 static GLuint ocean_vao;
 fbo_t ocean_fbo;
@@ -113,7 +117,7 @@ static void create_fft_buffers(GLuint* buffers)
 
 void ocean_init() {
 	const int NxN = ocean_N * ocean_N;
-	h_tilde0 = malloc(NxN * sizeof(h_tilde0_t));
+	h_tilde0 = malloc(NxN * sizeof(complex)*2);
 
 	h_tilde = malloc(NxN * sizeof(complex));
 	h_tilde_slopex = malloc(NxN * sizeof(complex));
@@ -129,9 +133,22 @@ void ocean_init() {
 
 	fft_init(&ocean_fft, ocean_N);
 
-	load_shader(&ocean_resolve, 1, &ocean_resolve_stage);
-	ocean_resolve_N = glGetUniformLocation(ocean_resolve.program, "N");
 	load_shader(&ocean_draw, 2, &ocean_vert, &ocean_frag);
+	load_shader(&ocean_resolve, 1, &ocean_resolve_stage);
+	load_shader(&ocean_compute, 1, &ocean_compute_stage);
+
+	ocean_resolve_N = glGetUniformLocation(ocean_resolve.program, "N");
+	ocean_compute_N = glGetUniformLocation(ocean_compute.program, "N");
+	ocean_compute_G = glGetUniformLocation(ocean_compute.program, "G");
+	ocean_compute_ocean_length = glGetUniformLocation(ocean_compute.program, "oL");
+	ocean_compute_dampening2 = glGetUniformLocation(ocean_compute.program, "dmp2");
+
+	// Generate h~0 buffer
+	glGenBuffers(1, &h_tilde0_buffer);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, h_tilde0_buffer);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, 2*sizeof(complex)*NxN, NULL, GL_STATIC_DRAW);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
 	// Generate index and vertex buffer
 	int Nplus1 = ocean_N + 1;
@@ -187,6 +204,8 @@ void ocean_init() {
 	u_ocean_model = glGetUniformLocation(ocean_draw.program, "M");
 	u_ocean_camera_pos = glGetUniformLocation(ocean_draw.program, "cp");
 
+	// Generate ocean data render buffers
+
 	glGenBuffers(OceanBuffer_Count, ocean_buffers);
 
 	glBindBuffer(GL_ARRAY_BUFFER,  ocean_buffers[OceanBuffer_VertexData]);
@@ -209,7 +228,6 @@ void ocean_init() {
 
 	// Use same depth as main_fbo
 	glBindFramebuffer(GL_FRAMEBUFFER, ocean_fbo.fbo);
-	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, main_fbo.textures[TextureType_Depth], 0);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CW);
@@ -227,12 +245,16 @@ void ocean_seed(vec2* wind, float A, float g) {
 	ocean_g = g;
 	for (int m = 0; m < ocean_N; ++m) {
 		for (int n = 0; n < ocean_N; ++n) {
-			h_tilde0_t* ht = h_tilde0 + (m * ocean_N + n);
-			hTilde0(n, m, &(ht->val));
-			hTilde0(-n, -m, &(ht->mk_conj));
-			complex_conj(&(ht->mk_conj));
+			complex* ht = h_tilde0 + (m * ocean_N + n) * 2;
+			hTilde0(n, m, ht);
+			hTilde0(-n, -m, ht + 1);
+			complex_conj(ht + 1);
 		}
 	}
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, h_tilde0_buffer);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, 2 * sizeof(complex)*ocean_N * ocean_N, h_tilde0);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
 
@@ -298,6 +320,7 @@ static float dispersion(int n, int m) {
 	return (float)floor(sqrt(ocean_g * sqrt(kx * kx + kz * kz)) / w_0) * w_0;
 }
 
+/*
 static void hTilde(int n, int m, complex* out) {
 	h_tilde0_t* h0 = h_tilde0 + (m * ocean_N + n);
 
@@ -317,6 +340,7 @@ static void hTilde(int n, int m, complex* out) {
 	complex_add(&op1, &op2, out);
 
 }
+*/
 
 static GLuint run_fft(complex* data, GLuint* buffers) {
 	GLuint outbuffer = fft_compute(&ocean_fft, buffers[0], buffers[1]);
@@ -328,59 +352,37 @@ void ocean_calculate()
 	FROB_PERF_BEGIN(ocean_calculate);
 
 	FROB_PERF_BEGIN(ocean_hTilde);
-	vec2 k;
-	for (int m = 0; m < ocean_N; ++m) {
-		k.y = M_PI * (2.f* m - ocean_N) / ocean_length;
-		for (int n = 0; n < ocean_N; ++n) {
-			k.x = M_PI * (2.f* n - ocean_N) / ocean_length;
-			int index = m * ocean_N + n;
-			float k_norm = normal_v2(&k);
 
-			hTilde(n, m, h_tilde + index);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, h_tilde_buffers[0]);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, h_tilde_slopex_buffers[0]);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, h_tilde_slopez_buffers[0]);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, h_tilde_dx_buffers[0]);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, h_tilde_dz_buffers[0]);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, h_tilde0_buffer);
 
-			complex tmp = { 0.f, k.x };
-			complex_mul(h_tilde + index, &tmp, h_tilde_slopex + index);
-			tmp.y = k.y;
-			complex_mul(h_tilde + index, &tmp, h_tilde_slopez + index);
+	glUseProgram(ocean_compute.program);
+	// TODO: Move the unform setting to do only once at setup?
+	glUniform1i(ocean_compute_N, ocean_N);
+	glUniform1f(ocean_compute_G, ocean_g);
+	glUniform1f(ocean_compute_ocean_length, ocean_length);
+	glUniform1f(ocean_compute_dampening2, dampening*dampening);
 
-			if (k_norm < dampening*dampening) {
-				memset(h_tilde_dx + index, 0, sizeof(complex));
-				memset(h_tilde_dz + index, 0, sizeof(complex));
-			} else {
-				tmp.y = -k.x / k_norm;
-				complex_mul(h_tilde + index, &tmp, h_tilde_dx + index);
-				tmp.y = -k.y / k_norm;
-				complex_mul(h_tilde + index, &tmp, h_tilde_dz + index);
-			}
-		}
-	}
+	glUniform1f(ocean_compute.time, time);
+
+	glDispatchCompute(ocean_N / 16, ocean_N / 16, 1);
+
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
 	FROB_PERF_END(ocean_hTilde);
 
 	FROB_PERF_BEGIN(ocean_fft);
 
 	int buffer_size = sizeof(complex)*ocean_N* ocean_N;
 
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, h_tilde_buffers[0]);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, buffer_size, h_tilde);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, h_tilde_slopex_buffers[0]);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, buffer_size, h_tilde_slopex);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, h_tilde_slopez_buffers[0]);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, buffer_size, h_tilde_slopez);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, h_tilde_dx_buffers[0]);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, buffer_size, h_tilde_dx);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, h_tilde_dz_buffers[0]);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, buffer_size, h_tilde_dz);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
+	FROB_PERF_BEGIN(ocean_fft_first); // This scope indicates if the problem is memory sync (which it is...)
 	GLuint ht = run_fft(h_tilde, h_tilde_buffers);
+	FROB_PERF_END(ocean_fft_first);
+
 	GLuint htsx = run_fft(h_tilde_slopex, h_tilde_slopex_buffers);
 	GLuint htsz = run_fft(h_tilde_slopez, h_tilde_slopez_buffers);
 	GLuint htdx = run_fft(h_tilde_dx, h_tilde_dx_buffers);
@@ -416,8 +418,6 @@ void ocean_calculate()
 }
 
 static void render_internal(int x, int y) {
-	// TODO: Model matrix
-
 	const size_t w = 15;
 	const size_t h = 15;
 	mat4 model;

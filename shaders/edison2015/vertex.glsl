@@ -14,5 +14,4 @@ void main(){
 	cp = tmp.xyz / tmp.w;
 	tmp = PV * vec4(0.f, 0.f, 1.f, 0.f);
 	cd = tmp.xyz / tmp.w;
-
 }
