@@ -380,8 +380,8 @@ void ocean_calculate()
 }
 
 static void render_internal(int x, int y) {
-	const size_t w = 15;
-	const size_t h = 15;
+	const size_t w = 5;
+	const size_t h = 5;
 	mat4 model;
 	memset(&model, 0, sizeof(mat4));
 	model.c0.x = 1;
@@ -389,7 +389,6 @@ static void render_internal(int x, int y) {
 	model.c2.z = 1;
 	model.c3.w = 1;
 
-	// This is huge performance hit, should at least use instanced rendering
 	for (unsigned int y = 0; y < h; y++){
 		for (unsigned int x = 0; x < w; x++){
 			model.c3.x = x * ocean_length;
