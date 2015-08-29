@@ -10,6 +10,7 @@ void upload_light(struct shader_t* shader);
 #define ENABLE_TEXTURES 1
 #define ENABLE_FBOS 1
 #define ENABLE_CAMERA 1
+#define ENABLE_INSTANCED_DRAWING 1
 
 #define ENABLE_COMPUTE
 

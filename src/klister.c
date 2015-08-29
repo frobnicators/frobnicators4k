@@ -35,6 +35,11 @@ PFNGLMEMORYBARRIERPROC glMemoryBarrier;
 PFNGLMAPBUFFERRANGEPROC glMapBufferRange;
 PFNGLUNMAPBUFFERPROC glUnmapBuffer;
 
+#ifdef ENABLE_INSTANCED_DRAWING
+PFNGLDRAWELEMENTSINSTANCEDPROC glDrawElementsInstanced;
+PFNGLVERTEXATTRIBDIVISORPROC glVertexAttribDivisor;
+#endif
+
 #ifdef ENABLE_FBOS
 PFNGLGENFRAMEBUFFERSPROC glGenFramebuffers;
 PFNGLBINDFRAMEBUFFERPROC glBindFramebuffer;
@@ -86,6 +91,12 @@ void initKlister() {
 	glMemoryBarrier = (PFNGLMEMORYBARRIERPROC)getProcAddr("glMemoryBarrier");
 	glMapBufferRange = (PFNGLMAPBUFFERRANGEPROC)getProcAddr("glMapBufferRange");
 	glUnmapBuffer = (PFNGLUNMAPBUFFERPROC)getProcAddr("glUnmapBuffer");
+
+#ifdef ENABLE_INSTANCED_DRAWING
+	glDrawElementsInstanced = (PFNGLDRAWELEMENTSINSTANCEDPROC) getProcAddr("glDrawElementsInstanced");
+	glVertexAttribDivisor = (PFNGLVERTEXATTRIBDIVISORPROC) getProcAddr("glVertexAttribDivisor");
+#endif
+
 #ifdef ENABLE_FBOS
 	glGenFramebuffers = (PFNGLGENFRAMEBUFFERSPROC)getProcAddr("glGenFramebuffers");
 	glBindFramebuffer = (PFNGLBINDFRAMEBUFFERPROC)getProcAddr("glBindFramebuffer");
@@ -138,6 +149,10 @@ void initKlister() {
 		glBindVertexArray == NULL ||
 		glDeleteVertexArrays == NULL ||
 		glMemoryBarrier == NULL
+#ifdef ENABLE_INSTANCED_DRAWING
+		|| glDrawElementsInstanced == NULL
+		|| glVertexAttribDivisor == NULL
+#endif
 #ifdef ENABLE_FBOS
 		|| glGenFramebuffers == NULL
 		|| glBindFramebuffer == NULL
