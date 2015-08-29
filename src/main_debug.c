@@ -183,6 +183,7 @@ static void do_the_magic() {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		} else {
+			FROB_PERF_BEGIN(frame);
 			update_time();
 			if(time >= DEMO_LENGTH) terminate();
 #if _DEBUG
@@ -198,10 +199,9 @@ static void do_the_magic() {
 				last_time = time;
 			}
 #endif
-			FROB_PERF_BEGIN(demo);
 			render_demo();
-			FROB_PERF_END(demo);
 			SwapBuffers(hDC);
+			FROB_PERF_END(frame);
 		}
 	}
 }
