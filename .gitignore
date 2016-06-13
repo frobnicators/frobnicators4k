@@ -13,3 +13,5 @@ generated/
 .*
 crinkler.html
 data.h
+
+perf.txt
