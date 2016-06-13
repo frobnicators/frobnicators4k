@@ -45,14 +45,14 @@ void end_scope(struct PerfScope* scope) {
 }
 
 void print_perf_report() {
-	FROB_PRINTF("====== Performance Report =======\n");
+	debug_print("====== Performance Report =======\n");
 	struct PerfScope* next = g_firstScope;
 	while (next != NULL) {
 		float accum = next->accum / 1000.f;
-		FROB_PRINTF("%s: %f ms (%u hits, max: %f ms) %s:%d\n", next->name, accum / next->hits, next->hits, next->max_val / 1000.f, next->filename, next->line);
+		debug_print("%s(%d): %s: %f ms (%u hits, max: %f ms)\n", next->filename, next->line, next->name, accum / next->hits, next->hits, next->max_val / 1000.f);
 		next = next->next;
 	}
-	FROB_PRINTF("=================================\n");
+	debug_print("=================================\n");
 }
 
 #endif
