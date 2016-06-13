@@ -49,7 +49,7 @@ void print_perf_report() {
 	struct PerfScope* next = g_firstScope;
 	while (next != NULL) {
 		float accum = next->accum / 1000.f;
-		FROB_PRINTF("%s: %f ms (%u hits, max: %f ms)\n", next->name, accum / next->hits, next->hits, next->max_val / 1000.f);
+		FROB_PRINTF("%s: %f ms (%u hits, max: %f ms) %s:%d\n", next->name, accum / next->hits, next->hits, next->max_val / 1000.f, next->filename, next->line);
 		next = next->next;
 	}
 	FROB_PRINTF("=================================\n");

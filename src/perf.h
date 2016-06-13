@@ -4,6 +4,8 @@
 
 struct PerfScope {
 	const char* name;
+	const char* filename;
+	int line;
 	unsigned long accum;
 	unsigned long max_val;
 	unsigned long current_start;
@@ -17,7 +19,7 @@ void end_scope(struct PerfScope* scope);
 void print_perf_report();
 
 #define FROB_PERF_BEGIN(name) \
-	static struct PerfScope _perf_scope_##name = { #name, 0, 0, 0, 0, 0,NULL }; \
+	static struct PerfScope _perf_scope_##name = { #name, __FILE__, __LINE__, 0, 0, 0, 0, 0,NULL }; \
 	begin_scope(&_perf_scope_##name)
 
 #define FROB_PERF_END(name) end_scope(&_perf_scope_##name);
