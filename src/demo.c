@@ -68,6 +68,7 @@ void upload_light(shader_t* shader) {
 
 void render_demo() {
 	FROB_PERF_BEGIN(update);
+	GPU_SCOPE_PUSH("update", COLOR_RED);
 	if (time < 100){
 		camera.look_direction.x = 0.0f;
 		camera.look_direction.y = -0.4f;
@@ -79,6 +80,7 @@ void render_demo() {
 		camera.position.z = (128 * 2);// -time * 15 + 2000;//100;
 		update_camera_matrices(&camera);
 	}
+	GPU_SCOPE_POP();
 	FROB_PERF_END(update);
 
 	ocean_calculate();
@@ -89,11 +91,13 @@ void render_demo() {
 
 	{
 		FROB_PERF_BEGIN(raymarch);
+		GPU_SCOPE_PUSH("raymarch", COLOR_GREEN);
 		glBindFramebuffer(GL_FRAMEBUFFER, main_fbo.fbo);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(raymarch.program);
 		glUniformMatrix4fv(u_raymarch_pv,1, GL_FALSE, (float*)&camera.view_proj_matrix);
 		render(&raymarch);
+		GPU_SCOPE_POP();
 		FROB_PERF_END(raymarch);
 
 		FROB_PERF_BEGIN(ocean_render);
@@ -101,11 +105,13 @@ void render_demo() {
 		FROB_PERF_END(ocean_render);
 
 		FROB_PERF_BEGIN(blit);
+		GPU_SCOPE_PUSH("blit", COLOR_GREEN);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glBindTexture(GL_TEXTURE_2D, main_fbo.textures[TextureType_Color]);
 		render(&passthru);
 		glBindTexture(GL_TEXTURE_2D, ocean_fbo.textures[TextureType_Color]);
 		render(&passthru);
+		GPU_SCOPE_POP();
 		FROB_PERF_END(blit);
 	}
 #ifdef _DEBUG

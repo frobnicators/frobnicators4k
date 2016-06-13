@@ -63,6 +63,7 @@ void fft_init(fft_t* fft, unsigned int N) {
 }
 
 static int fft_compute_dispatch(fft_t* fft, int which, int stride, int offset_mul) {
+	GPU_SCOPE_PUSH("fft_compute_dispatch", COLOR_YELLOW);
 	glUniform2i(fft->u_os, offset_mul, stride);
 
 	int invert = 1;
@@ -81,10 +82,12 @@ static int fft_compute_dispatch(fft_t* fft, int which, int stride, int offset_mu
 		CHECK_FOR_GL_ERRORS("fft dispatch");
 	}
 
+	GPU_SCOPE_POP();
 	return which;
 }
 
 GLuint fft_compute(fft_t* fft, GLuint input, GLuint swap_buffer) {
+	GPU_SCOPE_PUSH("fft_compute", COLOR_YELLOW);
 	glUseProgram(fft->shader.program);
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, BIT_REVERSE_BINDING, fft->rev_buffer);
@@ -98,6 +101,7 @@ GLuint fft_compute(fft_t* fft, GLuint input, GLuint swap_buffer) {
 
 	which = fft_compute_dispatch(fft, which, fft->N, 1);
 
+	GPU_SCOPE_POP();
 	return buffers[which];
 }
 

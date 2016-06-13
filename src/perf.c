@@ -1,6 +1,7 @@
 #include "perf.h"
 #include "winclude.h"
 #include "debug.h"
+#include "nvToolsExt.h"
 
 #if SOME_DEBUG
 
@@ -53,6 +54,26 @@ void print_perf_report() {
 		next = next->next;
 	}
 	debug_print("=================================\n");
+}
+
+void gpu_scope_push(const char* name, unsigned int color) {
+    nvtxEventAttributes_t eventAttrib = {0};
+
+    // set the version and the size information
+    eventAttrib.version = NVTX_VERSION;
+    eventAttrib.size = NVTX_EVENT_ATTRIB_STRUCT_SIZE;
+
+    // configure the attributes.  0 is the default for all attributes.
+    eventAttrib.colorType = NVTX_COLOR_ARGB;
+    eventAttrib.color = color;
+    eventAttrib.messageType = NVTX_MESSAGE_TYPE_ASCII;
+    eventAttrib.message.ascii = name;
+
+	nvtxRangePushEx(&eventAttrib);
+}
+
+void gpu_scope_pop() {
+	nvtxRangePop();
 }
 
 #endif

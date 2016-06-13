@@ -318,7 +318,10 @@ static GLuint run_fft(GLuint* buffers) {
 
 void ocean_calculate()
 {
+	GPU_SCOPE_PUSH("ocean_calculate", COLOR_BLUE);
+
 	FROB_PERF_BEGIN(ocean_hTilde);
+	GPU_SCOPE_PUSH("ocean_hTilde", COLOR_CYAN);
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, h_tilde_buffers[0]);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, h_tilde_slopex_buffers[0]);
@@ -335,9 +338,11 @@ void ocean_calculate()
 
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
+	GPU_SCOPE_POP();
 	FROB_PERF_END(ocean_hTilde);
 
 	FROB_PERF_BEGIN(ocean_fft);
+	GPU_SCOPE_PUSH("ocean_fft", COLOR_YELLOW);
 
 	int buffer_size = sizeof(complex)*ocean_N* ocean_N;
 
@@ -349,9 +354,11 @@ void ocean_calculate()
 
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
+	GPU_SCOPE_POP();
 	FROB_PERF_END(ocean_fft);
 
 	FROB_PERF_BEGIN(ocean_resolve);
+	GPU_SCOPE_PUSH("ocean_resolve", COLOR_YELLOW);
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ht);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, htsx);
@@ -369,7 +376,10 @@ void ocean_calculate()
 
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
+	GPU_SCOPE_POP();
 	FROB_PERF_END(ocean_resolve);
+
+	GPU_SCOPE_POP();
 
 	CHECK_FOR_GL_ERRORS("ocean calculate end");
 }
@@ -397,6 +407,7 @@ static void render_internal(int x, int y) {
 }
 
 void ocean_render() {
+	GPU_SCOPE_PUSH("ocean_render", COLOR_GREEN);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ocean_buffers[OceanBuffer_OceanData]);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ocean_buffers[OceanBuffer_Displacement]);
 
@@ -418,4 +429,5 @@ void ocean_render() {
 	render_internal(0, 0);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	GPU_SCOPE_POP();
 }
