@@ -346,11 +346,6 @@ void ocean_calculate()
 	GLuint htsz = run_fft(h_tilde_slopez_buffers);
 	GLuint htdx = run_fft(h_tilde_dx_buffers);
 	GLuint htdz = run_fft(h_tilde_dz_buffers);
-	/*GLuint ht = h_tilde_buffers[0];
-	GLuint htsx = h_tilde_slopex_buffers[0];
-	GLuint htsz = h_tilde_slopez_buffers[0];
-	GLuint htdx = h_tilde_dx_buffers[0];
-	GLuint htdz = h_tilde_dz_buffers[0];*/
 
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
